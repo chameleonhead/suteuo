@@ -1,15 +1,15 @@
 import { Col, Container, Row } from 'reactstrap';
 import LoginForm, { LoginFormProps } from '../components/LoginForm';
 
-export type LoginProps = {
+export type RegisterProps = {
     onSubmit: LoginFormProps['onSubmit']
 }
 
-export const Login = (props: LoginProps) => {
+export const Register = (props: RegisterProps) => {
     const { onSubmit } = props
     return (
         <Container>
-            <h1>ログイン</h1>
+            <h1>登録</h1>
             <Row>
                 <Col md="6">
                     <LoginForm onSubmit={onSubmit} />
@@ -19,4 +19,4 @@ export const Login = (props: LoginProps) => {
     )
 };
 
-export default Login;
+export default Register;
