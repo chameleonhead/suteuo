@@ -15,7 +15,6 @@ const RequestItem = (props: { request: Request }) => {
 }
 
 export type RequestBoardSummaryProps = {
-    requests: Request[];
 }
 
 export const RequestBoardSummary = (props: RequestBoardSummaryProps) => {

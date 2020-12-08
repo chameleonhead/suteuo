@@ -8,14 +8,14 @@ export type LoginProps = {
 export const Login = (props: LoginProps) => {
     const { onSubmit } = props
     return (
-        <Container>
+        <div>
             <h1>ログイン</h1>
             <Row>
                 <Col md="6">
                     <LoginForm onSubmit={onSubmit} />
                 </Col>
             </Row>
-        </Container>
+        </div>
     )
 };
 

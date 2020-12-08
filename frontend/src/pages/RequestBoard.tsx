@@ -20,12 +20,12 @@ export type RequestBoardProps = RouteComponentProps
 export const RequestBoard = (_: RequestBoardProps) => {
     const requests = allRequests();
     return (
-        <Container>
+        <div>
             <Link to="#">最新</Link>
             <ListGroup>
                 {requests.map(r => (<RequestItem key={r.id} request={r} />))}
             </ListGroup>
-        </Container>
+        </div>
     )
 }
 

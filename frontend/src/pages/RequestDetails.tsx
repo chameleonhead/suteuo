@@ -9,10 +9,10 @@ export const RequestDetails = (props: RequestDetailsProps) => {
     const request = findRequestById(id);
     if (request) {
         return (
-            <Container>
+            <div>
                 <h1>{request.title}</h1>
                 <div>依頼者: {request.requester.name}</div>
-            </Container>
+            </div>
         );
     }
     return <Redirect to="/requests" />

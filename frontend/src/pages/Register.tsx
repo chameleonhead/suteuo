@@ -8,14 +8,14 @@ export type RegisterProps = {
 export const Register = (props: RegisterProps) => {
     const { onSubmit } = props
     return (
-        <Container>
+        <div>
             <h1>登録</h1>
             <Row>
                 <Col md="6">
                     <LoginForm onSubmit={onSubmit} />
                 </Col>
             </Row>
-        </Container>
+        </div>
     )
 };
 
