@@ -1,5 +1,4 @@
-import { Redirect, RouteComponentProps } from 'react-router-dom';
-import { Container } from 'reactstrap';
+import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import { findRequestById } from '../data';
 
 export type RequestDetailsProps = RouteComponentProps<{ id: string }>
@@ -11,7 +10,7 @@ export const RequestDetails = (props: RequestDetailsProps) => {
         return (
             <div>
                 <h1>{request.title}</h1>
-                <div>依頼者: {request.requester.name}</div>
+                <div>依頼者: <Link to={`/users/${request.requester.id}`}>{request.requester.name}</Link></div>
             </div>
         );
     }

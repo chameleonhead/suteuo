@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Container, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
+import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Request } from '../models';

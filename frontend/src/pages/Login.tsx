@@ -1,4 +1,4 @@
-import { Col, Container, Row } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 import LoginForm, { LoginFormProps } from '../components/LoginForm';
 
 export type LoginProps = {
