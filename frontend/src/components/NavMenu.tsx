@@ -8,44 +8,12 @@ export type NavMenuProps = {
     notifications: any[];
 }
 
-const NavList = (props: NavMenuProps) => {
-    return (
-        <ul className="navbar-nav flex-grow">
-            <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/requests">リクエスト</NavLink>
-            </NavItem>
-            {props.user && (
-                <NavItem>
-                    <NavLink tag={Link} className="text-dark" to="/notifications">通知</NavLink>
-                </NavItem>
-            )}
-            {props.user && (
-                <NavItem>
-                    <NavLink tag={Link} className="text-dark" to="/messages">メッセージ</NavLink>
-                </NavItem>
-            )}
-        </ul>
-    )
-}
-
 const UserInfo = (props: NavMenuProps) => {
     const { user } = props
-    if (user) {
-        return (
-            <NavbarText>
-                {user.name}
-            </NavbarText>
-        )
-    }
     return (
-        <ul className="navbar-nav flex-grow">
-            <NavItem className="mr-2">
-                <NavLink tag={Link} className="text-dark" to="/register">登録</NavLink>
-            </NavItem>
-            <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/login">ログイン</NavLink>
-            </NavItem>
-        </ul>
+        <NavbarText>
+            {user.name}
+        </NavbarText>
     )
 }
 
@@ -53,18 +21,55 @@ export const NavMenu = (props: NavMenuProps) => {
     const [isOpen, setOpen] = React.useState(false)
     const { user } = props
     if (user) {
-
+        return (
+            <header>
+                <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" light>
+                    <Container>
+                        <NavbarBrand tag={Link} to="/">捨て魚</NavbarBrand>
+                        <ul className="nav mr-auto">
+                            <NavItem>
+                                <NavLink tag={Link} className="text-dark" to="/requests/new">
+                                    <i className="fas fa-pencil-alt d-sm-none"></i>
+                                    <span className="d-none d-sm-inline">リクエスト</span>
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink tag={Link} className="text-dark" to="/notifications">
+                                    <i className="fas fa-bell d-sm-none"></i>
+                                    <span className="d-none d-sm-inline">通知</span>
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink tag={Link} className="text-dark" to="/notifications">
+                                    <i className="far fa-comment-dots d-sm-none"></i>
+                                    <span className="d-none d-sm-inline">メッセージ</span>
+                                </NavLink>
+                            </NavItem>
+                        </ul>
+                        <NavbarToggler onClick={() => setOpen(!isOpen)} className="mr-2" />
+                        <Collapse className="d-sm-inline-flex justify-content-end" isOpen={isOpen} navbar>
+                            <UserInfo {...props} />
+                        </Collapse>
+                    </Container>
+                </Navbar>
+            </header>
+        )
     }
     return (
         <header>
             <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" light>
                 <Container>
                     <NavbarBrand tag={Link} to="/">捨て魚</NavbarBrand>
-                    <NavbarToggler onClick={() => setOpen(!isOpen)} className="mr-2" />
-                    <Collapse className="d-sm-inline-flex justify-content-between" isOpen={isOpen} navbar>
-                        <NavList {...props} />
-                        <UserInfo {...props} />
-                    </Collapse>
+                    <div className="d-flex justify-content-end">
+                        <ul className="nav mr-auto">
+                            <NavItem className="mr-2">
+                                <NavLink tag={Link} className="text-dark" to="/register">登録</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink tag={Link} className="text-dark" to="/login">ログイン</NavLink>
+                            </NavItem>
+                        </ul>
+                    </div>
                 </Container>
             </Navbar>
         </header>
