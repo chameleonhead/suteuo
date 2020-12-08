@@ -3,7 +3,7 @@ import { Container, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupIte
 import { RouteComponentProps } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Request } from '../models';
-import requests from '../data/requests.json'
+import { allRequests } from '../data';
 
 const RequestItem = (props: { request: Request }) => {
     const { request } = props
@@ -18,6 +18,7 @@ const RequestItem = (props: { request: Request }) => {
 export type RequestBoardProps = RouteComponentProps
 
 export const RequestBoard = (_: RequestBoardProps) => {
+    const requests = allRequests();
     return (
         <Container>
             <Link to="#">最新</Link>
@@ -28,4 +29,4 @@ export const RequestBoard = (_: RequestBoardProps) => {
     )
 }
 
-export default (props: any) => <RequestBoard {...props} />;
+export default RequestBoard;

@@ -1,14 +1,12 @@
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { Container } from 'reactstrap';
-import requests from '../data/requests.json';
-import { Request } from '../models';
+import { findRequestById } from '../data';
 
 export type RequestDetailsProps = RouteComponentProps<{ id: string }>
 
 export const RequestDetails = (props: RequestDetailsProps) => {
     const { id } = props.match.params;
-    const filtered = requests.filter(m => String(m.id) === id);
-    const request = filtered.length ? filtered[0] as Request : undefined
+    const request = findRequestById(id);
     if (request) {
         return (
             <Container>

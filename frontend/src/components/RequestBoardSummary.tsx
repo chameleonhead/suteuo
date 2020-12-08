@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Request } from '../models';
-import requests from '../data/requests.json'
+import { allRequests } from '../data';
 
 const RequestItem = (props: { request: Request }) => {
     const { request } = props
@@ -19,7 +19,7 @@ export type RequestBoardSummaryProps = {
 }
 
 export const RequestBoardSummary = (props: RequestBoardSummaryProps) => {
-    const { requests } = props
+    const requests = allRequests() as Request[]
     return (
         <ListGroup>
             {requests.map(r => (<RequestItem key={r.id} request={r} />))}
@@ -27,4 +27,4 @@ export const RequestBoardSummary = (props: RequestBoardSummaryProps) => {
     )
 }
 
-export default (props: any) => <RequestBoardSummary {...props} requests={requests} />;
+export default RequestBoardSummary;

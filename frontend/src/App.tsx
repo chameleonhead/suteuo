@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import RequestBoard from './pages/RequestBoard';
 import RequestDetails from './pages/RequestDetails';
+import UserDetails from './pages/UserDetails';
 
 import './custom.css'
 
@@ -16,6 +17,7 @@ const App = () => (
         <Route path='/login' component={Login} />
         <Route exact path='/requests' component={RequestBoard} />
         <Route path='/requests/:id' component={RequestDetails} />
+        <Route path='/users/:id' component={UserDetails} />
     </Layout>
 );
 
