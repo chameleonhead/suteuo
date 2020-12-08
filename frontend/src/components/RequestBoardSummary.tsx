@@ -8,7 +8,7 @@ const RequestItem = (props: { request: Request }) => {
     const { request } = props
     return (
         <ListGroupItem tag={Link} to={`/requests/${request.id}`} className="text-dark text-decoration-none">
-            <ListGroupItemHeading>{request.requester.name}<small className="ml-2">{request.area}</small><small className="float-right">{request.updatedAt}</small></ListGroupItemHeading>
+            <ListGroupItemHeading>{request.owner.name}<small className="ml-2">{request.area}</small><small className="float-right">{request.updatedAt}</small></ListGroupItemHeading>
             <ListGroupItemText>{request.title}</ListGroupItemText>
         </ListGroupItem>
     )

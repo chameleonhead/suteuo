@@ -3,14 +3,15 @@ import { Request, User } from '../models';
 import requests from './requests.json'
 
 const user = new schema.Entity('users');
-const comments = new schema.Entity('comments');
+const comment = new schema.Entity('comments', {
+    createdBy: user
+});
 const request = new schema.Entity('requests', {
-    requester: user,
-    comments: comments,
+    owner: user,
+    comments: [comment],
 });
 
 const normalizedData = normalize(requests, [request]);
-console.log()
 
 export const allRequests = (): Request[] => {
     return denormalize(Object.keys(normalizedData.entities.requests as any), [request], normalizedData.entities);

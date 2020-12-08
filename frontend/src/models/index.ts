@@ -2,6 +2,8 @@ export interface User {
     id: string;
     name: string;
     area: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface Request {
@@ -9,6 +11,16 @@ export interface Request {
     area: string;
     title: string;
     detailedText: string;
-    requester: User;
+    owner: User;
+    comments: RequestComment[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface RequestComment {
+    id: string;
+    comment: string;
+    createdBy: User;
+    createdAt: string;
     updatedAt: string;
 }

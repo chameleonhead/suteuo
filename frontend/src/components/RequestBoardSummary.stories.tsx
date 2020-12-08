@@ -12,16 +12,4 @@ export default {
 const Template: Story<RequestBoardSummaryProps> = (args) => <RequestBoardSummary {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {
-    requests: [
-        {
-            id: '1', 
-            title: 'Test 1 Title', 
-            requester: {
-                id: '1',
-                name: 'Requester Name'
-            },
-            updatedAt: '2020-12-01T18:30:10',
-        }
-    ]
-}
+Default.args = {}
