@@ -11,6 +11,10 @@ export const RequestDetails = (props: RequestDetailsProps) => {
             <div>
                 <h1>{request.title}</h1>
                 <div>依頼者: <Link to={`/users/${request.requester.id}`}>{request.requester.name}</Link></div>
+                <h5 className="mt-3">依頼内容</h5>
+                <div>
+                    {request.detailedText}
+                </div>
             </div>
         );
     }

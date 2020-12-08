@@ -16,6 +16,7 @@ export const RegisterForm = (props: RegisterFormProps) => {
     const formik = useFormik({
         initialValues: {
             mailAddress: '',
+            name: '',
             area: '',
             password: '',
         },
@@ -24,8 +25,8 @@ export const RegisterForm = (props: RegisterFormProps) => {
             if (!value.mailAddress) {
                 errors.mailAddress = '必須項目です。'
             }
-            if (!value.area) {
-                errors.area = '必須項目です。'
+            if (!value.name) {
+                errors.name = '必須項目です。'
             }
             if (!value.password) {
                 errors.password = '必須項目です。'
@@ -47,6 +48,18 @@ export const RegisterForm = (props: RegisterFormProps) => {
                     invalid={formik.touched.mailAddress && formik.errors.mailAddress ? true : false}
                 />
                 <FormFeedback>{formik.errors.mailAddress}</FormFeedback>
+            </FormGroup>
+            <FormGroup>
+                <Label>表示名</Label>
+                <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    onChange={formik.handleChange}
+                    value={formik.values.name}
+                    invalid={formik.touched.name && formik.errors.name ? true : false}
+                />
+                <FormFeedback>{formik.errors.name}</FormFeedback>
             </FormGroup>
             <FormGroup>
                 <Label>エリア</Label>

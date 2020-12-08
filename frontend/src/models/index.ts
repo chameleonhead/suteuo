@@ -1,6 +1,7 @@
 export interface User {
     id: string;
     name: string;
+    area: string;
 }
 
 export interface Request {
