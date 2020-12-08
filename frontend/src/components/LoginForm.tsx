@@ -34,7 +34,7 @@ export const LoginForm = (props: LoginFormProps) => {
     return (
         <Form onSubmit={formik.handleSubmit}>
             <FormGroup>
-                <Label>ユーザー名</Label>
+                <Label>メールアドレス</Label>
                 <Input
                     id="username"
                     name="username"

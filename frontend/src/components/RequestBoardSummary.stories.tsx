@@ -21,7 +21,7 @@ Default.args = {
                 id: '1',
                 name: 'Requester Name'
             },
-            requestedAt: '2020-12-01T18:30:10',
+            updatedAt: '2020-12-01T18:30:10',
         }
     ]
 }

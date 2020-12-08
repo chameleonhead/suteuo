@@ -5,7 +5,9 @@ export interface User {
 
 export interface Request {
     id: string;
+    area: string;
     title: string;
+    detailedText: string;
     requester: User;
-    requestedAt: string;
+    updatedAt: string;
 }
