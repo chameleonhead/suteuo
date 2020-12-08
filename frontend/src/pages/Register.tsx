@@ -1,8 +1,8 @@
 import { Col, Row } from 'reactstrap';
-import LoginForm, { LoginFormProps } from '../components/LoginForm';
+import RegisterForm, { RegisterFormProps } from '../components/RegisterForm';
 
 export type RegisterProps = {
-    onSubmit: LoginFormProps['onSubmit']
+    onSubmit: RegisterFormProps['onSubmit']
 }
 
 export const Register = (props: RegisterProps) => {
@@ -12,7 +12,7 @@ export const Register = (props: RegisterProps) => {
             <h1>登録</h1>
             <Row>
                 <Col md="6">
-                    <LoginForm onSubmit={onSubmit} />
+                    <RegisterForm onSubmit={onSubmit} />
                 </Col>
             </Row>
         </div>
