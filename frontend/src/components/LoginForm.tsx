@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap';
 
-interface FormValue {
+export interface FormValue {
     username: string;
     password: string;
     rememberMe: boolean;

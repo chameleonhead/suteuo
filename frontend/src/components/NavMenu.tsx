@@ -1,21 +1,11 @@
 import * as React from 'react';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarText, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Collapse, Container, Navbar, NavbarBrand, NavbarText, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { ApplicationState, selectors } from '../store';
 import './NavMenu.css';
 
-export type NavMenuProps = {
-    user?: any;
-    notifications: any[];
-}
-
-const UserInfo = (props: NavMenuProps) => {
-    const { user } = props
-    return (
-        <NavbarText>
-            {user.name}
-        </NavbarText>
-    )
-}
+export type NavMenuProps = ReturnType<typeof mapStateToProps>
 
 export const NavMenu = (props: NavMenuProps) => {
     const [isOpen, setOpen] = React.useState(false)
@@ -48,7 +38,9 @@ export const NavMenu = (props: NavMenuProps) => {
                         </ul>
                         <NavbarToggler onClick={() => setOpen(!isOpen)} className="mr-2" />
                         <Collapse className="d-sm-inline-flex justify-content-end" isOpen={isOpen} navbar>
-                            <UserInfo {...props} />
+                            <NavbarText>
+                                {user.name}
+                            </NavbarText>
                         </Collapse>
                     </Container>
                 </Navbar>
@@ -76,4 +68,8 @@ export const NavMenu = (props: NavMenuProps) => {
     )
 }
 
-export default (props: any) => <NavMenu {...props} />;
+const mapStateToProps = (state: ApplicationState) => ({
+    user: selectors.selectUser(state)
+})
+
+export default connect(mapStateToProps)(NavMenu);

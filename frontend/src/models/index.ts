@@ -1,3 +1,6 @@
+export interface LoginUser extends User {
+}
+
 export interface User {
     id: string;
     name: string;

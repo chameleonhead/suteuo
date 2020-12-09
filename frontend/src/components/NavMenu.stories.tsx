@@ -15,7 +15,7 @@ export const LoggedIn = Template.bind({});
 LoggedIn.args = {
     user: {
         name: 'User Name'
-    }
+    } as any
 }
 
 export const LoggedOut = Template.bind({});

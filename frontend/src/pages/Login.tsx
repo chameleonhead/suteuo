@@ -1,12 +1,17 @@
 import { Col, Row } from 'reactstrap';
-import LoginForm, { LoginFormProps } from '../components/LoginForm';
+import { connect } from 'react-redux';
 
-export type LoginProps = {
-    onSubmit: LoginFormProps['onSubmit']
-}
+import LoginForm from '../components/LoginForm';
+import { actionCreators, ApplicationState, selectors } from '../store';
+import { Redirect } from 'react-router';
+
+export type LoginProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 export const Login = (props: LoginProps) => {
-    const { onSubmit } = props
+    const { user, onSubmit } = props
+    if (user) {
+        return <Redirect to="/" />
+    }
     return (
         <div>
             <h1>ログイン</h1>
@@ -19,4 +24,14 @@ export const Login = (props: LoginProps) => {
     )
 };
 
-export default Login;
+const mapStateToProps = (state: ApplicationState) => ({
+    user: selectors.selectUser(state)
+})
+const mapDispatchToProps = {
+    onSubmit: actionCreators.login
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Login);
