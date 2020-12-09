@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarText, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { ApplicationState, selectors } from '../store';
+import { Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Navbar, NavbarBrand, NavbarText, NavItem, NavLink } from 'reactstrap';
+import { actionCreators, ApplicationState, selectors } from '../store';
 import './NavMenu.css';
 
-export type NavMenuProps = ReturnType<typeof mapStateToProps>
+export type NavMenuProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 export const NavMenu = (props: NavMenuProps) => {
     const [isOpen, setOpen] = React.useState(false)
-    const { user } = props
+    const { user, onLogout } = props
     if (user) {
         return (
             <header>
@@ -36,12 +36,16 @@ export const NavMenu = (props: NavMenuProps) => {
                                 </NavLink>
                             </NavItem>
                         </ul>
-                        <NavbarToggler onClick={() => setOpen(!isOpen)} className="mr-2" />
-                        <Collapse className="d-sm-inline-flex justify-content-end" isOpen={isOpen} navbar>
-                            <NavbarText>
-                                {user.name}
-                            </NavbarText>
-                        </Collapse>
+                        <Dropdown isOpen={isOpen} toggle={() => setOpen(!isOpen)}>
+                            <DropdownToggle tag="div">
+                                <NavbarText>
+                                    {user.name}
+                                </NavbarText>
+                            </DropdownToggle>
+                            <DropdownMenu right>
+                                <DropdownItem tag="button" onClick={onLogout}>ログアウト</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
                     </Container>
                 </Navbar>
             </header>
@@ -71,5 +75,11 @@ export const NavMenu = (props: NavMenuProps) => {
 const mapStateToProps = (state: ApplicationState) => ({
     user: selectors.selectUser(state)
 })
+const mapDispatchToProps = {
+    onLogout: actionCreators.logout
+}
 
-export default connect(mapStateToProps)(NavMenu);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(NavMenu) as any;

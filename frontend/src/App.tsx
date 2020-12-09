@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route } from 'react-router';
+import { Route, Switch } from 'react-router';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -13,13 +13,15 @@ import './custom.css'
 
 const App = () => (
     <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/register' component={Register} />
-        <Route path='/login' component={Login} />
-        <Route exact path='/requests' component={RequestBoard} />
-        <Route exact path='/requests/new' component={NewRequest} />
-        <Route path='/requests/:id' component={RequestDetails} />
-        <Route path='/users/:id' component={UserDetails} />
+        <Switch>
+            <Route exact path='/' component={Home} />
+            <Route path='/register' component={Register} />
+            <Route path='/login' component={Login} />
+            <Route path='/requests/new' component={NewRequest} />
+            <Route path='/requests/:id' component={RequestDetails} />
+            <Route exact path='/requests' component={RequestBoard} />
+            <Route path='/users/:id' component={UserDetails} />
+        </Switch>
     </Layout>
 );
 

@@ -34,7 +34,7 @@ export interface LogoutAction {
 
 export interface SetSessionAction {
     type: 'SET_SESSION';
-    payload: LoginUser
+    payload: LoginUser | null
 }
 
 export type KnownAction = LoginAction
@@ -86,6 +86,10 @@ const middleware: Middleware = ({ dispatch }) => next => incomingAction => {
         case "LOGOUT":
             {
                 localStorage.removeItem('session');
+                dispatch({
+                    type: 'SET_SESSION',
+                    payload: null
+                } as SetSessionAction)
             }
             break;
     }

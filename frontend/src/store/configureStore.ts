@@ -2,10 +2,19 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { History } from 'history';
-import { ApplicationState, reducers, middlewares } from './';
+import { actionCreators, ApplicationState, reducers, middlewares } from '.';
 
 export default function configureStore(history: History, initialState?: ApplicationState) {
     const middleware = [
+        (store: any) => (next: any) => (action: any) => {
+            console.log(action);
+            const state = store.getState();
+            next(action)
+            const newState = store.getState()
+            if (state !== newState) {
+                console.log(newState)
+            }
+        },
         thunk,
         routerMiddleware(history),
         ...middlewares,
@@ -22,9 +31,11 @@ export default function configureStore(history: History, initialState?: Applicat
         enhancers.push(windowIfDefined.__REDUX_DEVTOOLS_EXTENSION__());
     }
 
-    return createStore(
+    const store = createStore(
         rootReducer,
         initialState,
         compose(applyMiddleware(...middleware), ...enhancers)
     );
+    store.dispatch(actionCreators.getSession());
+    return store;
 }
