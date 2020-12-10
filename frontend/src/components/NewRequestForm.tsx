@@ -8,16 +8,17 @@ interface FormValue {
 }
 
 export type NewRequestFormProps = {
-    onSubmit: (value: FormValue) => void
+    defaultArea?: string;
+    onSubmit: (value: FormValue) => void;
 }
 
 export const NewRequestForm = (props: NewRequestFormProps) => {
-    const { onSubmit } = props
+    const { defaultArea, onSubmit } = props
     const formik = useFormik({
         initialValues: {
             title: '',
             detailedText: '',
-            area: '',
+            area: defaultArea || '',
         },
         validate: value => {
             const errors = {} as any

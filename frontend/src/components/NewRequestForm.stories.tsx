@@ -12,3 +12,8 @@ export default {
 const Template: Story<NewRequestFormProps> = (args) => <NewRequestForm {...args} />;
 
 export const Default = Template.bind({});
+
+export const withDefaultArea = Template.bind({});
+withDefaultArea.args = {
+    defaultArea: '愛知県'
+}

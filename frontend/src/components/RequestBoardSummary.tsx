@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { Request } from '../models';
+import { Request, User } from '../models';
 import { allRequests } from '../data';
 
 const RequestItem = (props: { request: Request }) => {
@@ -15,14 +15,34 @@ const RequestItem = (props: { request: Request }) => {
 }
 
 export type RequestBoardSummaryProps = {
+    owner?: User;
+    commenter?: User;
+    featured?: boolean;
+    latest?: boolean;
 }
 
 export const RequestBoardSummary = (props: RequestBoardSummaryProps) => {
-    const requests = allRequests() as Request[]
+    const { latest, featured, owner, commenter } = props;
+
+    let requests = allRequests() as Request[]
+    if (featured || latest) {
+        requests = [...requests].sort((a, b) => new Date(b.updatedAt).getMilliseconds() - new Date(a.updatedAt).getMilliseconds())
+    }
+    if (owner) {
+        requests = requests.filter(m => m.owner.id === owner.id)
+    }
+    if (commenter) {
+        requests = requests.filter(m => m.comments && m.comments.filter(c => c.createdBy.id === commenter.id).length > 0)
+    }
+    if (requests.length) {
+        return (
+            <ListGroup>
+                {requests.map(r => (<RequestItem key={r.id} request={r} />))}
+            </ListGroup>
+        )
+    }
     return (
-        <ListGroup>
-            {requests.map(r => (<RequestItem key={r.id} request={r} />))}
-        </ListGroup>
+        <div>今はありません。</div>
     )
 }
 

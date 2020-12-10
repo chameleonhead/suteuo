@@ -12,3 +12,10 @@ export default {
 const Template: Story<HomeProps> = (args) => <Home {...args} />;
 
 export const Default = Template.bind({});
+
+export const LoggedIn = Template.bind({});
+LoggedIn.args = {
+    user: {
+        id: '1'
+    } as any
+}

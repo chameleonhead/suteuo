@@ -18,7 +18,7 @@ export const NavMenu = (props: NavMenuProps) => {
                         <NavbarBrand tag={Link} to="/">捨て魚</NavbarBrand>
                         <ul className="nav mr-auto">
                             <NavItem className={location.pathname.startsWith('/requests') ? 'border-bottom' : 'border-bottom border-white'}>
-                                <NavLink tag={Link} className="text-dark" to="/requests/new">
+                                <NavLink tag={Link} className="text-dark" to="/requests">
                                     <i className="fas fa-pencil-alt d-sm-none"></i>
                                     <span className="d-none d-sm-inline">リクエスト</span>
                                 </NavLink>
