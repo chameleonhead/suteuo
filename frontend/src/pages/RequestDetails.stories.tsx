@@ -19,3 +19,11 @@ Default.args = {
         }
     } as any
 }
+
+export const withUser = Template.bind({});
+withUser.args = {
+    ...Default.args,
+    user: {
+        id: '2'
+    } as any
+}

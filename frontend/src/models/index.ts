@@ -15,6 +15,8 @@ export interface Request {
     title: string;
     detailedText: string;
     owner: User;
+    favUsers: User[];
+    subUsers: User[];
     comments: RequestComment[];
     createdAt: string;
     updatedAt: string;

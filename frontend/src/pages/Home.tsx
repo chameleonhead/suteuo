@@ -20,6 +20,10 @@ export const Home = (props: HomeProps) => {
           <RequestBoardSummary commenter={user} />
         </div>
         <div className="mb-3">
+          <h5>お気に入り</h5>
+          <RequestBoardSummary fav={user} />
+        </div>
+        <div className="mb-3">
           <h5>注目</h5>
           <RequestBoardSummary featured />
         </div>

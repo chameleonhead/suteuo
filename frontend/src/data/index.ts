@@ -11,6 +11,8 @@ const comment = new schema.Entity('comments', {
 const request = new schema.Entity('requests', {
     owner: user,
     comments: [comment],
+    favUsers: [user],
+    subUsers: [user],
 });
 const message = new schema.Entity('messages', {
     sender: user

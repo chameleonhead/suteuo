@@ -17,12 +17,13 @@ const RequestItem = (props: { request: Request }) => {
 export type RequestBoardSummaryProps = {
     owner?: User;
     commenter?: User;
+    fav?: User;
     featured?: boolean;
     latest?: boolean;
 }
 
 export const RequestBoardSummary = (props: RequestBoardSummaryProps) => {
-    const { latest, featured, owner, commenter } = props;
+    const { latest, featured, owner, commenter, fav } = props;
 
     let requests = allRequests() as Request[]
     if (featured || latest) {
@@ -33,6 +34,9 @@ export const RequestBoardSummary = (props: RequestBoardSummaryProps) => {
     }
     if (commenter) {
         requests = requests.filter(m => m.comments && m.comments.filter(c => c.createdBy.id === commenter.id).length > 0)
+    }
+    if (fav) {
+        requests = requests.filter(m => m.favUsers && m.favUsers.filter(c => c.id === fav.id).length > 0)
     }
     if (requests.length) {
         return (

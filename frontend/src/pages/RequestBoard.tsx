@@ -36,7 +36,7 @@ export const RequestBoard = (props: RequestBoardProps) => {
                     }
                 }}>
                     <Row noGutters>
-                        <Col className="pl-2">
+                        <Col>
                             <Input
                                 name="search"
                                 type="search"
