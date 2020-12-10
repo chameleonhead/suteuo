@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Navbar, NavbarBrand, NavbarText, NavItem, NavLink } from 'reactstrap';
+import { Badge, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Navbar, NavbarBrand, NavbarText, NavItem, NavLink } from 'reactstrap';
 import { actionCreators, ApplicationState, selectors } from '../store';
 import './NavMenu.css';
 
@@ -9,7 +9,7 @@ export type NavMenuProps = ReturnType<typeof mapStateToProps> & typeof mapDispat
 
 export const NavMenu = (props: NavMenuProps) => {
     const [isOpen, setOpen] = React.useState(false)
-    const { user, onLogout } = props
+    const { user, notificationCount, messageCount, onLogout } = props
     if (user) {
         return (
             <header>
@@ -27,12 +27,22 @@ export const NavMenu = (props: NavMenuProps) => {
                                 <NavLink tag={Link} className="text-dark" to="/notifications">
                                     <i className="fas fa-bell d-sm-none"></i>
                                     <span className="d-none d-sm-inline">通知</span>
+                                    {
+                                        notificationCount > 0 
+                                        ? <>{' '}<Badge>{notificationCount}</Badge></>
+                                        : null
+                                    }                                    
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/notifications">
+                                <NavLink tag={Link} className="text-dark" to="/messages">
                                     <i className="far fa-comment-dots d-sm-none"></i>
                                     <span className="d-none d-sm-inline">メッセージ</span>
+                                    {
+                                        messageCount > 0 
+                                        ? <>{' '}<Badge>{messageCount}</Badge></>
+                                        : null
+                                    }                                    
                                 </NavLink>
                             </NavItem>
                         </ul>
@@ -73,7 +83,9 @@ export const NavMenu = (props: NavMenuProps) => {
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
-    user: selectors.selectUser(state)
+    user: selectors.selectUser(state),
+    notificationCount: selectors.selectUnreadNotificationCount(state),
+    messageCount: selectors.selectUnreadMessageCount(state),
 })
 const mapDispatchToProps = {
     onLogout: actionCreators.logout

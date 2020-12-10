@@ -9,7 +9,7 @@ export interface AuthState {
 }
 
 export const selectors = {
-    selectUser: (state: ApplicationState) => state.auth.user
+    selectUser: (state: ApplicationState) => state.auth && state.auth.user
 }
 
 
