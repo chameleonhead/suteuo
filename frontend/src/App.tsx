@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import RequestBoard from './pages/RequestBoard';
 import NewRequest from './pages/NewRequest';
+import EditRequest from './pages/EditRequest';
 import RequestDetails from './pages/RequestDetails';
 import UserDetails from './pages/UserDetails';
 import NotificationList from './pages/NotificationList';
@@ -21,6 +22,7 @@ const App = () => (
             <Route path='/register' component={Register} />
             <Route path='/login' component={Login} />
             <Route path='/requests/new' component={NewRequest} />
+            <Route path='/requests/edit/:id' component={EditRequest} />
             <Route exact path='/notifications' component={NotificationList} />
             <Route path='/requests/:id' component={RequestDetails} />
             <Route exact path='/requests' component={RequestBoard} />
