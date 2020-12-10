@@ -27,7 +27,7 @@ export const MessageForm = (props: MessageFormProps) => {
     return (
         <Form onSubmit={formik.handleSubmit}>
             <Row noGutters>
-                <Col xs={10} lg={11}>
+                <Col>
                     <Input
                         id="body"
                         name="body"
@@ -36,7 +36,7 @@ export const MessageForm = (props: MessageFormProps) => {
                         value={formik.values.body}
                     />
                 </Col>
-                <Col className="pl-2">
+                <Col className="pl-2 col-auto">
                     <Button color="primary" block className="h-100">送信</Button>
                 </Col>
             </Row>

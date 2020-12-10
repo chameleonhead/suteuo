@@ -53,6 +53,7 @@ export const NavMenu = (props: NavMenuProps) => {
                                 </NavbarText>
                             </DropdownToggle>
                             <DropdownMenu right>
+                                <DropdownItem tag={Link} to="/requests/new">新規依頼</DropdownItem>
                                 <DropdownItem tag="button" onClick={onLogout}>ログアウト</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>

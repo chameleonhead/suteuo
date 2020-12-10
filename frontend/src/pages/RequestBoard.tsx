@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Col, Input, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Row } from 'reactstrap';
+import { Button, Col, Form, Input, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Row } from 'reactstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Request } from '../models';
@@ -27,19 +27,38 @@ export const RequestBoard = (props: RequestBoardProps) => {
     return (
         <div>
             <div className="mb-3">
-                <Row noGutters>
-                    <Col xs={10} lg={11}>
-                        <Input
-                            name="search"
-                            type="search"
-                            onChange={e => setLocalSearch(e.target.value)}
-                            value={localSearch}
-                        />
-                    </Col>
-                    <Col className="pl-2">
-                        <Button onClick={() => history.push({ search: '?search=' + localSearch })} color="primary" block className="h-100">検索</Button>
-                    </Col>
-                </Row>
+                <Form onSubmit={e => {
+                    e.preventDefault();
+                    history.push({ search: '?search=' + localSearch })
+                }}>
+                    <Row noGutters>
+                        <Col className="pl-2 col-auto">
+                            <Button
+                                tag={Link}
+                                to="/requests/new"
+                                color="default"
+                                block
+                                outline
+                                className="h-100"
+                            ><i className="fa fa-plus"></i></Button>
+                        </Col>
+                        <Col className="pl-2">
+                            <Input
+                                name="search"
+                                type="search"
+                                onChange={e => setLocalSearch(e.target.value)}
+                                value={localSearch}
+                            />
+                        </Col>
+                        <Col className="pl-2 col-auto">
+                            <Button
+                                color="primary"
+                                block
+                                className="h-100"
+                            >検索</Button>
+                        </Col>
+                    </Row>
+                </Form>
             </div>
             <ListGroup>
                 {requests.map(r => (<RequestItem key={r.id} request={r} />))}
