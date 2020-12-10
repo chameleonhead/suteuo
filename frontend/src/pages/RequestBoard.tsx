@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
+import { Button, Col, Input, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Row } from 'reactstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Request } from '../models';
@@ -17,11 +17,30 @@ const RequestItem = (props: { request: Request }) => {
 
 export type RequestBoardProps = RouteComponentProps
 
-export const RequestBoard = (_: RequestBoardProps) => {
-    const requests = allRequests();
+export const RequestBoard = (props: RequestBoardProps) => {
+    const { location, history } = props
+    const searchQuery = new URLSearchParams(location.search).get('search');
+    let requests = React.useMemo(() => {
+        return allRequests().filter(r => !searchQuery || r.title.match(searchQuery))
+    }, [searchQuery]);
+    const [localSearch, setLocalSearch] = React.useState(searchQuery || '');
     return (
         <div>
-            <Link to="#">最新</Link>
+            <div className="mb-3">
+                <Row noGutters>
+                    <Col xs={10} lg={11}>
+                        <Input
+                            name="search"
+                            type="search"
+                            onChange={e => setLocalSearch(e.target.value)}
+                            value={localSearch}
+                        />
+                    </Col>
+                    <Col className="pl-2">
+                        <Button onClick={() => history.push({ search: '?search=' + localSearch })} color="primary" block className="h-100">検索</Button>
+                    </Col>
+                </Row>
+            </div>
             <ListGroup>
                 {requests.map(r => (<RequestItem key={r.id} request={r} />))}
             </ListGroup>
