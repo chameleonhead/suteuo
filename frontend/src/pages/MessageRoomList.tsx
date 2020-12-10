@@ -9,12 +9,13 @@ import { ApplicationState, selectors } from '../store';
 
 const MessageRoomItem = (props: { room: MessageRoom, user: LoginUser }) => {
     const { room, user } = props
+    const message = room.messages.length ? room.messages[room.messages.length - 1] : undefined;
     return (
         <ListGroupItem tag={Link} to={`/messages/${room.id}`} className="text-dark text-decoration-none">
-            <ListGroupItemHeading>{room.participants.filter(m => m.id !== user.id).map(m => m.name).join('、')}<small className="float-right">{room.updatedAt}</small></ListGroupItemHeading>
+            <ListGroupItemHeading>{room.participants.filter(m => m.id !== user.id).map(m => m.name).join('、')}</ListGroupItemHeading>
             {
-                room.messages.length
-                    ? <ListGroupItemText>{room.messages[room.messages.length - 1].body}<small className="float-right">{room.messages[room.messages.length - 1].createdAt}</small></ListGroupItemText>
+                message
+                    ? <ListGroupItemText>{message.body}<small className="float-right">{message.sender.id === user.id ? 'あなた' : message.sender.name} ({message.createdAt})</small></ListGroupItemText>
                     : <ListGroupItemText></ListGroupItemText>
             }
         </ListGroupItem>
@@ -28,7 +29,6 @@ export const MessageRoomList = (props: MessageRoomListProps) => {
     const messageRooms = allMessageRooms();
     return (
         <div>
-            <h1>メッセージ</h1>
             <ListGroup>
                 {messageRooms.map(r => (<MessageRoomItem key={r.id} room={r} user={user} />))}
             </ListGroup>

@@ -18,24 +18,45 @@ LoggedIn.args = {
     } as any,
     notificationCount: 0,
     messageCount: 0,
+    location: {
+        pathname: '/'
+    } as any,
 }
 
 export const LoggedInAndMessageCount = Template.bind({});
 LoggedInAndMessageCount.args = {
-    user: {
-        name: 'User Name'
-    } as any,
-    notificationCount: 0,
+    ...LoggedIn.args,
     messageCount: 1,
 }
 
 export const LoggedInAndNotificationCount = Template.bind({});
 LoggedInAndNotificationCount.args = {
-    user: {
-        name: 'User Name'
-    } as any,
+    ...LoggedIn.args,
     notificationCount: 1,
-    messageCount: 0,
+}
+
+export const LoggedInAndRequests = Template.bind({});
+LoggedInAndRequests.args = {
+    ...LoggedIn.args,
+    location: {
+        pathname: '/requests/ddd'
+    } as any,
+}
+
+export const LoggedInAndNotifications = Template.bind({});
+LoggedInAndNotifications.args = {
+    ...LoggedIn.args,
+    location: {
+        pathname: '/notifications/ddd'
+    } as any,
+}
+
+export const LoggedInAndMessages = Template.bind({});
+LoggedInAndMessages.args = {
+    ...LoggedIn.args,
+    location: {
+        pathname: '/messages/ddd'
+    } as any,
 }
 
 export const LoggedOut = Template.bind({});

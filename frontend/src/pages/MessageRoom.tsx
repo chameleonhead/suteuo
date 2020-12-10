@@ -10,7 +10,7 @@ const MessageItem = (props: { message: Message, user: LoginUser }) => {
     const { message, user } = props
     return (
         <ListGroupItem>
-            <ListGroupItemText>{message.body}<small className="float-right">{message.sender.name}</small></ListGroupItemText>
+            <ListGroupItemText>{message.body}<small className="float-right">{message.sender.id === user.id ? 'あなた' : message.sender.name} ({message.createdAt})</small></ListGroupItemText>
         </ListGroupItem>
     )
 }
@@ -20,12 +20,12 @@ export type MessageRoomProps = ReturnType<typeof mapStateToProps> & RouteCompone
 export const MessageRoom = (props: MessageRoomProps) => {
     const { id } = props.match.params;
     const { user } = props
-    const messageRoom = findMessageRoomById(id);
+    const room = findMessageRoomById(id);
     return (
         <div>
-            <h1>メッセージ</h1>
+            <h1>{room.participants.filter(m => m.id !== user.id).map(m => m.name).join('、')}</h1>
             <ListGroup>
-                {messageRoom.messages.map(r => (<MessageItem key={r.id} message={r} user={user} />))}
+                {room.messages.map(r => (<MessageItem key={r.id} message={r} user={user} />))}
             </ListGroup>
         </div>
     )
