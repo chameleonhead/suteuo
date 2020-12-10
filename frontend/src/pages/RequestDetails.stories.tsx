@@ -27,3 +27,31 @@ withUser.args = {
         id: '2'
     } as any
 }
+
+
+export const withOwner = Template.bind({});
+withOwner.args = {
+    ...Default.args,
+    user: {
+        id: '1'
+    } as any
+}
+
+export const closed = Template.bind({});
+closed.args = {
+    ...Default.args,
+    match: {
+        params: {
+            id: '3'
+        }
+    } as any
+}
+
+
+export const closedWithOwner = Template.bind({});
+closedWithOwner.args = {
+    ...closed.args,
+    user: {
+        id: '3'
+    } as any
+}

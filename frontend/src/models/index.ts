@@ -11,6 +11,7 @@ export interface User {
 
 export interface Request {
     id: string;
+    state: 'OPEN' | 'CLOSED';
     area: string;
     title: string;
     detailedText: string;
