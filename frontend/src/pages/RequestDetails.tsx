@@ -1,10 +1,12 @@
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
+import RequestCommentForm from '../components/RequestCommentForm';
 import { findRequesById } from '../data';
 
-export type RequestDetailsProps = RouteComponentProps<{ id: string }>
+export type RequestDetailsProps = typeof mapDispatchToProps & RouteComponentProps<{ id: string }>
 
 export const RequestDetails = (props: RequestDetailsProps) => {
+    const { onAddNewComment } = props
     const { id } = props.match.params;
     const request = findRequesById(id);
     if (request) {
@@ -25,9 +27,12 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                                     request.comments.map(c => {
                                         return (
                                             <ListGroupItem key={c.id}>
+                                                <ListGroupItemHeading>
+                                                    {c.createdBy.name}
+                                                    <span className="float-right">{c.createdAt}</span>
+                                                </ListGroupItemHeading>
                                                 <ListGroupItemText>
                                                     {c.comment}
-                                                    <span className="float-right">{c.createdBy.name}</span>
                                                 </ListGroupItemText>
                                             </ListGroupItem>
                                         )
@@ -39,9 +44,17 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                             <p>コメントはまだありません</p>
                         )}
                 </div>
+                <div className="mt-3">
+                    <RequestCommentForm onSubmit={onAddNewComment} />
+                </div>
             </div>
         );
     }
     return <Redirect to="/requests" />
 }
+
+const mapDispatchToProps = {
+    onAddNewComment: () => null
+}
+
 export default (props: any) => <RequestDetails {...props} />;
