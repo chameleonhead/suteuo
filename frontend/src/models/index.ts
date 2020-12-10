@@ -27,3 +27,20 @@ export interface RequestComment {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface Message {
+    id: string;
+    messageRoomId: string;
+    sender: User;
+    body: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface MessageRoom {
+    id: string;
+    participants: User[];
+    messages: Message[];
+    createdAt: string;
+    updatedAt: string;
+}

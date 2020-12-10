@@ -8,6 +8,8 @@ import RequestBoard from './pages/RequestBoard';
 import NewRequest from './pages/NewRequest';
 import RequestDetails from './pages/RequestDetails';
 import UserDetails from './pages/UserDetails';
+import MessageRoomList from './pages/MessageRoomList';
+import MessageRoom from './pages/MessageRoom';
 
 import './custom.css'
 
@@ -21,6 +23,8 @@ const App = () => (
             <Route path='/requests/:id' component={RequestDetails} />
             <Route exact path='/requests' component={RequestBoard} />
             <Route path='/users/:id' component={UserDetails} />
+            <Route path='/messages/:id' component={MessageRoom} />
+            <Route exact path='/messages' component={MessageRoomList} />
         </Switch>
     </Layout>
 );

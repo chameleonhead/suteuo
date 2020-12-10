@@ -1,12 +1,12 @@
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
-import { findRequestById } from '../data';
+import { findRequesById } from '../data';
 
 export type RequestDetailsProps = RouteComponentProps<{ id: string }>
 
 export const RequestDetails = (props: RequestDetailsProps) => {
     const { id } = props.match.params;
-    const request = findRequestById(id);
+    const request = findRequesById(id);
     if (request) {
         return (
             <div>
