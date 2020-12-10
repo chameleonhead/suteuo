@@ -21,7 +21,13 @@ export const RequestBoard = (props: RequestBoardProps) => {
     const { location, history } = props
     const searchQuery = new URLSearchParams(location.search).get('search');
     let requests = React.useMemo(() => {
-        return allRequests().filter(r => !searchQuery || r.title.match(searchQuery))
+        if (searchQuery) {
+            if (searchQuery.startsWith('エリア:')) {
+                return allRequests().filter(r => r.area.match(searchQuery.replace('エリア:', '')))
+            }
+            return allRequests().filter(r => r.title.match(searchQuery))
+        }
+        return allRequests();
     }, [searchQuery]);
     const [localSearch, setLocalSearch] = React.useState(searchQuery || '');
     return (

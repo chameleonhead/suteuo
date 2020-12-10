@@ -40,10 +40,10 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                                 ? (
                                     <Row noGutters>
                                         <Col className="col-auto">
-                                            <Button size="sm" color="default"><i className={"fa fa-star" + ((request.favUsers && request.favUsers.filter(u => u.id === user.id).length > 0) ? ' text-warning' : '')}></i><span className="d-none d-sm-inline"> お気に入り</span></Button>
+                                            <Button size="sm" color="default"><i className={"fa-star" + ((request.favUsers && request.favUsers.filter(u => u.id === user.id).length > 0) ? ' fa text-warning' : ' far')}></i><span className="d-none d-sm-inline"> お気に入り</span></Button>
                                         </Col>
                                         <Col className="col-auto">
-                                            <Button size="sm" color="default"><i className={"fa fa-bell" + ((request.subUsers && request.subUsers.filter(u => u.id === user.id).length > 0) ? ' text-warning' : '')}></i><span className="d-none d-sm-inline"> 通知</span></Button>
+                                            <Button size="sm" color="default"><i className={"fa-bell" + ((request.subUsers && request.subUsers.filter(u => u.id === user.id).length > 0) ? ' fa text-warning' : ' far')}></i><span className="d-none d-sm-inline"> 通知</span></Button>
                                         </Col>
                                     </Row>
                                 )
@@ -53,25 +53,30 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                 </Row>
                 <h1 className="my-3">{request.title}</h1>
                 <div>
-                    <Row noGutters style={{ height: '1.5em' }}>
-                        <Col>
-                            <Link to={`/users/${request.owner.id}`}><b>{request.owner.name}</b></Link>
-                        </Col>
+                    <div className="d-flex justify-content-between" style={{ height: '1.5em' }}>
+                        <div className="d-flex">
+                            <div className="mr-3">
+                                <i className="fa fa-map-marker"></i> <Link to={`/requests?search=エリア:${request.area}`}>{request.area}</Link>
+                            </div>
+                            <div className="mr-3">
+                                <i className="fa fa-user"></i> <Link to={`/users/${request.owner.id}`}>{request.owner.name}</Link>
+                            </div>
+                        </div>
                         {
                             user && request.owner.id === user.id
                                 ? (
-                                    <>
+                                    <Row noGutters>
                                         <Col className="ml-2 col-auto">
                                             <Button tag={Link} to={`/requests/edit/${request.id}`} color="secondary" outline>編集</Button>
                                         </Col>
                                         <Col className="ml-2 col-auto">
                                             <Button color="secondary" outline>終了</Button>
                                         </Col>
-                                    </>
+                                    </Row>
                                 )
                                 : null
                         }
-                    </Row>
+                    </div>
                 </div>
                 <h5 className="my-3">依頼内容</h5>
                 <div>
@@ -88,7 +93,7 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                                             <ListGroupItem key={c.id}>
                                                 <ListGroupItemHeading>
                                                     <Link to={`/users/${c.createdBy.id}`}>{c.createdBy.name}</Link>
-                                                    <span className="float-right">{c.createdAt}</span>
+                                                    <small className="float-right">{c.createdAt}</small>
                                                 </ListGroupItemHeading>
                                                 <ListGroupItemText>
                                                     {c.comment}
