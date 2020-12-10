@@ -29,19 +29,13 @@ export const RequestBoard = (props: RequestBoardProps) => {
             <div className="mb-3">
                 <Form onSubmit={e => {
                     e.preventDefault();
-                    history.push({ search: '?search=' + localSearch })
+                    if (localSearch) {
+                        history.push({ search: '?search=' + localSearch })
+                    } else {
+                        history.push({ search: '' })
+                    }
                 }}>
                     <Row noGutters>
-                        <Col className="pl-2 col-auto">
-                            <Button
-                                tag={Link}
-                                to="/requests/new"
-                                color="default"
-                                block
-                                outline
-                                className="h-100"
-                            ><i className="fa fa-plus"></i></Button>
-                        </Col>
                         <Col className="pl-2">
                             <Input
                                 name="search"
@@ -56,6 +50,16 @@ export const RequestBoard = (props: RequestBoardProps) => {
                                 block
                                 className="h-100"
                             >検索</Button>
+                        </Col>
+                        <Col className="pl-4 col-auto">
+                            <Button
+                                tag={Link}
+                                to="/requests/new"
+                                color="default"
+                                block
+                                outline
+                                className="h-100"
+                            ><i className="fa fa-plus"></i></Button>
                         </Col>
                     </Row>
                 </Form>
