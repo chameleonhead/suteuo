@@ -8,6 +8,7 @@ import RequestBoard from './pages/RequestBoard';
 import NewRequest from './pages/NewRequest';
 import RequestDetails from './pages/RequestDetails';
 import UserDetails from './pages/UserDetails';
+import NotificationList from './pages/NotificationList';
 import MessageRoomList from './pages/MessageRoomList';
 import MessageRoom from './pages/MessageRoom';
 
@@ -20,6 +21,7 @@ const App = () => (
             <Route path='/register' component={Register} />
             <Route path='/login' component={Login} />
             <Route path='/requests/new' component={NewRequest} />
+            <Route exact path='/notifications' component={NotificationList} />
             <Route path='/requests/:id' component={RequestDetails} />
             <Route exact path='/requests' component={RequestBoard} />
             <Route path='/users/:id' component={UserDetails} />

@@ -44,3 +44,12 @@ export interface MessageRoom {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface Notification {
+    id: string;
+    title: string;
+    body: string;
+    href: string;
+    createdAt: string;
+    updatedAt: string;
+}

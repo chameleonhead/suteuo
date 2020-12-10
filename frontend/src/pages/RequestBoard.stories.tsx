@@ -12,3 +12,13 @@ export default {
 const Template: Story<RequestBoardProps> = (args) => <RequestBoard {...args} />;
 
 export const Default = Template.bind({});
+Default.args = {
+    location: {} as any
+}
+
+export const withSearch = Template.bind({});
+withSearch.args = {
+    location: {
+        search: '?search=text'
+    } as any
+}
