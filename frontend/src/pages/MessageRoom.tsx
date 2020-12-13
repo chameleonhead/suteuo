@@ -68,7 +68,7 @@ export const MessageRoom = (props: MessageRoomProps) => {
                 <div className="col-md-8">
                     <div className="mb-5">
                         <div className="d-md-none">
-                            <h3 className=" mb-3">{room.participants.filter(m => m.id !== user.id).map((m, i) => <>{i === 0 ? '' : '、'}<Link to={`/users/${m.id}`}>{m.name}</Link></>)}</h3>
+                            <h3 className=" mb-3">{room.participants.filter(m => m.id !== user.id).map((m, i) => <React.Fragment key={i}>{i === 0 ? '' : '、'}<Link to={`/users/${m.id}`}>{m.name}</Link></React.Fragment>)}</h3>
                         </div>
                         <div>
                             {room.messages.map(r => (<MessageItem key={r.id} message={r} user={user} />))}

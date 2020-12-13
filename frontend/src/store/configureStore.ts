@@ -7,6 +7,9 @@ import { actionCreators, ApplicationState, reducers, middlewares } from '.';
 export default function configureStore(history: History, initialState?: ApplicationState) {
     const middleware = [
         (store: any) => (next: any) => (action: any) => {
+            if (!action) {
+                return;
+            }
             console.log(action);
             const state = store.getState();
             next(action)
