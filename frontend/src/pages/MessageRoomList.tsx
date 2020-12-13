@@ -1,22 +1,22 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { LoginUser, MessageRoom } from '../models';
+import { LoginUser, MessageRoom as MessageRoomModel } from '../models';
 import { allMessageRooms } from '../data';
 import { ApplicationState, selectors } from '../store';
 
-const MessageRoomItem = (props: { room: MessageRoom, user: LoginUser }) => {
+const MessageRoomItem = (props: { room: MessageRoomModel, user: LoginUser }) => {
     const { room, user } = props
     const message = room.messages.length ? room.messages[room.messages.length - 1] : undefined;
     return (
         <ListGroupItem tag={Link} to={`/messages/${room.id}`} className="text-dark text-decoration-none">
-            <ListGroupItemHeading>{room.participants.filter(m => m.id !== user.id).map(m => m.name).join('、')}</ListGroupItemHeading>
+            <h5>{room.participants.filter(m => m.id !== user.id).map(m => m.name).join('、')}</h5>
             {
                 message
-                    ? <ListGroupItemText>{message.body}<small className="float-right">{message.sender.id === user.id ? 'あなた' : message.sender.name} ({message.createdAt})</small></ListGroupItemText>
-                    : <ListGroupItemText></ListGroupItemText>
+                    ? <div className="d-flex justify-content-between">{message.body}<small>{message.sender.id === user.id ? 'あなた' : message.sender.name} ({message.createdAt})</small></div>
+                    : <div></div>
             }
         </ListGroupItem>
     )
