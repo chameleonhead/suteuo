@@ -28,12 +28,6 @@ export type RequestDetailsProps = ReturnType<typeof mapStateToProps> & typeof ma
 export const RequestDetails = (props: RequestDetailsProps) => {
     const { user, onStarClick, onSubscribeClick, onFinishClick, onAddNewComment, onDeleteComment } = props
     const { id } = props.match.params;
-    let selectedTab = props.location.hash
-    if (!selectedTab || !['#comments', '#private'].includes(selectedTab)) {
-        selectedTab = 'comments';
-    } else {
-        selectedTab = selectedTab.replace('#', '');
-    }
     const request = findRequesById(id);
     if (request) {
         return (

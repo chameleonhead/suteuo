@@ -12,3 +12,8 @@ export default {
 const Template: Story<ResetPasswordProps> = (args) => <ResetPassword {...args} />;
 
 export const Default = Template.bind({});
+Default.args = {
+    location: {
+        search: "?requestId=123"
+    } as any
+}
