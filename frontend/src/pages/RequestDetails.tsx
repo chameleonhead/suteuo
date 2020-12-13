@@ -3,6 +3,7 @@ import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import { Badge, Button, Col, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Row } from 'reactstrap';
 import RequestCommentForm from '../components/RequestCommentForm';
 import { findRequesById } from '../data';
+import { RequestComment, User } from '../models';
 import { ApplicationState, selectors } from '../store';
 
 const RequestState = (props: { state: 'OPEN' | 'CLOSED' }) => {
@@ -21,10 +22,26 @@ const RequestState = (props: { state: 'OPEN' | 'CLOSED' }) => {
     }
 }
 
+const RequestCommentItem = (props: { comment: RequestComment, user?: User, onDelete?: (id: string) => void }) => {
+    const { comment, user, onDelete } = props
+    return (
+        <ListGroupItem key={comment.id}>
+            <ListGroupItemHeading>
+                <Link to={`/users/${comment.createdBy.id}`}>{comment.createdBy.name}</Link>
+                {user && user.id === comment.createdBy.id && <Button className="float-right ml-2" color="danger" size="sm" onClick={() => onDelete && onDelete(comment.id)}><i className="fa fa-times"></i><span className="d-none d-sm-inline"> 削除</span></Button>}
+                <small className="float-right">{comment.createdAt}</small>
+            </ListGroupItemHeading>
+            <ListGroupItemText>
+                {comment.comment}
+            </ListGroupItemText>
+        </ListGroupItem>
+    )
+}
+
 export type RequestDetailsProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps<{ id: string }>
 
 export const RequestDetails = (props: RequestDetailsProps) => {
-    const { user, onAddNewComment } = props
+    const { user, onStarClick, onSubscribeClick, onFinishClick, onAddNewComment, onDeleteComment } = props
     const { id } = props.match.params;
     const request = findRequesById(id);
     if (request) {
@@ -40,10 +57,10 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                                 ? (
                                     <Row noGutters>
                                         <Col className="col-auto">
-                                            <Button size="sm" color="default"><i className={"fa-star" + ((request.favUsers && request.favUsers.filter(u => u.id === user.id).length > 0) ? ' fa text-warning' : ' far')}></i><span className="d-none d-sm-inline"> お気に入り</span></Button>
+                                            <Button size="sm" color="default" onClick={() => onStarClick(id)}><i className={"fa-star" + ((request.favUsers && request.favUsers.filter(u => u.id === user.id).length > 0) ? ' fa text-warning' : ' far')}></i><span className="d-none d-sm-inline"> お気に入り</span></Button>
                                         </Col>
                                         <Col className="col-auto">
-                                            <Button size="sm" color="default"><i className={"fa-bell" + ((request.subUsers && request.subUsers.filter(u => u.id === user.id).length > 0) ? ' fa text-warning' : ' far')}></i><span className="d-none d-sm-inline"> 通知</span></Button>
+                                            <Button size="sm" color="default" onClick={() => onSubscribeClick(id)}><i className={"fa-bell" + ((request.subUsers && request.subUsers.filter(u => u.id === user.id).length > 0) ? ' fa text-warning' : ' far')}></i><span className="d-none d-sm-inline"> 通知</span></Button>
                                         </Col>
                                     </Row>
                                 )
@@ -70,7 +87,7 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                                             <Button tag={Link} to={`/requests/edit/${request.id}`} color="secondary" outline>編集</Button>
                                         </Col>
                                         <Col className="ml-2 col-auto">
-                                            <Button color="secondary" outline>終了</Button>
+                                            <Button color="secondary" outline onClick={() => onFinishClick(id)}>終了</Button>
                                         </Col>
                                     </Row>
                                 )
@@ -82,40 +99,55 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                 <div>
                     {request.detailedText}
                 </div>
-                <h5 className="my-3">コメント</h5>
-                <div>
-                    {(request.comments && request.comments.length)
-                        ? (
-                            <ListGroup>
-                                {
-                                    request.comments.map(c => {
-                                        return (
-                                            <ListGroupItem key={c.id}>
-                                                <ListGroupItemHeading>
-                                                    <Link to={`/users/${c.createdBy.id}`}>{c.createdBy.name}</Link>
-                                                    <small className="float-right">{c.createdAt}</small>
-                                                </ListGroupItemHeading>
-                                                <ListGroupItemText>
-                                                    {c.comment}
-                                                </ListGroupItemText>
-                                            </ListGroupItem>
-                                        )
-                                    })
-                                }
-                            </ListGroup>
-                        )
-                        : (
-                            <p>コメントはまだありません</p>
-                        )}
-                </div>
                 {
                     user
                         ? (
-                            <div className="mt-3">
-                                <RequestCommentForm onSubmit={onAddNewComment} />
+                            <div>
+                                <h5 className="my-3">コメント</h5>
+                                <div>
+                                    {(request.comments && request.comments.length)
+                                        ? (
+                                            <ListGroup>
+                                                {
+                                                    request.comments.map(c => {
+                                                        return (
+                                                            <RequestCommentItem key={c.id} comment={c} user={user} onDelete={commentId => onDeleteComment(id, commentId)} />
+                                                        )
+                                                    })
+                                                }
+                                            </ListGroup>
+                                        )
+                                        : (
+                                            <p>コメントはまだありません</p>
+                                        )}
+                                </div>
+                                <div className="mt-3">
+                                    <RequestCommentForm onSubmit={value => onAddNewComment(id, value)} />
+                                </div>
                             </div>
                         )
-                        : null
+                        : (
+                            <div>
+                                <h5 className="my-3">コメント</h5>
+                                <div>
+                                    {(request.comments && request.comments.length)
+                                        ? (
+                                            <ListGroup>
+                                                {
+                                                    request.comments.map(c => {
+                                                        return (
+                                                            <RequestCommentItem key={c.id} comment={c} />
+                                                        )
+                                                    })
+                                                }
+                                            </ListGroup>
+                                        )
+                                        : (
+                                            <p>コメントはまだありません</p>
+                                        )}
+                                </div>
+                            </div>
+                        )
                 }
             </div >
         );
@@ -128,7 +160,11 @@ const mapStateToProps = (state: ApplicationState) => ({
 })
 
 const mapDispatchToProps = {
-    onAddNewComment: () => null
+    onFinishClick: (id: string) => null,
+    onStarClick: (id: string) => null,
+    onSubscribeClick: (id: string) => null,
+    onAddNewComment: (id: string, value: { comment: string }) => null,
+    onDeleteComment: (id: string, commentId: string) => null
 }
 
 export default connect(
