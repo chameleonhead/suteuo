@@ -30,7 +30,7 @@ const RequestCommentItem = (props: { comment: RequestComment, user?: User, onDel
         <ListGroupItem key={comment.id}>
             <div className="d-flex justify-content-between">
                 <Link to={`/users/${comment.createdBy.id}`}>{comment.createdBy.name}</Link>
-                <div className="d-flex">
+                <div className="d-flex" style={{height: '2rem'}}>
                     <small className="float-right">{comment.createdAt}</small>
                     {user && user.id === comment.createdBy.id && (
                         <Dropdown className="ml-2" isOpen={isOpen} toggle={() => setOpen(!isOpen)}>

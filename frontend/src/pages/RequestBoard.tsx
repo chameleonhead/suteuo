@@ -1,19 +1,9 @@
 import * as React from 'react';
-import { Button, Col, Form, Input, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Row } from 'reactstrap';
+import { Button, Col, Form, Input, Row } from 'reactstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { Request } from '../models';
 import { allRequests } from '../data';
-
-const RequestItem = (props: { request: Request }) => {
-    const { request } = props
-    return (
-        <ListGroupItem tag={Link} to={`/requests/${request.id}`} className="text-dark text-decoration-none">
-            <ListGroupItemHeading>{request.owner.name}<small className="float-right">{request.updatedAt}</small></ListGroupItemHeading>
-            <ListGroupItemText>{request.title}</ListGroupItemText>
-        </ListGroupItem>
-    )
-}
+import RequestList from '../components/RequestList';
 
 export type RequestBoardProps = RouteComponentProps
 
@@ -70,9 +60,7 @@ export const RequestBoard = (props: RequestBoardProps) => {
                     </Row>
                 </Form>
             </div>
-            <ListGroup>
-                {requests.map(r => (<RequestItem key={r.id} request={r} />))}
-            </ListGroup>
+            <RequestList requests={requests} />
         </div>
     )
 }
