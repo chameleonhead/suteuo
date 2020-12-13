@@ -15,4 +15,4 @@ export const UserDetails = (props: UserDetailsProps) => {
     }
     return <Redirect to="/users" />
 }
-export default (props: any) => <UserDetails {...props} />;
+export default UserDetails;

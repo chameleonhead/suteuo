@@ -26,8 +26,7 @@ const NotificationItem = (props: { notification: Notification }) => {
 
 export type NotificationListProps = ReturnType<typeof mapStateToProps> & RouteComponentProps<{ id: string }>
 
-export const NotificationList = (props: NotificationListProps) => {
-    const { user } = props
+export const NotificationList = (_: NotificationListProps) => {
     const notifications = allNotifications();
     return (
         <div>

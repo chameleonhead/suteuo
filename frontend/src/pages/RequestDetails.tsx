@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
-import { Badge, Button, Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, ListGroup, ListGroupItem, Row } from 'reactstrap';
+import { Badge, Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
 import RequestCommentForm from '../components/RequestCommentForm';
 import RequestCommentList from '../components/RequestCommentList';
 import { findRequesById } from '../data';
-import { RequestComment, User } from '../models';
 import { ApplicationState, selectors } from '../store';
 
 const RequestState = (props: { state: 'OPEN' | 'CLOSED' }) => {
@@ -29,6 +28,12 @@ export type RequestDetailsProps = ReturnType<typeof mapStateToProps> & typeof ma
 export const RequestDetails = (props: RequestDetailsProps) => {
     const { user, onStarClick, onSubscribeClick, onFinishClick, onAddNewComment, onDeleteComment } = props
     const { id } = props.match.params;
+    let selectedTab = props.location.hash
+    if (!selectedTab || !['#comments', '#private'].includes(selectedTab)) {
+        selectedTab = 'comments';
+    } else {
+        selectedTab = selectedTab.replace('#', '');
+    }
     const request = findRequesById(id);
     if (request) {
         return (
@@ -88,12 +93,30 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                 {
                     user
                         ? (
-                            <div>
-                                <h5 className="my-3">コメント</h5>
-                                <RequestCommentList comments={request.comments} user={user} onDelete={commentId => onDeleteComment(id, commentId)} />
-                                <div className="mt-3">
-                                    <RequestCommentForm onSubmit={value => onAddNewComment(id, value)} />
-                                </div>
+                            <div className="my-3">
+                                <Nav tag="ul" tabs>
+                                    <NavItem tag="li">
+                                        <NavLink tag={Link} to="#comments" className={selectedTab === 'comments' ? 'active' : ''}>公開コメント</NavLink>
+                                    </NavItem>
+                                    <NavItem tag="li">
+                                        <NavLink tag={Link} to="#private" className={selectedTab === 'private' ? 'active' : ''}><i className="fa fa-lock"></i> 非公開コメント</NavLink>
+                                    </NavItem>
+                                </Nav>
+                                <TabContent activeTab={selectedTab}>
+                                    <TabPane tabId="comments">
+                                        <div className="my-3">
+                                            <RequestCommentList comments={request.comments} user={user} onDelete={commentId => onDeleteComment(id, commentId)} />
+                                            <div className="mt-3">
+                                                <RequestCommentForm onSubmit={value => onAddNewComment(id, value)} />
+                                            </div>
+                                        </div>
+                                    </TabPane>
+                                    <TabPane tabId="private">
+                                        <div className="my-3">
+                                            非公開のやりとり
+                                        </div>
+                                    </TabPane>
+                                </TabContent>
                             </div>
                         )
                         : (

@@ -84,13 +84,11 @@ const middleware: Middleware = ({ dispatch }) => next => incomingAction => {
             }
             break;
         case "LOGOUT":
-            {
-                localStorage.removeItem('session');
-                dispatch({
-                    type: 'SET_SESSION',
-                    payload: null
-                } as SetSessionAction)
-            }
+            localStorage.removeItem('session');
+            dispatch({
+                type: 'SET_SESSION',
+                payload: null
+            } as SetSessionAction)
             break;
     }
 }
@@ -98,7 +96,7 @@ const middleware: Middleware = ({ dispatch }) => next => incomingAction => {
 export const middlewares = [middleware]
 
 export const reducer: Reducer<AuthState, Action> = (state, incomingAction) => {
-    if (state == undefined) {
+    if (state === undefined) {
         return {
             user: null,
         }

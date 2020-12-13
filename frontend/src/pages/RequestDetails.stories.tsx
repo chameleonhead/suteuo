@@ -17,6 +17,9 @@ Default.args = {
         params: {
             id: '1'
         }
+    } as any,
+    location: {
+        hash: '#comments'
     } as any
 }
 
@@ -25,6 +28,9 @@ withUser.args = {
     ...Default.args,
     user: {
         id: '2'
+    } as any,
+    location: {
+        hash: '#private'
     } as any
 }
 
