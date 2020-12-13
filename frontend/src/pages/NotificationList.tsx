@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { LoginUser, Notification } from '../models';
 import { allNotifications } from '../data';
@@ -11,15 +11,21 @@ const NotificationItem = (props: { notification: Notification }) => {
     if (notification.href) {
         return (
             <ListGroupItem tag={Link} to={notification.href} className="text-dark text-decoration-none">
-                <ListGroupItemHeading>{notification.title}</ListGroupItemHeading>
-                <ListGroupItemText>{notification.body}<small className="float-right">{notification.createdAt}</small></ListGroupItemText>
+                <div className="d-flex justify-content-between">
+                    <h5>{notification.title}</h5>
+                    <small>{notification.createdAt}</small>
+                </div>
+                <div>{notification.body}</div>
             </ListGroupItem>
         )
     }
     return (
         <ListGroupItem>
-            <ListGroupItemHeading>{notification.title}</ListGroupItemHeading>
-            <ListGroupItemText>{notification.body}<small className="float-right">{notification.createdAt}</small></ListGroupItemText>
+            <div className="d-flex justify-content-between">
+                <h5>{notification.title}</h5>
+                <small>{notification.createdAt}</small>
+            </div>
+            <div>{notification.body}</div>
         </ListGroupItem>
     )
 }
