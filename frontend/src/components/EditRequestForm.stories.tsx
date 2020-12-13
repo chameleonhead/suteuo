@@ -12,9 +12,7 @@ export default {
 const Template: Story<EditRequestFormProps> = (args) => <EditRequestForm {...args} />;
 
 export const Default = Template.bind({});
-
-export const withDefaultArea = Template.bind({});
-withDefaultArea.args = {
+Default.args = {
     initialValue: {
         id: '1',
         area: '愛知県',
