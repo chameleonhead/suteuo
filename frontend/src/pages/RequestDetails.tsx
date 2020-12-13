@@ -1,6 +1,7 @@
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
-import { Badge, Button, Col, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Row } from 'reactstrap';
+import { Badge, Button, Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, ListGroup, ListGroupItem, Row } from 'reactstrap';
 import RequestCommentForm from '../components/RequestCommentForm';
 import { findRequesById } from '../data';
 import { RequestComment, User } from '../models';
@@ -24,16 +25,26 @@ const RequestState = (props: { state: 'OPEN' | 'CLOSED' }) => {
 
 const RequestCommentItem = (props: { comment: RequestComment, user?: User, onDelete?: (id: string) => void }) => {
     const { comment, user, onDelete } = props
+    const [isOpen, setOpen] = React.useState(false);
     return (
         <ListGroupItem key={comment.id}>
-            <ListGroupItemHeading>
+            <div className="d-flex justify-content-between">
                 <Link to={`/users/${comment.createdBy.id}`}>{comment.createdBy.name}</Link>
-                {user && user.id === comment.createdBy.id && <Button className="float-right ml-2" color="danger" size="sm" onClick={() => onDelete && onDelete(comment.id)}><i className="fa fa-times"></i><span className="d-none d-sm-inline"> 削除</span></Button>}
-                <small className="float-right">{comment.createdAt}</small>
-            </ListGroupItemHeading>
-            <ListGroupItemText>
-                {comment.comment}
-            </ListGroupItemText>
+                <div className="d-flex">
+                    <small className="float-right">{comment.createdAt}</small>
+                    {user && user.id === comment.createdBy.id && (
+                        <Dropdown className="ml-2" isOpen={isOpen} toggle={() => setOpen(!isOpen)}>
+                            <DropdownToggle tag="div">
+                                <Button color="default" size="sm"><i className="fas fa-ellipsis-v"></i></Button>
+                            </DropdownToggle>
+                            <DropdownMenu right>
+                                <DropdownItem tag="button" onClick={() => onDelete && onDelete(comment.id)}>削除</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    )}
+                </div>
+            </div>
+            <div>{comment.comment}</div>
         </ListGroupItem>
     )
 }
