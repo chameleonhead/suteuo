@@ -32,6 +32,13 @@ export interface LogoutAction {
     type: 'LOGOUT';
 }
 
+export interface ResetPasswordAction {
+    type: 'RESET_PASSWORD';
+    payload: {
+        newPassword: string
+    }
+}
+
 export interface SetSessionAction {
     type: 'SET_SESSION';
     payload: LoginUser | null
@@ -40,6 +47,7 @@ export interface SetSessionAction {
 export type KnownAction = LoginAction
     | GetSessionAction
     | LogoutAction
+    | ResetPasswordAction
     | SetSessionAction;
 
 export const actionCreators = {
@@ -52,7 +60,11 @@ export const actionCreators = {
     } as GetSessionAction),
     logout: () => ({
         type: "LOGOUT",
-    } as LogoutAction)
+    } as LogoutAction),
+    resetPassword: (resetPassword: { requestId: string, newPassword: string }) => ({
+        type: "RESET_PASSWORD",
+        payload: resetPassword
+    } as ResetPasswordAction)
 };
 
 

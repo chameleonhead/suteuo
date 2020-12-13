@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
-import { Alert, Badge, Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
-import MessageList from '../components/MessageList';
+import { Badge, Button, Col, Row } from 'reactstrap';
 import RequestCommentForm from '../components/RequestCommentForm';
 import RequestCommentList from '../components/RequestCommentList';
-import { findMessageRoomForRequestId, findRequesById } from '../data';
+import { findRequesById } from '../data';
 import { ApplicationState, selectors } from '../store';
 
 const RequestState = (props: { state: 'OPEN' | 'CLOSED' }) => {
@@ -27,7 +26,7 @@ const RequestState = (props: { state: 'OPEN' | 'CLOSED' }) => {
 export type RequestDetailsProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps<{ id: string }>
 
 export const RequestDetails = (props: RequestDetailsProps) => {
-    const { user, onStarClick, onSubscribeClick, onFinishClick, onAddNewComment, onDeleteComment, onAddNewMessage, onCreateMessageRoom } = props
+    const { user, onStarClick, onSubscribeClick, onFinishClick, onAddNewComment, onDeleteComment } = props
     const { id } = props.match.params;
     let selectedTab = props.location.hash
     if (!selectedTab || !['#comments', '#private'].includes(selectedTab)) {
@@ -37,7 +36,6 @@ export const RequestDetails = (props: RequestDetailsProps) => {
     }
     const request = findRequesById(id);
     if (request) {
-        const messageRoom = user && findMessageRoomForRequestId(user.id, request.id)
         return (
             <div>
                 <Row className="justify-content-between mb-3" style={{ height: '1.5em' }}>
@@ -96,42 +94,11 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                     user
                         ? (
                             <div className="my-3">
-                                <Nav tag="ul" tabs>
-                                    <NavItem tag="li">
-                                        <NavLink tag={Link} to="#comments" className={selectedTab === 'comments' ? 'active' : ''}>公開コメント</NavLink>
-                                    </NavItem>
-                                    <NavItem tag="li">
-                                        <NavLink tag={Link} to="#private" className={selectedTab === 'private' ? 'active' : ''}><i className="fa fa-lock"></i> 非公開コメント</NavLink>
-                                    </NavItem>
-                                </Nav>
-                                <TabContent activeTab={selectedTab}>
-                                    <TabPane tabId="comments">
-                                        <div className="my-3">
-                                            <RequestCommentList comments={request.comments} user={user} onDelete={commentId => onDeleteComment(id, commentId)} />
-                                            <div className="mt-3">
-                                                <RequestCommentForm onSubmit={value => onAddNewComment(id, value)} />
-                                            </div>
-                                        </div>
-                                    </TabPane>
-                                    <TabPane tabId="private">
-                                        <div className="my-3">
-                                            <Alert color="warning">こちらに記載されたコメントは依頼者以外には見ることが出来ません。</Alert>
-                                            {messageRoom
-                                                ? (
-                                                    <div className="mt-3">
-                                                        <MessageList messages={messageRoom?.messages} user={user} />
-                                                        <RequestCommentForm onSubmit={value => onAddNewMessage(messageRoom.id, value.comment)} />
-                                                    </div>
-                                                )
-                                                : (
-                                                    <div className="mt-3">
-                                                        <RequestCommentForm onSubmit={value => onCreateMessageRoom(request.id, user.id, value.comment)} />
-                                                    </div>
-                                                )
-                                            }
-                                        </div>
-                                    </TabPane>
-                                </TabContent>
+                                <h5 className="my-3">コメント</h5>
+                                <RequestCommentList comments={request.comments} user={user} onDelete={commentId => onDeleteComment(id, commentId)} />
+                                <div className="mt-3">
+                                    <RequestCommentForm onSubmit={value => onAddNewComment(id, value)} />
+                                </div>
                             </div>
                         )
                         : (
@@ -157,8 +124,6 @@ const mapDispatchToProps = {
     onSubscribeClick: (id: string) => null,
     onAddNewComment: (id: string, value: { comment: string }) => null,
     onDeleteComment: (id: string, commentId: string) => null,
-    onAddNewMessage: (roomId: string, value: string) => null,
-    onCreateMessageRoom: (id: string, userId: string, value: string) => null,
 }
 
 export default connect(

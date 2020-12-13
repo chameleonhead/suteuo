@@ -2,10 +2,14 @@ import { Button, Col, Form, FormFeedback, FormGroup, Input, Label, Row } from 'r
 import { connect } from 'react-redux';
 
 import { actionCreators, ApplicationState, selectors } from '../store';
-import { Redirect } from 'react-router';
+import { Redirect, RouteComponentProps } from 'react-router';
 import { useFormik } from 'formik';
 
-const ResetPasswordForm = (props: any) => {
+interface FormValue {
+    newPassword: string
+}
+
+const ResetPasswordForm = (props: { onSubmit: (value: FormValue) => void }) => {
     const { onSubmit } = props
     const formik = useFormik({
         initialValues: {
@@ -41,11 +45,12 @@ const ResetPasswordForm = (props: any) => {
     )
 }
 
-export type ResetPasswordProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+export type ResetPasswordProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps;
 
 export const ResetPassword = (props: ResetPasswordProps) => {
-    const { user, onSubmit } = props
-    if (user) {
+    const { user, onSubmit, location } = props
+    const requestId = new URLSearchParams(location.search).get('requestId')
+    if (!requestId || user) {
         return <Redirect to="/" />
     }
     return (
@@ -53,7 +58,7 @@ export const ResetPassword = (props: ResetPasswordProps) => {
             <h1>パスワードの再設定</h1>
             <Row>
                 <Col md="6">
-                    <ResetPasswordForm onSubmit={onSubmit} />
+                    <ResetPasswordForm onSubmit={value => onSubmit({ ...value, requestId })} />
                 </Col>
             </Row>
         </div>
@@ -64,7 +69,7 @@ const mapStateToProps = (state: ApplicationState) => ({
     user: selectors.selectUser(state)
 })
 const mapDispatchToProps = {
-    onSubmit: actionCreators.login
+    onSubmit: actionCreators.resetPassword
 }
 
 export default connect(

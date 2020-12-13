@@ -65,16 +65,6 @@ export const findMessageRoomById = (id: string): MessageRoom | undefined => {
     return denormalize(id, messageRoom, normalizedData.entities);
 }
 
-export const findMessageRoomForRequestId = (loginUserId: string, requestId: string): MessageRoom | undefined => {
-    const user = findUserById(loginUserId) as LoginUser;
-    if (user && user.requestMessageRooms) {
-        if (user.requestMessageRooms[requestId]) {
-            return findMessageRoomById(user.requestMessageRooms[requestId])
-        }
-    }
-    return undefined;
-}
-
 export const findMessageRoomForUserId = (loginUserId: string, targetUserId: string): MessageRoom | undefined => {
     const user = findUserById(loginUserId) as LoginUser;
     if (user && user.userMessageRooms) {
