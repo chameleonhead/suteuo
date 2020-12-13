@@ -3,18 +3,28 @@
         "id": "1",
         "name": "牡蠣 大輔",
         "area": "三重県",
+        "userMessageRooms": {
+            "2": "1",
+            "3": "2"
+        },
         "requestMessageRooms": {
-            "1": "2"
+            "2": "1"
         }
     },
     {
         "id": "2",
         "name": "鰤 大根",
-        "area": "三重県"
+        "area": "三重県",
+        "userMessageRooms": [
+            "1"
+        ]
     },
     {
         "id": "3",
         "name": "回転 素史郎",
-        "area": "三重県"
+        "area": "三重県",
+        "userMessageRooms": [
+            "2"
+        ]
     }
 ]

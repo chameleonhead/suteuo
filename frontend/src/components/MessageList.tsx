@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { LoginUser, Message, User } from '../models';
+import { LoginUser, Message } from '../models';
 
 const MessageItem = (props: { message: Message, user: LoginUser }) => {
     const { message, user } = props
@@ -40,7 +40,7 @@ const MessageItem = (props: { message: Message, user: LoginUser }) => {
 
 export type MessageListProps = {
     messages: Message[];
-    user: User;
+    user: LoginUser;
 }
 
 export const MessageList = (props: MessageListProps) => {

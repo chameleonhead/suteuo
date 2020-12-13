@@ -1,7 +1,10 @@
-import { Redirect, RouteComponentProps } from 'react-router-dom';
-import { Card, CardBody, CardImg, CardTitle, Col, Row } from 'reactstrap';
+import { connect } from 'react-redux';
+import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
+import { Button, Card, CardBody, CardImg, CardTitle, Col, Row } from 'reactstrap';
 import RequestBoardSummary from '../components/RequestBoardSummary';
-import { findUserById } from '../data';
+import { findMessageRoomForUserId, findUserById } from '../data';
+import { LoginUser } from '../models';
+import { ApplicationState, selectors } from '../store';
 
 const Rating = (props: { value: number }) => {
     const { value } = props;
@@ -60,21 +63,42 @@ const Rating = (props: { value: number }) => {
     )
 }
 
-export type UserDetailsProps = RouteComponentProps<{ id: string }>
+const InteractionPanel = (props: { id: string, loginUser: LoginUser }) => {
+    const { id, loginUser } = props
+    const messageRoom = findMessageRoomForUserId(loginUser.id, id);
+    return (
+        <div className="mb-3">
+            <Row>
+                <Col>
+                    <Button color="primary" block size="sm" tag={Link} to={`/messages${messageRoom ? "/" + messageRoom.id : ''}`}><i className="fa fa-envelope"></i> メッセージ</Button>
+                </Col>
+                <Col>
+                    <Button color="primary" block size="sm"><i className="fa fa-plus"></i> フォローする</Button>
+                </Col>
+            </Row>
+        </div>
+    );
+}
+
+export type UserDetailsProps = ReturnType<typeof mapStateToProps> & RouteComponentProps<{ id: string }>
 
 export const UserDetails = (props: UserDetailsProps) => {
     const { id } = props.match.params;
-    const user = findUserById(id)
+    const { loginUser } = props
+    const user = findUserById(id);
     if (user) {
         return (
             <Row>
                 <Col md="4">
-                    <Card>
+                    <Card className="mb-3">
                         <CardImg top width="100%" src="/assets/sample.svg" alt={`${user.name}のプロフィール画像`} />
                         <CardBody>
                             <CardTitle>
                                 <h1>{user.name}</h1>
                             </CardTitle>
+                            {
+                                loginUser && id !== loginUser.id && <InteractionPanel id={id} loginUser={loginUser} />
+                            }
                             <div className="mb-3">
                                 <h6>エリア</h6>
                                 <div>
@@ -91,12 +115,21 @@ export const UserDetails = (props: UserDetailsProps) => {
                     </Card>
                 </Col>
                 <Col md="8">
-                    <h5>最近の投稿</h5>
-                    <RequestBoardSummary owner={user} />
+                    <div className="mb-3">
+                        <h5>最近の投稿</h5>
+                        <RequestBoardSummary owner={user} />
+                    </div>
                 </Col>
             </Row>
         );
     }
     return <Redirect to="/users" />
 }
-export default UserDetails;
+
+const mapStateToProps = (state: ApplicationState) => ({
+    loginUser: selectors.selectUser(state)
+})
+
+export default connect(
+    mapStateToProps
+)(UserDetails);

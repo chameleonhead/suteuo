@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Container, ListGroup, ListGroupItem } from 'reactstrap';
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import { LoginUser, MessageRoom as MessageRoomModel } from '../models';
-import { allMessageRooms, findMessageRoomById } from '../data';
+import { findMessageRoomsForUser, findMessageRoomById } from '../data';
 import { ApplicationState, selectors } from '../store';
 import MessageForm from '../components/MessageForm';
 import MessageList from '../components/MessageList';
@@ -26,7 +26,7 @@ export const MessageRoom = (props: MessageRoomProps) => {
     if (!room) {
         return <Redirect to="/messages" />
     }
-    const messageRooms = allMessageRooms();
+    const messageRooms = findMessageRoomsForUser(user.id);
     return (
         <div>
             <div className="row">

@@ -4,7 +4,7 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { LoginUser, MessageRoom as MessageRoomModel } from '../models';
-import { allMessageRooms } from '../data';
+import { findMessageRoomsForUser } from '../data';
 import { ApplicationState, selectors } from '../store';
 
 const MessageRoomItem = (props: { room: MessageRoomModel, user: LoginUser }) => {
@@ -26,7 +26,7 @@ export type MessageRoomListProps = ReturnType<typeof mapStateToProps> & RouteCom
 
 export const MessageRoomList = (props: MessageRoomListProps) => {
     const { user } = props
-    const messageRooms = allMessageRooms();
+    const messageRooms = findMessageRoomsForUser(user.id);
     return (
         <div>
             <ListGroup>

@@ -1,4 +1,6 @@
 export interface LoginUser extends User {
+    requestMessageRooms: { [requestId: string]: string };
+    userMessageRooms: { [userId: string]: string };
 }
 
 export interface User {

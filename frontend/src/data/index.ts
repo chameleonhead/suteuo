@@ -1,5 +1,5 @@
 import { denormalize, normalize, schema } from 'normalizr';
-import { MessageRoom, Notification, Request, User } from '../models';
+import { LoginUser, MessageRoom, Notification, Request, User } from '../models';
 import requests from './requests.json'
 import messages from './messages.json'
 import notifications from './notifications.json'
@@ -49,18 +49,37 @@ export const findUserById = (id: string): User | undefined => {
     return denormalize(id, user, normalizedData.entities);
 }
 
-export const allMessageRooms = (): MessageRoom[] => {
-    return denormalize(Object.keys(normalizedData.entities.messageRooms as any), [messageRoom], normalizedData.entities);
+export const findMessageRoomsForUser = (id: string): MessageRoom[] => {
+    const user = findUserById(id) as LoginUser;
+    if (user && user.userMessageRooms) {
+        const messageRooms = [];
+        for (let key in user.userMessageRooms) {
+            messageRooms.push(findMessageRoomById(user.userMessageRooms[key]) as MessageRoom)
+        }
+        return messageRooms;
+    }
+    return [];
 }
 
 export const findMessageRoomById = (id: string): MessageRoom | undefined => {
     return denormalize(id, messageRoom, normalizedData.entities);
 }
 
-export const findMessageRoomForRequestId = (requestId: string, userId: string): MessageRoom | undefined => {
-    for (let key in normalizedData.entities.users) {
-        if (normalizedData.entities.users[key].requestMessageRooms && normalizedData.entities.users[key].requestMessageRooms.includes(requestId)) {
-            return denormalize(key, messageRoom, normalizedData.entities);
+export const findMessageRoomForRequestId = (loginUserId: string, requestId: string): MessageRoom | undefined => {
+    const user = findUserById(loginUserId) as LoginUser;
+    if (user && user.requestMessageRooms) {
+        if (user.requestMessageRooms[requestId]) {
+            return findMessageRoomById(user.requestMessageRooms[requestId])
+        }
+    }
+    return undefined;
+}
+
+export const findMessageRoomForUserId = (loginUserId: string, targetUserId: string): MessageRoom | undefined => {
+    const user = findUserById(loginUserId) as LoginUser;
+    if (user && user.userMessageRooms) {
+        if (user.userMessageRooms[targetUserId]) {
+            return findMessageRoomById(user.userMessageRooms[targetUserId])
         }
     }
     return undefined;

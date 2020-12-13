@@ -5,7 +5,7 @@ import { Alert, Badge, Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabP
 import MessageList from '../components/MessageList';
 import RequestCommentForm from '../components/RequestCommentForm';
 import RequestCommentList from '../components/RequestCommentList';
-import { findMessageRoomById, findRequesById } from '../data';
+import { findMessageRoomForRequestId, findRequesById } from '../data';
 import { ApplicationState, selectors } from '../store';
 
 const RequestState = (props: { state: 'OPEN' | 'CLOSED' }) => {
@@ -37,7 +37,7 @@ export const RequestDetails = (props: RequestDetailsProps) => {
     }
     const request = findRequesById(id);
     if (request) {
-        const messageRoom = user && findMessageRoomById(request.id)
+        const messageRoom = user && findMessageRoomForRequestId(user.id, request.id)
         return (
             <div>
                 <Row className="justify-content-between mb-3" style={{ height: '1.5em' }}>
