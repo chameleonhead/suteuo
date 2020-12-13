@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import Login from './pages/Login';
 import RequestBoard from './pages/RequestBoard';
 import NewRequest from './pages/NewRequest';
 import EditRequest from './pages/EditRequest';
@@ -20,6 +22,8 @@ const App = () => (
         <Switch>
             <Route exact path='/' component={Home} />
             <Route path='/register' component={Register} />
+            <Route path='/forgotpassword' component={ForgotPassword} />
+            <Route path='/resetpassword' component={ResetPassword} />
             <Route path='/login' component={Login} />
             <Route path='/requests/new' component={NewRequest} />
             <Route path='/requests/edit/:id' component={EditRequest} />

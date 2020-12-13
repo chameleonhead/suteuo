@@ -57,6 +57,17 @@ export const LoginForm = (props: LoginFormProps) => {
                 />
                 <FormFeedback>{formik.errors.password}</FormFeedback>
             </FormGroup>
+            <FormGroup check>
+                <Label>
+                    <Input
+                        id="rememberMe"
+                        name="rememberMe"
+                        type="checkbox"
+                        onChange={formik.handleChange}
+                        checked={formik.values.rememberMe}
+                        invalid={formik.touched.rememberMe && formik.errors.rememberMe ? true : false}
+                    /> ログインしたままにする</Label>
+            </FormGroup>
             <FormGroup className="mt-3">
                 <Button color="primary" block>ログイン</Button>
             </FormGroup>

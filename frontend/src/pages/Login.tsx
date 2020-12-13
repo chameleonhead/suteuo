@@ -1,9 +1,10 @@
-import { Col, Row } from 'reactstrap';
+import { Button, Col, Row } from 'reactstrap';
 import { connect } from 'react-redux';
 
 import LoginForm from '../components/LoginForm';
 import { actionCreators, ApplicationState, selectors } from '../store';
 import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
 
 export type LoginProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
@@ -18,6 +19,15 @@ export const Login = (props: LoginProps) => {
             <Row>
                 <Col md="6">
                     <LoginForm onSubmit={onSubmit} />
+                    <div>
+                        <small>
+                            <Link to="/forgotpassword">パスワードをお忘れの場合はこちら</Link>
+                        </small>
+                    </div>
+                    <hr />
+                    <div>
+                        <Button color="success" block tag={Link} to="/register">新規登録</Button>
+                    </div>
                 </Col>
             </Row>
         </div>
