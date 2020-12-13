@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import { Badge, Button, Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, ListGroup, ListGroupItem, Row } from 'reactstrap';
 import RequestCommentForm from '../components/RequestCommentForm';
+import RequestCommentList from '../components/RequestCommentList';
 import { findRequesById } from '../data';
 import { RequestComment, User } from '../models';
 import { ApplicationState, selectors } from '../store';
@@ -21,32 +22,6 @@ const RequestState = (props: { state: 'OPEN' | 'CLOSED' }) => {
         default:
             return null
     }
-}
-
-const RequestCommentItem = (props: { comment: RequestComment, user?: User, onDelete?: (id: string) => void }) => {
-    const { comment, user, onDelete } = props
-    const [isOpen, setOpen] = React.useState(false);
-    return (
-        <ListGroupItem key={comment.id}>
-            <div className="d-flex justify-content-between">
-                <Link to={`/users/${comment.createdBy.id}`}>{comment.createdBy.name}</Link>
-                <div className="d-flex" style={{height: '2rem'}}>
-                    <small className="float-right">{comment.createdAt}</small>
-                    {user && user.id === comment.createdBy.id && (
-                        <Dropdown className="ml-2" isOpen={isOpen} toggle={() => setOpen(!isOpen)}>
-                            <DropdownToggle tag="div">
-                                <Button color="default" size="sm"><i className="fas fa-ellipsis-v"></i></Button>
-                            </DropdownToggle>
-                            <DropdownMenu right>
-                                <DropdownItem tag="button" onClick={() => onDelete && onDelete(comment.id)}>削除</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    )}
-                </div>
-            </div>
-            <div>{comment.comment}</div>
-        </ListGroupItem>
-    )
 }
 
 export type RequestDetailsProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & RouteComponentProps<{ id: string }>
@@ -115,23 +90,7 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                         ? (
                             <div>
                                 <h5 className="my-3">コメント</h5>
-                                <div>
-                                    {(request.comments && request.comments.length)
-                                        ? (
-                                            <ListGroup>
-                                                {
-                                                    request.comments.map(c => {
-                                                        return (
-                                                            <RequestCommentItem key={c.id} comment={c} user={user} onDelete={commentId => onDeleteComment(id, commentId)} />
-                                                        )
-                                                    })
-                                                }
-                                            </ListGroup>
-                                        )
-                                        : (
-                                            <p>コメントはまだありません</p>
-                                        )}
-                                </div>
+                                <RequestCommentList comments={request.comments} user={user} onDelete={commentId => onDeleteComment(id, commentId)} />
                                 <div className="mt-3">
                                     <RequestCommentForm onSubmit={value => onAddNewComment(id, value)} />
                                 </div>
@@ -140,23 +99,7 @@ export const RequestDetails = (props: RequestDetailsProps) => {
                         : (
                             <div>
                                 <h5 className="my-3">コメント</h5>
-                                <div>
-                                    {(request.comments && request.comments.length)
-                                        ? (
-                                            <ListGroup>
-                                                {
-                                                    request.comments.map(c => {
-                                                        return (
-                                                            <RequestCommentItem key={c.id} comment={c} />
-                                                        )
-                                                    })
-                                                }
-                                            </ListGroup>
-                                        )
-                                        : (
-                                            <p>コメントはまだありません</p>
-                                        )}
-                                </div>
+                                <RequestCommentList comments={request.comments} />
                             </div>
                         )
                 }

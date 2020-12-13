@@ -26,6 +26,10 @@ export type RequestListProps = {
 export const RequestList = (props: RequestListProps) => {
     const { requests } = props;
 
+    if (!requests || requests.length === 0) {
+        return null;
+    }
+
     return (
         <ListGroup>
             {requests.map(r => (<RequestItem key={r.id} request={r} />))}
