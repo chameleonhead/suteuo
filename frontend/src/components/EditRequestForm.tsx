@@ -120,7 +120,7 @@ export const EditRequestForm = (props: EditRequestFormProps) => {
                 <FormFeedback>{formik.errors.detailedText}</FormFeedback>
             </FormGroup>
             <FormGroup className="mt-3">
-                <Button color="primary" block>変更</Button>
+                <Button type="submit" color="primary" block>変更</Button>
             </FormGroup>
         </Form>
     );

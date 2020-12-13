@@ -3,6 +3,7 @@ import { MessageRoom, Notification, Request, User } from '../models';
 import requests from './requests.json'
 import messages from './messages.json'
 import notifications from './notifications.json'
+import users from './users.json'
 
 const user = new schema.Entity('users');
 const comment = new schema.Entity('comments', {
@@ -27,11 +28,13 @@ const notification = new schema.Entity('notifications')
 const normalizedData = normalize({
     requests,
     messages,
-    notifications
+    notifications,
+    users,
 }, {
     requests: [request],
     messages: [messageRoom],
-    notifications: [notification]
+    notifications: [notification],
+    users: [user],
 });
 
 export const allRequests = (): Request[] => {
@@ -50,8 +53,17 @@ export const allMessageRooms = (): MessageRoom[] => {
     return denormalize(Object.keys(normalizedData.entities.messageRooms as any), [messageRoom], normalizedData.entities);
 }
 
-export const findMessageRoomById = (id: string): MessageRoom => {
+export const findMessageRoomById = (id: string): MessageRoom | undefined => {
     return denormalize(id, messageRoom, normalizedData.entities);
+}
+
+export const findMessageRoomForRequestId = (requestId: string, userId: string): MessageRoom | undefined => {
+    for (let key in normalizedData.entities.users) {
+        if (normalizedData.entities.users[key].requestMessageRooms && normalizedData.entities.users[key].requestMessageRooms.includes(requestId)) {
+            return denormalize(key, messageRoom, normalizedData.entities);
+        }
+    }
+    return undefined;
 }
 
 export const allNotifications = (): Notification[] => {

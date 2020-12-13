@@ -42,6 +42,7 @@ export interface Message {
 
 export interface MessageRoom {
     id: string;
+    requestId?: string;
     participants: User[];
     messages: Message[];
     createdAt: string;

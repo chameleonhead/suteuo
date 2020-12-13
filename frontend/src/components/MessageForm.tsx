@@ -37,7 +37,7 @@ export const MessageForm = (props: MessageFormProps) => {
                     />
                 </Col>
                 <Col className="pl-2 col-auto">
-                    <Button color="primary" block className="h-100">送信</Button>
+                    <Button type="submit" color="primary" block className="h-100">送信</Button>
                 </Col>
             </Row>
         </Form>

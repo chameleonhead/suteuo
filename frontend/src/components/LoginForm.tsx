@@ -69,7 +69,7 @@ export const LoginForm = (props: LoginFormProps) => {
                     /> ログインしたままにする</Label>
             </FormGroup>
             <FormGroup className="mt-3">
-                <Button color="primary" block>ログイン</Button>
+                <Button type="submit" color="primary" block>ログイン</Button>
             </FormGroup>
         </Form>
     );

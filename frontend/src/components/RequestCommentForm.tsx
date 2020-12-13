@@ -39,7 +39,7 @@ export const RequestCommentForm = (props: RequestCommentFormProps) => {
                 <FormFeedback>{formik.errors.comment}</FormFeedback>
             </FormGroup>
             <FormGroup className="mt-3">
-                <Button color="primary" block>コメント</Button>
+                <Button type="submit" color="primary" block>コメント</Button>
             </FormGroup>
         </Form>
     );

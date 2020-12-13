@@ -36,7 +36,7 @@ const ForgotPasswordForm = (props: any) => {
                 <FormFeedback>{formik.errors.mailAddress}</FormFeedback>
             </FormGroup>
             <FormGroup>
-                <Button color="primary" block tag={Link} to="/resetpassword?requestId=123">再発行用メールを送信する</Button>
+                <Button type="submit" color="primary" block tag={Link} to="/resetpassword?requestId=123">再発行用メールを送信する</Button>
             </FormGroup>
         </Form>
     )

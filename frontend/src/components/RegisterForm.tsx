@@ -135,7 +135,7 @@ export const RegisterForm = (props: RegisterFormProps) => {
                 <FormFeedback>{formik.errors.password}</FormFeedback>
             </FormGroup>
             <FormGroup className="mt-3">
-                <Button color="primary" block>登録</Button>
+                <Button type="submit" color="primary" block>登録</Button>
             </FormGroup>
         </Form>
     );

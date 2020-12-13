@@ -123,7 +123,7 @@ export const NewRequestForm = (props: NewRequestFormProps) => {
                 <FormFeedback>{formik.errors.detailedText}</FormFeedback>
             </FormGroup>
             <FormGroup className="mt-3">
-                <Button color="primary" block>依頼を作成する</Button>
+                <Button type="submit" color="primary" block>依頼を作成する</Button>
             </FormGroup>
         </Form>
     );

@@ -35,7 +35,7 @@ const ResetPasswordForm = (props: any) => {
                 <FormFeedback>{formik.errors.newPassword}</FormFeedback>
             </FormGroup>
             <FormGroup>
-                <Button color="primary" block>パスワードを再設定する</Button>
+                <Button type="submit" color="primary" block>パスワードを再設定する</Button>
             </FormGroup>
         </Form>
     )
