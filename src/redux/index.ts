@@ -1,23 +1,37 @@
-import { combineReducers, Middleware, Reducer } from "redux";
-import { authMiddleware, authReducer, AuthState } from "./auth";
+import { combineReducers, Reducer } from "redux";
+import {
+  authActionCreators,
+  authMiddleware,
+  authReducer,
+  authSelectors,
+  AuthState,
+} from "./auth";
+import {
+  notificationActionCreators,
+  notificationMiddleware,
+  notificationReducer,
+  notificationSelectors,
+  NotificationState,
+} from "./notification";
 
 export interface ApplicationState {
   auth: AuthState;
+  notification: NotificationState;
 }
 
-export const middlewares = [
-  ((store) => (next) => (action) => {
-    const state = store.getState();
-    console.log(action);
-    next(action);
-    const stateAfter = store.getState();
-    if (state !== stateAfter) {
-      console.log(stateAfter);
-    }
-  }) as Middleware,
-  authMiddleware,
-];
+export const selectors = {
+  ...authSelectors,
+  ...notificationSelectors,
+};
+
+export const actionCreators = {
+  ...authActionCreators,
+  ...notificationActionCreators,
+};
+
+export const middlewares = [authMiddleware, notificationMiddleware];
 
 export const reducers: Reducer<ApplicationState> = combineReducers({
   auth: authReducer,
+  notification: notificationReducer,
 });

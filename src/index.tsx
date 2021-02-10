@@ -9,7 +9,6 @@ import configureStore from "./redux/configureStore";
 
 Amplify.configure(awsExports);
 const store = configureStore();
-(window as any).__store__ = store;
 
 ReactDOM.render(
   <React.StrictMode>
