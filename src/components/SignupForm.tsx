@@ -1,23 +1,21 @@
 import * as React from "react";
 import { useFormik } from "formik";
 
-interface LoginFormValue {
+interface SignupFormValue {
   username: string;
   password: string;
-  rememberMe: boolean;
 }
 
-export type LoginFormProps = {
-  onSubmit: (value: LoginFormValue) => void;
+export type SignupFormProps = {
+  onSubmit: (value: SignupFormValue) => void;
 };
 
-export const LoginForm = (props: LoginFormProps) => {
+export const SignupForm = (props: SignupFormProps) => {
   const { onSubmit } = props;
-  const formik = useFormik<LoginFormValue>({
+  const formik = useFormik<SignupFormValue>({
     initialValues: {
       username: "",
       password: "",
-      rememberMe: false,
     },
     onSubmit: (value, _) => onSubmit(value),
   });
@@ -27,10 +25,9 @@ export const LoginForm = (props: LoginFormProps) => {
         <div>
           <label htmlFor="usernmae">メールアドレス</label>
           <input
-            id="username"
             type="email"
             name="username"
-            value={formik.values.username}
+            id="username"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
@@ -38,27 +35,15 @@ export const LoginForm = (props: LoginFormProps) => {
         <div>
           <label htmlFor="password">パスワード</label>
           <input
-            id="password"
             type="password"
             name="password"
-            value={formik.values.password}
+            id="password"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
         </div>
         <div>
-          <input
-            id="rememberMe"
-            type="checkbox"
-            name="rememberMe"
-            checked={formik.values.rememberMe}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-          <label htmlFor="rememberMe"> ログイン情報を保持する</label>
-        </div>
-        <div>
-          <button type="submit">ログイン</button>
+          <button type="submit">登録</button>
         </div>
       </div>
     </form>
