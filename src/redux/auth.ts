@@ -13,9 +13,9 @@ export interface UserInfo {
 
 export interface AuthState {
   state:
+    | "INITIALIZING"
     | "NOT_LOGGED_IN"
     | "WAITING_CONFIRM_CODE"
-    | "WAITING_LOGIN_CONFIRM"
     | "LOGGED_IN";
   credential: UserCredential | undefined;
   user: UserInfo | undefined;
@@ -44,6 +44,10 @@ interface LoginInfo {
 
 interface InitAuthAction {
   type: "INIT_AUTH";
+}
+
+interface InitAuthCompletedAction {
+  type: "INIT_AUTH_COMPLETED";
 }
 
 interface SignupAction {
@@ -81,6 +85,7 @@ interface LogoutSuccessAction {
 
 type KnownAction =
   | InitAuthAction
+  | InitAuthCompletedAction
   | SignupAction
   | RequireConfirmationAction
   | ConfirmCodeAction
@@ -92,6 +97,9 @@ type KnownAction =
 export const authActionCreators = {
   initAuth: (): InitAuthAction => ({
     type: "INIT_AUTH",
+  }),
+  initAuthCompleted: (): InitAuthCompletedAction => ({
+    type: "INIT_AUTH_COMPLETED",
   }),
   signup: (info: SignupInfo): SignupAction => ({
     type: "SIGNUP",
@@ -129,13 +137,22 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
   next(incomingAction);
   const action = incomingAction as KnownAction;
   if (action.type === "INIT_AUTH") {
-    Auth.currentSession().then((value) => {
+    Auth.currentSession().then((session) => {
       console.log("SESSION");
-      console.log(value);
-    });
-    Auth.currentUserInfo().then((value) => {
-      console.log("USER INFO");
-      console.log(value);
+      console.log(session);
+
+      return Auth.currentUserInfo()
+        .then((value) => {
+          console.log("USER INFO");
+          console.log(value);
+
+          dispatch(
+            actionCreators.loginSuccess({ username: value.attributes["email"] })
+          );
+        })
+        .finally(() => {
+          dispatch(actionCreators.initAuthCompleted());
+        });
     });
   }
   if (action.type === "SIGNUP") {
@@ -231,7 +248,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
 export const authReducer: Reducer<AuthState> = (state, incomingAction) => {
   if (!state) {
     state = {
-      state: "NOT_LOGGED_IN",
+      state: "INITIALIZING",
       credential: undefined,
       user: undefined,
     };
@@ -239,6 +256,14 @@ export const authReducer: Reducer<AuthState> = (state, incomingAction) => {
 
   const action = incomingAction as KnownAction;
   switch (action.type) {
+    case "INIT_AUTH_COMPLETED":
+      if (state.state === "INITIALIZING") {
+        return {
+          ...state,
+          state: "NOT_LOGGED_IN",
+        };
+      }
+      break;
     case "REQUIRE_CONFIRMATION":
       return {
         ...state,

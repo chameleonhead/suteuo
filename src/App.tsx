@@ -10,10 +10,13 @@ function App() {
   const [showSignupPage, setShowSignupPage] = useState(true);
   const authState = useSelector(selectors.getAuthState);
   const dispatch = useDispatch();
+  if (authState.state === "INITIALIZING") {
+    return <div className="App">読み込み中</div>;
+  }
   if (authState.state !== "LOGGED_IN") {
     if (showSignupPage) {
       return (
-        <div>
+        <div className="App">
           <h1>サインアップ</h1>
           <Signup />
           <button onClick={() => setShowSignupPage(false)}>ログイン</button>
@@ -21,7 +24,7 @@ function App() {
       );
     } else {
       return (
-        <div>
+        <div className="App">
           <h1>ログイン</h1>
           <Login />
           <button onClick={() => setShowSignupPage(true)}>サインアップ</button>
