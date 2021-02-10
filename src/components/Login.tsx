@@ -2,13 +2,14 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
 import { ConfirmCodeForm } from "./ConfirmCodeForm";
-import { SignupForm } from "./SignupForm";
+import { LoginForm } from "./LoginForm";
 
-export type SignupProps = ReturnType<typeof mapStateToProps> &
+export type LoginProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;
 
-export const Signup = (props: SignupProps) => {
-  const { authState, onConfirmCode, onSignup } = props;
+export const Login = (props: LoginProps) => {
+  const { authState, onConfirmCode, onLogin } = props;
+  console.log(authState);
   if (authState.state === "WAITING_CONFIRM_CODE") {
     return (
       <ConfirmCodeForm
@@ -17,7 +18,11 @@ export const Signup = (props: SignupProps) => {
       />
     );
   }
-  return <SignupForm onSubmit={onSignup} />;
+  return (
+    <div>
+      <LoginForm onSubmit={onLogin} />
+    </div>
+  );
 };
 
 const mapStateToProps = (state: ApplicationState) => ({
@@ -25,8 +30,8 @@ const mapStateToProps = (state: ApplicationState) => ({
 });
 
 const mapDispatchToProps = {
-  onSignup: actionCreators.signup,
+  onLogin: actionCreators.login,
   onConfirmCode: actionCreators.confirmCode,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Signup);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

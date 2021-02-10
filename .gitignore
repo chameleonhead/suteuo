@@ -116,6 +116,7 @@ dist
 .pnp.*
 
 amplify/team-provider-info.json
+src/react-app-env.d.ts
 
 #amplify
 amplify/\#current-cloud-backend

@@ -19,6 +19,16 @@ export const LoginForm = (props: LoginFormProps) => {
       password: "",
       rememberMe: false,
     },
+    validate: (values) => {
+      const errors = {} as any;
+      if (!values.username) {
+        errors.username = "必須項目です。";
+      }
+      if (!values.password) {
+        errors.password = "必須項目です。";
+      }
+      return errors;
+    },
     onSubmit: (value, _) => onSubmit(value),
   });
   return (

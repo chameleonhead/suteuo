@@ -1,10 +1,38 @@
+import { useState } from "react";
+import { actionCreators, selectors } from "./redux";
+import { useDispatch, useSelector } from "react-redux";
+
 import Signup from "./components/Signup";
+import Login from "./components/Login";
 import "./App.css";
 
 function App() {
+  const [showSignupPage, setShowSignupPage] = useState(true);
+  const authState = useSelector(selectors.getAuthState);
+  const dispatch = useDispatch();
+  if (authState.state !== "LOGGED_IN") {
+    if (showSignupPage) {
+      return (
+        <div>
+          <h1>サインアップ</h1>
+          <Signup />
+          <button onClick={() => setShowSignupPage(false)}>ログイン</button>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <h1>ログイン</h1>
+          <Login />
+          <button onClick={() => setShowSignupPage(true)}>サインアップ</button>
+        </div>
+      );
+    }
+  }
   return (
     <div className="App">
-      <Signup />
+      ホームページ
+      <button onClick={() => dispatch(actionCreators.logout())}>LOGOUT</button>
     </div>
   );
 }

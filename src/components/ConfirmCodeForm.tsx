@@ -3,25 +3,29 @@ import { useFormik } from "formik";
 
 interface ConfirmCodeFormValue {
   username: string;
+  password: string;
   code: string;
 }
 
 export type ConfirmCodeFormProps = {
-  username: string;
+  credential: { username: string; password: string };
   onSubmit: (value: ConfirmCodeFormValue) => void;
 };
 
 export const ConfirmCodeForm = (props: ConfirmCodeFormProps) => {
-  const { username, onSubmit } = props;
+  const { credential, onSubmit } = props;
   const formik = useFormik<ConfirmCodeFormValue>({
     initialValues: {
-      username,
+      ...credential,
       code: "",
     },
     validate: (values) => {
       const errors = {} as any;
       if (!values.username) {
         errors.username = "必須項目です。";
+      }
+      if (!values.password) {
+        errors.password = "必須項目です。";
       }
       if (!values.code) {
         errors.code = "必須項目です。";

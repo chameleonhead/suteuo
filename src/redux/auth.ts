@@ -2,16 +2,22 @@ import { Auth } from "aws-amplify";
 import { Middleware, Reducer } from "redux";
 import { actionCreators, ApplicationState } from ".";
 
+export interface UserCredential {
+  username: string;
+  password: string;
+}
+
 export interface UserInfo {
   username: string;
 }
 
 export interface AuthState {
   state:
-    | "NOT_LGGED_IN"
-    | "WAITING_SIGNUP_CONFIRM"
-    | "WAITING_LOGIN"
+    | "NOT_LOGGED_IN"
+    | "WAITING_CONFIRM_CODE"
+    | "WAITING_LOGIN_CONFIRM"
     | "LOGGED_IN";
+  credential: UserCredential | undefined;
   user: UserInfo | undefined;
 }
 
@@ -26,6 +32,7 @@ interface SignupInfo {
 
 interface ConfirmCodeInfo {
   username: string;
+  password: string;
   code: string;
 }
 
@@ -35,17 +42,18 @@ interface LoginInfo {
   rememberMe: boolean;
 }
 
+interface InitAuthAction {
+  type: "INIT_AUTH";
+}
+
 interface SignupAction {
   type: "SIGNUP";
   payload: SignupInfo;
 }
 
-interface SignupSuccessAction {
-  type: "SIGNUP_SUCCESS";
-  payload: {
-    nextState: AuthState["state"];
-    user: UserInfo;
-  };
+interface RequireConfirmationAction {
+  type: "REQUIRE_CONFIRMATION";
+  payload: UserCredential;
 }
 
 interface ConfirmCodeAction {
@@ -58,21 +66,42 @@ interface LoginAction {
   payload: LoginInfo;
 }
 
+interface LoginSuccessAction {
+  type: "LOGIN_SUCCESS";
+  payload: UserInfo;
+}
+
 interface LogoutAction {
   type: "LOGOUT";
 }
 
+interface LogoutSuccessAction {
+  type: "LOGOUT_SUCCESS";
+}
+
 type KnownAction =
+  | InitAuthAction
   | SignupAction
-  | SignupSuccessAction
+  | RequireConfirmationAction
   | ConfirmCodeAction
   | LoginAction
-  | LogoutAction;
+  | LoginSuccessAction
+  | LogoutAction
+  | LogoutSuccessAction;
 
 export const authActionCreators = {
+  initAuth: (): InitAuthAction => ({
+    type: "INIT_AUTH",
+  }),
   signup: (info: SignupInfo): SignupAction => ({
     type: "SIGNUP",
     payload: info,
+  }),
+  requireConfirmation: (
+    credential: UserCredential
+  ): RequireConfirmationAction => ({
+    type: "REQUIRE_CONFIRMATION",
+    payload: credential,
   }),
   confirmCode: (info: ConfirmCodeInfo): ConfirmCodeAction => ({
     type: "CONFIRM_CODE",
@@ -82,8 +111,15 @@ export const authActionCreators = {
     type: "LOGIN",
     payload: info,
   }),
+  loginSuccess: (info: UserInfo): LoginSuccessAction => ({
+    type: "LOGIN_SUCCESS",
+    payload: info,
+  }),
   logout: (): LogoutAction => ({
     type: "LOGOUT",
+  }),
+  logoutSuccess: (): LogoutSuccessAction => ({
+    type: "LOGOUT_SUCCESS",
   }),
 };
 
@@ -92,6 +128,16 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
 ) => {
   next(incomingAction);
   const action = incomingAction as KnownAction;
+  if (action.type === "INIT_AUTH") {
+    Auth.currentSession().then((value) => {
+      console.log("SESSION");
+      console.log(value);
+    });
+    Auth.currentUserInfo().then((value) => {
+      console.log("USER INFO");
+      console.log(value);
+    });
+  }
   if (action.type === "SIGNUP") {
     const { username, password } = action.payload;
     Auth.signUp({
@@ -100,20 +146,20 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
     })
       .then((value) => {
         // SIGNUP SUCCESS
-        dispatch({
-          type: "SIGNUP_SUCCESS",
-          payload: {
-            user: {
-              username,
-            },
-            nextState: "WAITING_SIGNUP_CONFIRM",
-          },
-        } as SignupSuccessAction);
         console.log("SIGNUP SUCCESS");
         console.log(value);
+        if (value.userConfirmed) {
+          dispatch(
+            actionCreators.login({ username, password, rememberMe: false })
+          );
+        } else {
+          dispatch(actionCreators.requireConfirmation({ username, password }));
+        }
       })
       .catch((err) => {
         // SIGNUP FAIL
+        console.error("SIGNUP FAIL");
+        console.error(err);
         if (err.code) {
           // Cognito のエラー
           if (err.code === "UsernameExistsException") {
@@ -122,17 +168,18 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
             );
           }
         }
-        console.error("SIGNUP FAIL");
-        console.error(err);
       });
   }
   if (action.type === "CONFIRM_CODE") {
-    const { username, code } = action.payload;
+    const { username, password, code } = action.payload;
     Auth.confirmSignUp(username, code)
       .then((value) => {
         // SIGNUP SUCCESS
         console.log("SIGNUP SUCCESS");
         console.log(value);
+        dispatch(
+          actionCreators.login({ username, password, rememberMe: false })
+        );
       })
       .catch((err) => {
         // SIGNUP FAIL
@@ -141,19 +188,28 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
       });
   }
   if (action.type === "LOGIN") {
+    const { username, password } = action.payload;
     Auth.signIn({
-      username: action.payload.username,
-      password: action.payload.password,
+      username,
+      password,
     })
       .then((value) => {
         // LOGIN SUCCESS
         console.log("LOGIN SUCCESS");
         console.log(value);
+        dispatch(actionCreators.loginSuccess({ username }));
       })
       .catch((err) => {
         // LOGIN FAIL
         console.error("LOGIN FAIL");
         console.error(err);
+        if (err.code) {
+          if (err.code === "UserNotConfirmedException") {
+            dispatch(
+              actionCreators.requireConfirmation({ username, password })
+            );
+          }
+        }
       });
   }
   if (action.type === "LOGOUT") {
@@ -162,6 +218,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
         // LOGOUT SUCCESS
         console.log("LOGOUT SUCCESS");
         console.log(value);
+        dispatch(actionCreators.logoutSuccess());
       })
       .catch((err) => {
         // LOGOUT FAIL
@@ -174,18 +231,36 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
 export const authReducer: Reducer<AuthState> = (state, incomingAction) => {
   if (!state) {
     state = {
-      state: "NOT_LGGED_IN",
+      state: "NOT_LOGGED_IN",
+      credential: undefined,
       user: undefined,
     };
   }
 
   const action = incomingAction as KnownAction;
   switch (action.type) {
-    case "SIGNUP_SUCCESS":
+    case "REQUIRE_CONFIRMATION":
       return {
         ...state,
-        state: action.payload.nextState,
-        user: action.payload.user,
+        state: "WAITING_CONFIRM_CODE",
+        credential: {
+          username: action.payload.username,
+          password: action.payload.password,
+        },
+      };
+    case "LOGIN_SUCCESS":
+      return {
+        ...state,
+        state: "LOGGED_IN",
+        credential: undefined,
+        userInfo: action.payload,
+      };
+    case "LOGOUT_SUCCESS":
+      return {
+        ...state,
+        state: "NOT_LOGGED_IN",
+        credential: undefined,
+        userInfo: undefined,
       };
   }
   return state;

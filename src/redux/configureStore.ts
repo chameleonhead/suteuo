@@ -1,5 +1,5 @@
 import { applyMiddleware, compose, createStore } from "redux";
-import { reducers, middlewares, ApplicationState } from ".";
+import { reducers, middlewares, ApplicationState, actionCreators } from ".";
 
 const configureStore = (initialState?: ApplicationState) => {
   const enhancers = [];
@@ -9,11 +9,14 @@ const configureStore = (initialState?: ApplicationState) => {
     enhancers.push(windowIfDefined.__REDUX_DEVTOOLS_EXTENSION__());
   }
 
-  return createStore(
+  const store = createStore(
     reducers,
     initialState,
     compose(applyMiddleware(...middlewares), ...enhancers)
   );
+  
+  store.dispatch(actionCreators.initAuth());
+  return store;
 };
 
 export default configureStore;
