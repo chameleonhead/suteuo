@@ -32,7 +32,7 @@ export const LoginForm = (props: LoginFormProps) => {
     onSubmit: (value, _) => onSubmit(value),
   });
   return (
-    <form onClick={formik.handleSubmit}>
+    <form onSubmit={formik.handleSubmit}>
       <div>
         <div>
           <label htmlFor="usernmae">メールアドレス</label>

@@ -35,7 +35,7 @@ export const ConfirmCodeForm = (props: ConfirmCodeFormProps) => {
     onSubmit: (value, _) => onSubmit(value),
   });
   return (
-    <form onClick={formik.handleSubmit}>
+    <form onSubmit={formik.handleSubmit}>
       <div>
         <div>
           <label htmlFor="code">パスコード</label>

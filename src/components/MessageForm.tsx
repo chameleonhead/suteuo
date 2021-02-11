@@ -25,7 +25,7 @@ export const MessageForm = (props: MessageFormProps) => {
     onSubmit: (value, _) => onSubmit(value),
   });
   return (
-    <form onClick={formik.handleSubmit}>
+    <form onSubmit={formik.handleSubmit}>
       <div>
         <label htmlFor="body">メッセージ本文</label>
         <input
