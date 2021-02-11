@@ -137,23 +137,23 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
   next(incomingAction);
   const action = incomingAction as KnownAction;
   if (action.type === "INIT_AUTH") {
-    Auth.currentSession().then((session) => {
-      console.log("SESSION");
-      console.log(session);
+    Auth.currentSession()
+      .then((session) => {
+        console.log("SESSION");
+        console.log(session);
 
-      return Auth.currentUserInfo()
-        .then((value) => {
+        return Auth.currentUserInfo().then((value) => {
           console.log("USER INFO");
           console.log(value);
 
           dispatch(
             actionCreators.loginSuccess({ username: value.attributes["email"] })
           );
-        })
-        .finally(() => {
-          dispatch(actionCreators.initAuthCompleted());
         });
-    });
+      })
+      .finally(() => {
+        dispatch(actionCreators.initAuthCompleted());
+      });
   }
   if (action.type === "SIGNUP") {
     const { username, password } = action.payload;
