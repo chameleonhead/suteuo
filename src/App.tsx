@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { actionCreators, selectors } from "./redux";
 import { useDispatch, useSelector } from "react-redux";
 
 import Signup from "./components/Signup";
 import Login from "./components/Login";
+import Messaging from "./components/Messaging";
 import "./App.css";
 
 function App() {
@@ -34,8 +35,13 @@ function App() {
   }
   return (
     <div className="App">
-      ホームページ
-      <button onClick={() => dispatch(actionCreators.logout())}>LOGOUT</button>
+      <header>
+        ホームページ
+        <button onClick={() => dispatch(actionCreators.logout())}>
+          LOGOUT
+        </button>
+      </header>
+      <Messaging />
     </div>
   );
 }

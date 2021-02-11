@@ -83,7 +83,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-suteuo-dev-115632-deployment",
-          "S3Key": "amplify-builds/messagefunc-376d724530494849305a-build.zip"
+          "S3Key": "amplify-builds/messagefunc-4e6567766b3850583477-build.zip"
         }
       }
     },
