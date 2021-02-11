@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "storage": {
+      "messagetable": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

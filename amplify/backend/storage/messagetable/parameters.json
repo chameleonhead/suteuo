@@ -1,0 +1,5 @@
+{
+    "tableName": "message",
+    "partitionKeyName": "id",
+    "partitionKeyType": "S"
+}
