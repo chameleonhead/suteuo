@@ -1,6 +1,24 @@
 {
     "paths": [
         {
+            "name": "/users",
+            "lambdaFunction": "userfunc",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            },
+            "policyResourceName": "/users"
+        },
+        {
             "name": "/messages",
             "lambdaFunction": "messagefunc",
             "privacy": {
@@ -16,20 +34,31 @@
             "policyResourceName": "/messages"
         }
     ],
-    "resourceName": "messageapi",
-    "apiName": "messageapi",
+    "resourceName": "suteuoapi",
+    "apiName": "suteuoapi",
     "functionArns": [
+        {
+            "lambdaFunction": "userfunc"
+        },
         {
             "lambdaFunction": "messagefunc"
         }
     ],
     "privacy": {
-        "auth": 1,
-        "unauth": 0,
+        "auth": 2,
+        "unauth": 1,
         "authRoleName": "amplify-suteuo-dev-115632-authRole",
         "unAuthRoleName": "amplify-suteuo-dev-115632-unauthRole"
     },
     "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "userfunc",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        },
         {
             "category": "function",
             "resourceName": "messagefunc",

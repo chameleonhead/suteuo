@@ -20,33 +20,45 @@ import {
   notificationSelectors,
   NotificationState,
 } from "./notification";
+import {
+  userActionCreators,
+  userMiddleware,
+  userReducer,
+  userSelectors,
+  UserState,
+} from "./users";
 
 export interface ApplicationState {
   auth: AuthState;
-  notification: NotificationState;
+  users: UserState;
   messaging: MessagingState;
+  notification: NotificationState;
 }
 
 export const selectors = {
   ...authSelectors,
-  ...notificationSelectors,
+  ...userSelectors,
   ...messagingSelectors,
+  ...notificationSelectors,
 };
 
 export const actionCreators = {
   ...authActionCreators,
-  ...notificationActionCreators,
+  ...userActionCreators,
   ...messagingActionCreators,
+  ...notificationActionCreators,
 };
 
 export const middlewares = [
   authMiddleware,
-  notificationMiddleware,
+  userMiddleware,
   messagingMiddleware,
+  notificationMiddleware,
 ];
 
 export const reducers: Reducer<ApplicationState> = combineReducers({
   auth: authReducer,
-  notification: notificationReducer,
+  users: userReducer,
   messaging: messagingReducer,
+  notification: notificationReducer,
 });

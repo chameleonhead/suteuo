@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "auth": {
+      "suteuo1fc826bf": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "storage": {
+      "messagetable": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

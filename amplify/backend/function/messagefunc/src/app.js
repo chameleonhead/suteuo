@@ -20,7 +20,7 @@ app.get("/messages", function (req, res) {
   };
   docClient.scan(params, function (err, data) {
     if (err) res.json({ err });
-    else res.json({ data });
+    else res.json(data);
   });
 });
 

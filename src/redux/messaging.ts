@@ -62,7 +62,7 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
   if (action.type === "CREATE_MESSAGE") {
     const { body } = action.payload;
     const { user } = selectors.getAuthState(getState());
-    API.post("messageapi", "/messages", {
+    API.post("suteuoapi", "/messages", {
       body: {
         body,
         sender: user?.username,
@@ -76,11 +76,11 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
     });
   }
   if (action.type === "REQUEST_MESSAGE") {
-    API.get("messageapi", "/messages", {}).then((data) => {
+    API.get("suteuoapi", "/messages", {}).then((data) => {
       console.log("REQUEST_MESSAGE SUCCESS");
       console.log(data);
 
-      dispatch(actionCreators.requestMessageSuccess(data.data.Items));
+      dispatch(actionCreators.requestMessageSuccess(data.Items));
     });
   }
 };
