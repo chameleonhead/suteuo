@@ -1,15 +1,7 @@
 {
   "permissions": {
-    "auth": {
-      "suteuo1fc826bf": [
-        "create",
-        "read",
-        "update",
-        "delete"
-      ]
-    },
     "storage": {
-      "messagetable": [
+      "suteuo": [
         "create",
         "read",
         "update",

@@ -2,12 +2,11 @@
   "hosting": {
     "amplifyhosting": {
       "service": "amplifyhosting",
-      "type": "cicd",
-      "lastPushTimeStamp": "2021-01-31T10:40:28.507Z"
+      "type": "cicd"
     }
   },
   "auth": {
-    "suteuo1fc826bf": {
+    "suteuo": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -15,42 +14,34 @@
     }
   },
   "storage": {
-    "messagetable": {
+    "suteuo": {
       "service": "DynamoDB",
       "providerPlugin": "awscloudformation"
     }
   },
   "function": {
-    "messagefunc": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "storage",
-          "resourceName": "messagetable",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        }
-      ]
-    },
-    "userfunc": {
+    "suteuo-users": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
       "dependsOn": [
         {
           "category": "auth",
-          "resourceName": "suteuo1fc826bf",
+          "resourceName": "suteuo",
           "attributes": [
             "UserPoolId"
           ]
-        },
+        }
+      ]
+    },
+    "suteuo-messaging": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
         {
           "category": "storage",
-          "resourceName": "messagetable",
+          "resourceName": "suteuo",
           "attributes": [
             "Name",
             "Arn"
@@ -60,13 +51,13 @@
     }
   },
   "api": {
-    "suteuoapi": {
+    "suteuo": {
       "service": "API Gateway",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "userfunc",
+          "resourceName": "suteuo-users",
           "attributes": [
             "Name",
             "Arn"
@@ -74,7 +65,7 @@
         },
         {
           "category": "function",
-          "resourceName": "messagefunc",
+          "resourceName": "suteuo-messaging",
           "attributes": [
             "Name",
             "Arn"

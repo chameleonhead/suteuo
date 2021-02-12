@@ -1,9 +1,10 @@
 {
-  "name": "messagefunc",
+  "name": "suteuo-users",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "aws-sdk": "^2.842.0",
     "aws-serverless-express": "^3.3.5",
     "body-parser": "^1.17.1",
     "cors": "^2.8.5",

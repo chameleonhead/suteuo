@@ -1,7 +1,7 @@
 {
   "permissions": {
-    "storage": {
-      "messagetable": [
+    "auth": {
+      "suteuo": [
         "create",
         "read",
         "update",

@@ -2,7 +2,7 @@
     "paths": [
         {
             "name": "/users",
-            "lambdaFunction": "userfunc",
+            "lambdaFunction": "suteuo-users",
             "privacy": {
                 "protected": true,
                 "auth": [
@@ -19,8 +19,8 @@
             "policyResourceName": "/users"
         },
         {
-            "name": "/messages",
-            "lambdaFunction": "messagefunc",
+            "name": "/messaging",
+            "lambdaFunction": "suteuo-messaging",
             "privacy": {
                 "private": true,
                 "auth": [
@@ -31,29 +31,29 @@
                     "/DELETE"
                 ]
             },
-            "policyResourceName": "/messages"
+            "policyResourceName": "/messaging"
         }
     ],
-    "resourceName": "suteuoapi",
-    "apiName": "suteuoapi",
+    "resourceName": "suteuo",
+    "apiName": "suteuo",
     "functionArns": [
         {
-            "lambdaFunction": "userfunc"
+            "lambdaFunction": "suteuo-users"
         },
         {
-            "lambdaFunction": "messagefunc"
+            "lambdaFunction": "suteuo-messaging"
         }
     ],
     "privacy": {
         "auth": 2,
         "unauth": 1,
-        "authRoleName": "amplify-suteuo-dev-115632-authRole",
-        "unAuthRoleName": "amplify-suteuo-dev-115632-unauthRole"
+        "authRoleName": "amplify-suteuo-dev-124433-authRole",
+        "unAuthRoleName": "amplify-suteuo-dev-124433-unauthRole"
     },
     "dependsOn": [
         {
             "category": "function",
-            "resourceName": "userfunc",
+            "resourceName": "suteuo-users",
             "attributes": [
                 "Name",
                 "Arn"
@@ -61,7 +61,7 @@
         },
         {
             "category": "function",
-            "resourceName": "messagefunc",
+            "resourceName": "suteuo-messaging",
             "attributes": [
                 "Name",
                 "Arn"

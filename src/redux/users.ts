@@ -57,7 +57,7 @@ export const userMiddleware: Middleware = ({ dispatch }) => (next) => (
   next(incomingAction);
   const action = incomingAction as KnownAction;
   if (action.type === "REQUEST_USER_BY_ID") {
-    API.get("suteuoapi", "/users/" + action.payload, {}).then((data) => {
+    API.get("suteuo", "/users/" + action.payload, {}).then((data) => {
       console.log("REQUEST_USER_BY_ID SUCCESS");
       console.log(data);
       dispatch(actionCreators.requestUserByIdSuccess(data));

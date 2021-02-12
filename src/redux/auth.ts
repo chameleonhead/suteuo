@@ -28,6 +28,7 @@ export const authSelectors = {
 
 interface SignupInfo {
   username: string;
+  email: string;
   password: string;
 }
 
@@ -148,7 +149,10 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
           console.log(value);
 
           dispatch(
-            actionCreators.loginSuccess({ username: value.attributes["email"], displayName: 'display name' })
+            actionCreators.loginSuccess({
+              username: value.attributes["email"],
+              displayName: "display name",
+            })
           );
         });
       })
@@ -157,10 +161,14 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
       });
   }
   if (action.type === "SIGNUP") {
-    const { username, password } = action.payload;
+    const { username, email, password } = action.payload;
     Auth.signUp({
-      username,
+      username: email,
       password,
+      attributes: {
+        preferred_username: username,
+        picture: undefined,
+      },
     })
       .then((value) => {
         // SIGNUP SUCCESS
@@ -215,7 +223,9 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
         // LOGIN SUCCESS
         console.log("LOGIN SUCCESS");
         console.log(value);
-        dispatch(actionCreators.loginSuccess({ username, displayName: 'display name' }));
+        dispatch(
+          actionCreators.loginSuccess({ username, displayName: "display name" })
+        );
       })
       .catch((err) => {
         // LOGIN FAIL

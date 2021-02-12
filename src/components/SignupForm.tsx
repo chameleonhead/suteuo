@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 
 interface SignupFormValue {
   username: string;
+  email: string;
   password: string;
 }
 
@@ -15,12 +16,16 @@ export const SignupForm = (props: SignupFormProps) => {
   const formik = useFormik<SignupFormValue>({
     initialValues: {
       username: "",
+      email: "",
       password: "",
     },
     validate: (values) => {
       const errors = {} as any;
       if (!values.username) {
         errors.username = "必須項目です。";
+      }
+      if (!values.email) {
+        errors.email = "必須項目です。";
       }
       if (!values.password) {
         errors.password = "必須項目です。";
@@ -33,11 +38,21 @@ export const SignupForm = (props: SignupFormProps) => {
     <form onSubmit={formik.handleSubmit}>
       <div>
         <div>
-          <label htmlFor="usernmae">メールアドレス</label>
+          <label htmlFor="usernmae">ユーザー名</label>
           <input
-            type="email"
+            type="text"
             name="username"
             id="username"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="email">メールアドレス</label>
+          <input
+            type="email"
+            name="email"
+            id="email"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />

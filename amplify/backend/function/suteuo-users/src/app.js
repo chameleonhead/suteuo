@@ -13,7 +13,7 @@ const authClient = new AWS.CognitoIdentityServiceProvider();
 app.get("/users/:userId", function (req, res) {
   authClient.adminGetUser(
     {
-      UserPoolId: process.env.AUTH_SUTEUO1FC826BF_USERPOOLID,
+      UserPoolId: process.env.AUTH_SUTEUO_USERPOOLID,
       Username: req.params.userId,
     },
     function (err, data) {

@@ -14,29 +14,29 @@
         },
     
     
-          "functionuserfuncName": {
+          "functionsuteuo-usersName": {
             "Type": "String",
-            "Default": "functionuserfuncName"
+            "Default": "functionsuteuo-usersName"
           },
         
           
-          "functionuserfuncArn": {
+          "functionsuteuo-usersArn": {
             "Type": "String",
-            "Default": "functionuserfuncArn"
+            "Default": "functionsuteuo-usersArn"
           },
         
           
           
     
-          "functionmessagefuncName": {
+          "functionsuteuo-messagingName": {
             "Type": "String",
-            "Default": "functionmessagefuncName"
+            "Default": "functionsuteuo-messagingName"
           },
         
           
-          "functionmessagefuncArn": {
+          "functionsuteuo-messagingArn": {
             "Type": "String",
-            "Default": "functionmessagefuncArn"
+            "Default": "functionsuteuo-messagingArn"
           }
         
           
@@ -55,13 +55,13 @@
     },
     "Resources": {
         
-        "PolicyAPIGWsuteuoapiauth": {
+        "PolicyAPIGWsuteuoauth": {
             "DependsOn": [
-              "suteuoapi"
+              "suteuo"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGWsuteuoapiauth",
+              "PolicyName": "PolicyAPIGWsuteuoauth",
               "Roles": [
                 {"Ref": "authRoleName"}
               ],
@@ -91,7 +91,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -122,7 +122,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -157,7 +157,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -188,7 +188,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -223,7 +223,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -254,7 +254,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -289,7 +289,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -320,7 +320,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -355,7 +355,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -386,7 +386,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -426,7 +426,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -439,7 +439,7 @@
                               ]
                             },
                               "/POST",
-                            "/messages/*"
+                            "/messaging/*"
                           ]
                         ]
                       },
@@ -457,7 +457,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -470,7 +470,7 @@
                               ]
                             },
                               "/POST",
-                            "/messages"
+                            "/messaging"
                           ]
                         ]
                       }
@@ -492,7 +492,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -505,7 +505,7 @@
                               ]
                             },
                               "/GET",
-                            "/messages/*"
+                            "/messaging/*"
                           ]
                         ]
                       },
@@ -523,7 +523,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -536,7 +536,7 @@
                               ]
                             },
                               "/GET",
-                            "/messages"
+                            "/messaging"
                           ]
                         ]
                       }
@@ -558,7 +558,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -571,7 +571,7 @@
                               ]
                             },
                               "/PUT",
-                            "/messages/*"
+                            "/messaging/*"
                           ]
                         ]
                       },
@@ -589,7 +589,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -602,7 +602,7 @@
                               ]
                             },
                               "/PUT",
-                            "/messages"
+                            "/messaging"
                           ]
                         ]
                       }
@@ -624,7 +624,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -637,7 +637,7 @@
                               ]
                             },
                               "/PATCH",
-                            "/messages/*"
+                            "/messaging/*"
                           ]
                         ]
                       },
@@ -655,7 +655,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -668,7 +668,7 @@
                               ]
                             },
                               "/PATCH",
-                            "/messages"
+                            "/messaging"
                           ]
                         ]
                       }
@@ -690,7 +690,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -703,7 +703,7 @@
                               ]
                             },
                               "/DELETE",
-                            "/messages/*"
+                            "/messaging/*"
                           ]
                         ]
                       },
@@ -721,7 +721,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -734,7 +734,7 @@
                               ]
                             },
                               "/DELETE",
-                            "/messages"
+                            "/messaging"
                           ]
                         ]
                       }
@@ -756,13 +756,13 @@
         
         
         
-        "PolicyAPIGWsuteuoapiunauth": {
+        "PolicyAPIGWsuteuounauth": {
             "DependsOn": [
-              "suteuoapi"
+              "suteuo"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGWsuteuoapiunauth",
+              "PolicyName": "PolicyAPIGWsuteuounauth",
               "Roles": [
                  {"Ref": "unauthRoleName"}
               ],
@@ -792,7 +792,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -823,7 +823,7 @@
                             },
                             ":",
                             {
-                              "Ref": "suteuoapi"
+                              "Ref": "suteuo"
                             },
                             "/",
                             {
@@ -856,16 +856,16 @@
             }
           },
         
-      "suteuoapi": {
+      "suteuo": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
           "Description": "",
-          "Name": "suteuoapi",
+          "Name": "suteuo",
           "Body": {
             "swagger": "2.0",
             "info": {
               "version": "2018-05-24T17:52:00Z",
-              "title": "suteuoapi"
+              "title": "suteuo"
             },
             "host": {
                 "Fn::Join": [
@@ -993,7 +993,7 @@
                             
                             {
                                 
-                                "Ref": "functionuserfuncArn"
+                                "Ref": "functionsuteuo-usersArn"
                             },
                             
                             "/invocations"
@@ -1098,7 +1098,7 @@
                           
                           {
                             
-                            "Ref": "functionuserfuncArn"
+                            "Ref": "functionsuteuo-usersArn"
                           },
                           
                           "/invocations"
@@ -1112,7 +1112,7 @@
                 }
               },   
               
-              "/messages": {
+              "/messaging": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -1204,7 +1204,7 @@
                             
                             {
                                 
-                                "Ref": "functionmessagefuncArn"
+                                "Ref": "functionsuteuo-messagingArn"
                             },
                             
                             "/invocations"
@@ -1217,7 +1217,7 @@
                   }
                 }
               },
-              "/messages/{proxy+}": {
+              "/messaging/{proxy+}": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -1309,7 +1309,7 @@
                           
                           {
                             
-                            "Ref": "functionmessagefuncArn"
+                            "Ref": "functionsuteuo-messagingArn"
                           },
                           
                           "/invocations"
@@ -1366,12 +1366,12 @@
                   
         
         
-        "functionuserfuncPermissionsuteuoapi": {
+        "functionsuteuousersPermissionsuteuo": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
                     {
-                        "Ref":  "functionuserfuncName"
+                        "Ref":  "functionsuteuo-usersName"
                     },
                     
                     "Action": "lambda:InvokeFunction",
@@ -1390,7 +1390,7 @@
                             },
                             ":",
                             {
-                                "Ref": "suteuoapi"
+                                "Ref": "suteuo"
                             },
                             "/*/*/*"
                         ]
@@ -1400,12 +1400,12 @@
         },
         
         
-        "functionmessagefuncPermissionsuteuoapi": {
+        "functionsuteuomessagingPermissionsuteuo": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
                     {
-                        "Ref":  "functionmessagefuncName"
+                        "Ref":  "functionsuteuo-messagingName"
                     },
                     
                     "Action": "lambda:InvokeFunction",
@@ -1424,7 +1424,7 @@
                             },
                             ":",
                             {
-                                "Ref": "suteuoapi"
+                                "Ref": "suteuo"
                             },
                             "/*/*/*"
                         ]
@@ -1435,7 +1435,7 @@
         
         
         
-      "DeploymentAPIGWsuteuoapi": {
+      "DeploymentAPIGWsuteuo": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
@@ -1449,7 +1449,7 @@
             ]
           },
           "RestApiId": {
-            "Ref": "suteuoapi"
+            "Ref": "suteuo"
           }
         }
       }
@@ -1457,15 +1457,15 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "suteuoapi"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "suteuo"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
         },
         "ApiName": {
           "Description": "API Friendly name",
-          "Value": "suteuoapi"
+          "Value": "suteuo"
         },
         "ApiId": {
           "Description": "API ID (prefix of API URL)",
-          "Value": {"Ref": "suteuoapi"}
+          "Value": {"Ref": "suteuo"}
         }
     }
   }
