@@ -40,7 +40,7 @@
                 "AttributeDefinitions": [
                   
                   {
-                      "AttributeName": "ID",
+                      "AttributeName": "PK",
                       "AttributeType": "S"
                   }  , 
                   
@@ -53,7 +53,7 @@
                 "KeySchema": [
                   
                   {
-                    "AttributeName": "ID",
+                    "AttributeName": "PK",
                     "KeyType": "HASH"
                   }  , 
                   

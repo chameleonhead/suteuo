@@ -16,7 +16,7 @@ function id() {
 
 app.get("/messages", function (req, res) {
   var params = {
-    TableName: process.env.STORAGE_SUTEUO_NAME,
+    TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
   };
   docClient.scan(params, function (err, data) {
     if (err) res.json({ err });
@@ -26,7 +26,7 @@ app.get("/messages", function (req, res) {
 
 app.post("/messages", function (req, res) {
   var params = {
-    TableName: process.env.STORAGE_SUTEUO_NAME,
+    TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
     Item: {
       ID: id(),
       SK: "MESSAGE",

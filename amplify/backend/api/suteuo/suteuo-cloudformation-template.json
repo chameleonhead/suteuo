@@ -14,29 +14,29 @@
         },
     
     
-          "functionsuteuo-usersName": {
+          "functionsuteuousersName": {
             "Type": "String",
-            "Default": "functionsuteuo-usersName"
+            "Default": "functionsuteuousersName"
           },
         
           
-          "functionsuteuo-usersArn": {
+          "functionsuteuousersArn": {
             "Type": "String",
-            "Default": "functionsuteuo-usersArn"
+            "Default": "functionsuteuousersArn"
           },
         
           
           
     
-          "functionsuteuo-messagingName": {
+          "functionsuteuomessagingName": {
             "Type": "String",
-            "Default": "functionsuteuo-messagingName"
+            "Default": "functionsuteuomessagingName"
           },
         
           
-          "functionsuteuo-messagingArn": {
+          "functionsuteuomessagingArn": {
             "Type": "String",
-            "Default": "functionsuteuo-messagingArn"
+            "Default": "functionsuteuomessagingArn"
           }
         
           
@@ -993,7 +993,7 @@
                             
                             {
                                 
-                                "Ref": "functionsuteuo-usersArn"
+                                "Ref": "functionsuteuousersArn"
                             },
                             
                             "/invocations"
@@ -1098,7 +1098,7 @@
                           
                           {
                             
-                            "Ref": "functionsuteuo-usersArn"
+                            "Ref": "functionsuteuousersArn"
                           },
                           
                           "/invocations"
@@ -1204,7 +1204,7 @@
                             
                             {
                                 
-                                "Ref": "functionsuteuo-messagingArn"
+                                "Ref": "functionsuteuomessagingArn"
                             },
                             
                             "/invocations"
@@ -1309,7 +1309,7 @@
                           
                           {
                             
-                            "Ref": "functionsuteuo-messagingArn"
+                            "Ref": "functionsuteuomessagingArn"
                           },
                           
                           "/invocations"
@@ -1371,7 +1371,7 @@
             "Properties": {
                 "FunctionName": 
                     {
-                        "Ref":  "functionsuteuo-usersName"
+                        "Ref":  "functionsuteuousersName"
                     },
                     
                     "Action": "lambda:InvokeFunction",
@@ -1405,7 +1405,7 @@
             "Properties": {
                 "FunctionName": 
                     {
-                        "Ref":  "functionsuteuo-messagingName"
+                        "Ref":  "functionsuteuomessagingName"
                     },
                     
                     "Action": "lambda:InvokeFunction",

@@ -1,0 +1,7 @@
+{
+    "tableName": "suteuomessaging",
+    "partitionKeyName": "PK",
+    "partitionKeyType": "S",
+    "sortKeyName": "SK",
+    "sortKeyType": "S"
+}

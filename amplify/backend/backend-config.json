@@ -14,13 +14,17 @@
     }
   },
   "storage": {
-    "suteuo": {
+    "suteuomessaging": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
+    },
+    "suteuousers": {
       "service": "DynamoDB",
       "providerPlugin": "awscloudformation"
     }
   },
   "function": {
-    "suteuo-users": {
+    "suteuousers": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
@@ -31,17 +35,25 @@
           "attributes": [
             "UserPoolId"
           ]
+        },
+        {
+          "category": "storage",
+          "resourceName": "suteuousers",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
         }
       ]
     },
-    "suteuo-messaging": {
+    "suteuomessaging": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
       "dependsOn": [
         {
           "category": "storage",
-          "resourceName": "suteuo",
+          "resourceName": "suteuomessaging",
           "attributes": [
             "Name",
             "Arn"
@@ -57,7 +69,7 @@
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "suteuo-users",
+          "resourceName": "suteuousers",
           "attributes": [
             "Name",
             "Arn"
@@ -65,7 +77,7 @@
         },
         {
           "category": "function",
-          "resourceName": "suteuo-messaging",
+          "resourceName": "suteuomessaging",
           "attributes": [
             "Name",
             "Arn"

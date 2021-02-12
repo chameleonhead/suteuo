@@ -1,6 +1,6 @@
 {
-    "tableName": "messaging",
-    "partitionKeyName": "ID",
+    "tableName": "suteuousers",
+    "partitionKeyName": "PK",
     "partitionKeyType": "S",
     "sortKeyName": "SK",
     "sortKeyType": "S"

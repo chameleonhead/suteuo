@@ -2,7 +2,7 @@
     "paths": [
         {
             "name": "/users",
-            "lambdaFunction": "suteuo-users",
+            "lambdaFunction": "suteuousers",
             "privacy": {
                 "protected": true,
                 "auth": [
@@ -20,7 +20,7 @@
         },
         {
             "name": "/messaging",
-            "lambdaFunction": "suteuo-messaging",
+            "lambdaFunction": "suteuomessaging",
             "privacy": {
                 "private": true,
                 "auth": [
@@ -38,10 +38,10 @@
     "apiName": "suteuo",
     "functionArns": [
         {
-            "lambdaFunction": "suteuo-users"
+            "lambdaFunction": "suteuousers"
         },
         {
-            "lambdaFunction": "suteuo-messaging"
+            "lambdaFunction": "suteuomessaging"
         }
     ],
     "privacy": {
@@ -53,7 +53,7 @@
     "dependsOn": [
         {
             "category": "function",
-            "resourceName": "suteuo-users",
+            "resourceName": "suteuousers",
             "attributes": [
                 "Name",
                 "Arn"
@@ -61,7 +61,7 @@
         },
         {
             "category": "function",
-            "resourceName": "suteuo-messaging",
+            "resourceName": "suteuomessaging",
             "attributes": [
                 "Name",
                 "Arn"
