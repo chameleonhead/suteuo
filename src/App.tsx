@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { actionCreators, selectors } from "./redux";
 import { useDispatch, useSelector } from "react-redux";
 
-import Signup from "./components/Signup";
-import Login from "./components/Login";
-import Messaging from "./components/Messaging";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Messaging from "./pages/Messaging";
 import "./App.css";
 
 function App() {

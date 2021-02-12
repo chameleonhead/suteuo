@@ -1,8 +1,8 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
-import { MessageForm } from "./MessageForm";
-import { MessageList } from "./MessageList";
+import { MessageForm } from "../components/MessageForm";
+import { MessageList } from "../components/MessageList";
 
 export type MessagingProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;

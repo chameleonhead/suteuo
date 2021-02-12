@@ -1,8 +1,8 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
-import { ConfirmCodeForm } from "./ConfirmCodeForm";
-import { SignupForm } from "./SignupForm";
+import { ConfirmCodeForm } from "../components/ConfirmCodeForm";
+import { SignupForm } from "../components/SignupForm";
 
 export type SignupProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;
