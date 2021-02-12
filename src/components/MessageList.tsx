@@ -22,3 +22,5 @@ export const MessageList = (props: MessageListProps) => {
     </div>
   );
 };
+
+export default MessageList;

@@ -1,8 +1,9 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
-import { MessageForm } from "../components/MessageForm";
-import { MessageList } from "../components/MessageList";
+import MessageForm from "../components/MessageForm";
+import MessageList from "../components/MessageList";
+import Layout from "../components/Layout";
 
 export type MessagingProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;
@@ -14,10 +15,10 @@ export const Messaging = (props: MessagingProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div>
+    <Layout>
       <MessageList items={messages} />
       <MessageForm onSubmit={onCreateMessage} />
-    </div>
+    </Layout>
   );
 };
 

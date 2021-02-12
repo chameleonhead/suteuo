@@ -9,6 +9,7 @@ export interface UserCredential {
 
 export interface UserInfo {
   username: string;
+  displayName: string;
 }
 
 export interface AuthState {
@@ -147,7 +148,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
           console.log(value);
 
           dispatch(
-            actionCreators.loginSuccess({ username: value.attributes["email"] })
+            actionCreators.loginSuccess({ username: value.attributes["email"], displayName: 'display name' })
           );
         });
       })
@@ -214,7 +215,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
         // LOGIN SUCCESS
         console.log("LOGIN SUCCESS");
         console.log(value);
-        dispatch(actionCreators.loginSuccess({ username }));
+        dispatch(actionCreators.loginSuccess({ username, displayName: 'display name' }));
       })
       .catch((err) => {
         // LOGIN FAIL

@@ -54,3 +54,5 @@ export const ConfirmCodeForm = (props: ConfirmCodeFormProps) => {
     </form>
   );
 };
+
+export default ConfirmCodeForm;

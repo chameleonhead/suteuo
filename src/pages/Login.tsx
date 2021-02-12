@@ -1,27 +1,30 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
-import { ConfirmCodeForm } from "../components/ConfirmCodeForm";
-import { LoginForm } from "../components/LoginForm";
+import ConfirmCodeForm from "../components/ConfirmCodeForm";
+import LoginForm from "../components/LoginForm";
+import Layout from "../components/Layout";
 
 export type LoginProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;
 
 export const Login = (props: LoginProps) => {
   const { authState, onConfirmCode, onLogin } = props;
-  console.log(authState);
-  if (authState.state === "WAITING_CONFIRM_CODE") {
-    return (
-      <ConfirmCodeForm
-        credential={authState.credential!}
-        onSubmit={onConfirmCode}
-      />
-    );
-  }
+
   return (
-    <div>
-      <LoginForm onSubmit={onLogin} />
-    </div>
+    <Layout>
+      <h1>ログイン</h1>
+      {authState.state === "WAITING_CONFIRM_CODE" ? (
+        <ConfirmCodeForm
+          credential={authState.credential!}
+          onSubmit={onConfirmCode}
+        />
+      ) : (
+        <LoginForm onSubmit={onLogin} />
+      )}
+      <Link to="/register">サインアップ</Link>
+    </Layout>
   );
 };
 

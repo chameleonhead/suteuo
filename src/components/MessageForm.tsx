@@ -43,3 +43,5 @@ export const MessageForm = (props: MessageFormProps) => {
     </form>
   );
 };
+
+export default MessageForm;
