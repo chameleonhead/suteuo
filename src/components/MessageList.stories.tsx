@@ -11,5 +11,5 @@ const Template: Story<MessageListProps> = (args) => <MessageList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  items: [{ id: "1", body: "message" }],
+  items: [{ PK: "PK", SK: "SK", Body: "message" }],
 };

@@ -21,8 +21,8 @@ export const NavMenu = (props: NavMenuProps) => {
             </li>
           </ul>
           <div>
-            <Link to={"/users/" + authState.user?.username}>
-              {authState.user?.displayName}
+            <Link to={"/users/" + authState.userInfo?.id}>
+              {authState.userInfo?.displayName}
             </Link>
             <button type="button" onClick={onLogout}>
               ログアウト

@@ -3,10 +3,11 @@ import { Middleware, Reducer } from "redux";
 import { actionCreators, ApplicationState, selectors } from ".";
 
 export interface Message {
-  id: string;
-  body: string;
-  sender: string;
-  createdAt: string;
+  PK: string;
+  SK: string;
+  Body: string;
+  Sender: string;
+  CreatedAt: string;
 }
 
 export interface MessagingState {
@@ -61,11 +62,11 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
   const action = incomingAction as KnownAction;
   if (action.type === "CREATE_MESSAGE") {
     const { body } = action.payload;
-    const { user } = selectors.getAuthState(getState());
-    API.post("suteuo", "/messages", {
+    const { userInfo } = selectors.getAuthState(getState());
+    API.post("suteuo", "/messaging", {
       body: {
         body,
-        sender: user?.username,
+        sender: userInfo?.id,
         createdAt: new Date().toISOString(),
       },
     }).then((data) => {
@@ -76,7 +77,7 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
     });
   }
   if (action.type === "REQUEST_MESSAGE") {
-    API.get("suteuo", "/messages", {}).then((data) => {
+    API.get("suteuo", "/messaging", {}).then((data) => {
       console.log("REQUEST_MESSAGE SUCCESS");
       console.log(data);
 

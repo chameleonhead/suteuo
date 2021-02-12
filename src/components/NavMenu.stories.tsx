@@ -15,7 +15,7 @@ export const Initializing = Template.bind({});
 Initializing.args = {
   authState: {
     state: "INITIALIZING",
-    user: undefined,
+    userInfo: undefined,
     credential: undefined,
   },
 };
@@ -42,7 +42,8 @@ export const LoggedIn = Template.bind({});
 LoggedIn.args = {
   authState: {
     state: "LOGGED_IN",
-    user: {
+    userInfo: {
+      id: "id",
       username: "username",
       displayName: "Display Name",
     } as any,

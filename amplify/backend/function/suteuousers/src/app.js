@@ -28,9 +28,9 @@ app.get("/users/:userId", function (req, res) {
         const id = findAttr("sub");
         res.json({
           id,
-          username: findAttr("username") || id,
-          displayName: findAttr("displayName") || id,
-          avatarUrl: findAttr("avatar_url"),
+          username: findAttr("preferred_username") || id,
+          displayName: findAttr("preferred_username") || id,
+          avatarUrl: findAttr("picture"),
           area: findAttr("area"),
           rating: findAttr("rating"),
         });

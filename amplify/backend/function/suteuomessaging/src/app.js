@@ -14,7 +14,7 @@ function id() {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
-app.get("/messages", function (req, res) {
+app.get("/messaging", function (req, res) {
   var params = {
     TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
   };
@@ -24,11 +24,11 @@ app.get("/messages", function (req, res) {
   });
 });
 
-app.post("/messages", function (req, res) {
+app.post("/messaging", function (req, res) {
   var params = {
     TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
     Item: {
-      ID: id(),
+      PK: id(),
       SK: "MESSAGE",
       Body: req.body.body,
       Sender: req.body.sender,

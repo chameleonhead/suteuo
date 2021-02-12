@@ -1,4 +1,5 @@
 import * as React from "react";
+import { RouteComponentProps } from "react-router";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
 import Layout from "../components/Layout";
@@ -8,9 +9,9 @@ export type UserDetailsProps = ContainerProps &
   typeof mapDispatchToProps;
 
 export const UserDetails = (props: UserDetailsProps) => {
-  const { userId, details, onInit } = props;
+  const { match, details, onInit } = props;
   React.useEffect(() => {
-    onInit(userId);
+    onInit(match.params.userId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (!details) {
@@ -40,15 +41,13 @@ export const UserDetails = (props: UserDetailsProps) => {
   );
 };
 
-type ContainerProps = {
-  userId: string;
-};
+type ContainerProps = RouteComponentProps<{ userId: string }>;
 
 const mapStateToProps = (
   state: ApplicationState,
-  ownProps: ContainerProps,
+  ownProps: ContainerProps
 ) => ({
-  details: selectors.getUserById(state, ownProps.userId),
+  details: selectors.getUserById(state, ownProps.match.params.userId),
 });
 
 const mapDispatchToProps = {

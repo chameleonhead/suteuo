@@ -15,5 +15,9 @@ const Template: Story<Parameters<typeof UserDetails>[0]> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  userId: '22dab8d7-1476-48d7-91be-5218edbd5d19',
+  match: {
+    params: {
+      userId: "365fb1cb-7fb5-45ea-b51c-06e7025e6b0d",
+    },
+  } as any,
 };

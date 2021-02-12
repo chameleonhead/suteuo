@@ -8,6 +8,7 @@ export interface UserCredential {
 }
 
 export interface UserInfo {
+  id: string;
   username: string;
   displayName: string;
 }
@@ -19,7 +20,7 @@ export interface AuthState {
     | "WAITING_CONFIRM_CODE"
     | "LOGGED_IN";
   credential: UserCredential | undefined;
-  user: UserInfo | undefined;
+  userInfo: UserInfo | undefined;
 }
 
 export const authSelectors = {
@@ -150,8 +151,9 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
 
           dispatch(
             actionCreators.loginSuccess({
-              username: value.attributes["email"],
-              displayName: "display name",
+              id: value.attributes['sub'],
+              username: value.attributes["preferred_username"],
+              displayName: value.attributes["preferred_username"],
             })
           );
         });
@@ -176,10 +178,16 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
         console.log(value);
         if (value.userConfirmed) {
           dispatch(
-            actionCreators.login({ username, password, rememberMe: false })
+            actionCreators.login({
+              username: email,
+              password,
+              rememberMe: false,
+            })
           );
         } else {
-          dispatch(actionCreators.requireConfirmation({ username, password }));
+          dispatch(
+            actionCreators.requireConfirmation({ username: email, password })
+          );
         }
       })
       .catch((err) => {
@@ -224,7 +232,11 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
         console.log("LOGIN SUCCESS");
         console.log(value);
         dispatch(
-          actionCreators.loginSuccess({ username, displayName: "display name" })
+          actionCreators.loginSuccess({
+            id: value.attributes['sub'],
+            username: value.attributes["preferred_username"],
+            displayName: value.attributes["preferred_username"],
+          })
         );
       })
       .catch((err) => {
@@ -261,7 +273,7 @@ export const authReducer: Reducer<AuthState> = (state, incomingAction) => {
     state = {
       state: "INITIALIZING",
       credential: undefined,
-      user: undefined,
+      userInfo: undefined,
     };
   }
 
