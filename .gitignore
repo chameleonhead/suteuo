@@ -117,6 +117,7 @@ dist
 
 amplify/team-provider-info.json
 src/react-app-env.d.ts
+dynamodb-local
 
 #amplify
 amplify/\#current-cloud-backend

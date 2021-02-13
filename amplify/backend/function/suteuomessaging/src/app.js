@@ -8,6 +8,14 @@ app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
 
 const AWS = require("aws-sdk");
+if (process.env.ENDPOINT_OVERRIDE) {
+  AWS.config.update({
+    region: "us-west-2",
+    endpoint: process.env.ENDPOINT_OVERRIDE,
+    accessKeyId: "fakeAccessKeyId",
+    secretAccessKey: "fakeSecretAccessKey",
+  });
+}
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 function id() {
