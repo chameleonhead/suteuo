@@ -33,3 +33,14 @@ services:
       - 3001:8080
     environment:
       - API_URL=http://localhost:3000/api-docs.json
+  aws-cli:
+    image: amazon/aws-cli:2.0.56
+    entrypoint: /dynamodb-init.sh
+    environment:
+      - AWS_ACCESS_KEY_ID=fakeAccessKeyId
+      - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
+      - DYNAMODB_REGION=us-west-2
+    volumes:
+      - ./dynamodb-init.sh:/dynamodb-init.sh
+    depends_on:
+      - dynamodb

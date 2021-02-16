@@ -9,6 +9,7 @@ app.use(awsServerlessExpressMiddleware.eventContext());
 
 const AWS = require("aws-sdk");
 if (process.env.ENDPOINT_OVERRIDE) {
+  // 開発時のみの設定
   AWS.config.update({
     region: "us-west-2",
     endpoint: process.env.ENDPOINT_OVERRIDE,
@@ -51,16 +52,56 @@ function id() {
  *       - application/json
  *     responses:
  *       200:
- *         description: Success
+ *         description: 正常終了
+ *         headers:
+ *           Link:
+ *             example: <https://api.github.com/resource?page=2>; rel="next", <https://api.github.com/resource?page=5>; rel="last"
+ *             schema:
+ *               type: string
+ *         schema:
+ *           type: object
+ *           properties:
+ *             messages:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   messageId:
+ *                     type: string
+ *                   body:
+ *                     type: string
+ *                   sender:
+ *                     type: string
+ *                   createdAt:
+ *                     type: string
+ *               description: メッセージ一覧
+ *             total_count:
+ *               type: number
+ *               description: 全体件数
  */
-app.get("/messaging", function (req, res) {
+app.get("/messaging", async function (req, res) {
   var params = {
     TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
   };
-  docClient.scan(params, function (err, data) {
-    if (err) res.json({ err });
-    else res.json(data);
-  });
+  try {
+    const result = await docClient.scan(params).promise();
+    res.json({
+      messages: result.Items.map((item) => ({
+        messageId: item.PK,
+        body: item.Body,
+        sender: item.Sender,
+        createdAt: item.CreatedAt,
+      })),
+    });
+  } catch (error) {
+    res.status(500);
+    res.json({
+      statusCode: 500,
+      code: "UnknownException",
+      message: "Error occured while accessing database.",
+      error: error,
+    });
+  }
 });
 
 /**
@@ -73,30 +114,74 @@ app.get("/messaging", function (req, res) {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: body
- *         description: Message body.
- *         in: formData
+ *       - in: body
+ *         name: message
+ *         description: メッセージ内容
  *         required: true
- *         type: string
+ *         schema:
+ *           type: object
+ *           required:
+ *             - body
+ *           properties:
+ *             body:
+ *               type: string
+ *               description: メッセージ本文
  *     responses:
  *       200:
- *         description: Success
+ *         description: 正常終了
+ *         schema:
+ *           type: object
+ *           properties:
+ *             messageId:
+ *               type: string
+ *               description: 生成されたキー
+ *       400:
+ *         description: BadRequest
+ *         schema:
+ *           type: object
+ *           properties:
+ *             code:
+ *               type: string
+ *               description: エラーコード
+ *             message:
+ *               type: string
+ *               description: エラーメッセージ
  */
-app.post("/messaging", function (req, res) {
-  var params = {
+app.post("/messaging", async function (req, res) {
+  if (!req.body.body) {
+    res.status(400);
+    res.json({
+      statusCode: 400,
+      code: "ValidationException",
+      message: "message body is empty.",
+      time: new Date().toISOString(),
+      retryable: false,
+    });
+    return;
+  }
+  const key = id();
+  const params = {
     TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
     Item: {
-      PK: id(),
+      PK: key,
       SK: "MESSAGE",
       Body: req.body.body,
       Sender: req.body.sender,
-      CreatedAt: req.body.createdAt,
+      CreatedAt: new Date().toISOString(),
     },
   };
-  docClient.put(params, function (err, data) {
-    if (err) res.json({ err });
-    else res.json({ success: "Message created successfully!" });
-  });
+  try {
+    await docClient.put(params).promise();
+    res.json({ messageId: key });
+  } catch (error) {
+    res.status(500);
+    res.json({
+      statusCode: 500,
+      code: "UnknownException",
+      message: "Error occured while accessing database.",
+      error: error,
+    });
+  }
 });
 
 app.listen(3000, function () {

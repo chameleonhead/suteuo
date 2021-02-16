@@ -1,9 +1,10 @@
 import * as React from "react";
 
 interface MessageItem {
-  PK: string;
-  SK: string;
-  Body: string;
+  messageId: string;
+  body: string;
+  sender: string;
+  createdAt: string;
 }
 
 export type MessageListProps = {
@@ -17,7 +18,7 @@ export const MessageList = (props: MessageListProps) => {
       <h1>メッセージ一覧</h1>
       <div>
         {items.map((e) => (
-          <div key={e.PK + "#" + e.SK}>{e.Body}</div>
+          <div key={e.messageId}>{e.body}</div>
         ))}
       </div>
     </div>

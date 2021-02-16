@@ -3,11 +3,10 @@ import { Middleware, Reducer } from "redux";
 import { actionCreators, ApplicationState, selectors } from ".";
 
 export interface Message {
-  PK: string;
-  SK: string;
-  Body: string;
-  Sender: string;
-  CreatedAt: string;
+  messageId: string;
+  body: string;
+  sender: string;
+  createdAt: string;
 }
 
 export interface MessagingState {
@@ -81,7 +80,7 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
       console.log("REQUEST_MESSAGE SUCCESS");
       console.log(data);
 
-      dispatch(actionCreators.requestMessageSuccess(data.Items));
+      dispatch(actionCreators.requestMessageSuccess(data.messages));
     });
   }
 };
