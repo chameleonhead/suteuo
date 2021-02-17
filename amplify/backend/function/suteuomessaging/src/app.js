@@ -6,17 +6,10 @@ var cors = require("cors");
 app.use(cors());
 app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
+var MessagingApi = require("./messagingApi");
+const api = new MessagingApi();
 
-const AWS = require("aws-sdk");
 if (process.env.ENDPOINT_OVERRIDE) {
-  // 開発時のみの設定
-  AWS.config.update({
-    region: "us-west-2",
-    endpoint: process.env.ENDPOINT_OVERRIDE,
-    accessKeyId: "fakeAccessKeyId",
-    secretAccessKey: "fakeSecretAccessKey",
-  });
-
   //swaggerの基本定義
   var options = {
     swaggerDefinition: {
@@ -37,10 +30,15 @@ if (process.env.ENDPOINT_OVERRIDE) {
     res.send(swaggerSpec);
   });
 }
-const docClient = new AWS.DynamoDB.DocumentClient();
 
-function id() {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+function handleError(res, error) {
+  res.status(500);
+  res.json({
+    statusCode: 500,
+    code: "UnknownException",
+    message: "Error occured while accessing database.",
+    error: error,
+  });
 }
 
 /**
@@ -80,27 +78,11 @@ function id() {
  *               description: 全体件数
  */
 app.get("/messaging", async function (req, res) {
-  var params = {
-    TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
-  };
   try {
-    const result = await docClient.scan(params).promise();
-    res.json({
-      messages: result.Items.map((item) => ({
-        messageId: item.PK,
-        body: item.Body,
-        sender: item.Sender,
-        createdAt: item.CreatedAt,
-      })),
-    });
+    const result = await api.getMessagesForRoom("room-1");
+    res.json(result);
   } catch (error) {
-    res.status(500);
-    res.json({
-      statusCode: 500,
-      code: "UnknownException",
-      message: "Error occured while accessing database.",
-      error: error,
-    });
+    handleError(res, error);
   }
 });
 
@@ -148,39 +130,23 @@ app.get("/messaging", async function (req, res) {
  *               description: エラーメッセージ
  */
 app.post("/messaging", async function (req, res) {
-  if (!req.body.body) {
-    res.status(400);
-    res.json({
-      statusCode: 400,
-      code: "ValidationException",
-      message: "message body is empty.",
-      time: new Date().toISOString(),
-      retryable: false,
-    });
-    return;
-  }
-  const key = id();
   const params = {
-    TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
-    Item: {
-      PK: key,
-      SK: "MESSAGE",
-      Body: req.body.body,
-      Sender: req.body.sender,
-      CreatedAt: new Date().toISOString(),
-    },
+    roomId: req.params.roomId,
+    body: req.body.body,
   };
   try {
-    await docClient.put(params).promise();
-    res.json({ messageId: key });
+    const room = await api.getRoom("room-1");
+    if (room.code === "NotFoundException") {
+      await api.createRoom({
+        id: "room-1",
+        creator: "user-1",
+        participants: ["user-1", "user-2"],
+      });
+    }
+    const result = await api.createMessage(params).promise();
+    res.json(result);
   } catch (error) {
-    res.status(500);
-    res.json({
-      statusCode: 500,
-      code: "UnknownException",
-      message: "Error occured while accessing database.",
-      error: error,
-    });
+    handleError(res, error);
   }
 });
 
