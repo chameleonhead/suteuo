@@ -11,6 +11,9 @@ services:
   dynamodb-admin:
     image: aaronshaf/dynamodb-admin
     environment:
+      - AWS_ACCESS_KEY_ID=fakeAccessKeyId
+      - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
+      - AWS_REGION=us-west-2
       - DYNAMO_ENDPOINT=dynamodb:8000
     ports:
       - 8001:8001

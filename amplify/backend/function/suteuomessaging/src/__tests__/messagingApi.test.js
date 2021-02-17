@@ -2,11 +2,21 @@ const Api = require("../messagingApi");
 
 class Context {
   messageRooms = {};
+  messages = {};
   getMessageRoom(messageRoomId) {
     return Promise.resolve(this.messageRooms[messageRoomId]);
   }
+  getMessageRoomMessages(messageRoomId) {
+    return Promise.resolve(this.messages[messageRoomId]);
+  }
   addMessageRoom(messageRoom) {
     this.messageRooms[messageRoom.id] = messageRoom;
+    return Promise.resolve();
+  }
+  addMessageRoomMessage(messageRoomId, message) {
+    this.messages[messageRoomId] = this.messages[messageRoomId]
+      ? this.messages[messageRoomId].concat([message])
+      : [message];
     return Promise.resolve();
   }
   updateMessageRoom(messageRoom) {
@@ -40,6 +50,36 @@ describe("messaging api", () => {
         participants: ["user-1", "user-2"],
         createdAt: expect.anything(),
       });
+    });
+  });
+  describe("createMessage", () => {
+    it("should create message in message room", async () => {
+      const api = new Api(new Context());
+      const roomResult = await api.createRoom({
+        participants: ["user-1", "user-2"],
+        creator: "user-1",
+      });
+      const roomId = roomResult.room.id;
+      const result = await api.createMessage({
+        roomId,
+        body: "message body",
+        sender: "user-1",
+      });
+      expect(result).toMatchObject({
+        success: true,
+        message: {
+          id: expect.anything(),
+        },
+      });
+      const messages = (await api.getMessagesForRoom(roomId)).messages;
+      expect(messages).toMatchObject([
+        {
+          id: expect.anything(),
+          body: "message body",
+          sender: "user-1",
+          createdAt: expect.anything(),
+        },
+      ]);
     });
   });
   describe("updateRoom", () => {

@@ -53,6 +53,7 @@ MessagingApi.prototype.getMessagesForRoom = async function (messageRoomId) {
   if (messages) {
     return {
       success: true,
+      totalCount: messages.length,
       messages,
     };
   }
@@ -74,7 +75,7 @@ MessagingApi.prototype.getMessagesForRoom = async function (messageRoomId) {
  * @param {CreateRoomOptions} options
  */
 MessagingApi.prototype.createRoom = async function (options) {
-  const roomId = options.id || id();
+  const roomId = options.roomId || id();
   await this.context.addMessageRoom({
     id: roomId,
     participants: options.participants,
@@ -85,6 +86,46 @@ MessagingApi.prototype.createRoom = async function (options) {
     success: true,
     room: {
       id: roomId,
+    },
+  };
+};
+
+/**
+ * @typedef CreateMessageOptions
+ * @property {string} roomId
+ * @property {string} body
+ * @property {string} sender
+ */
+/**
+ * @param {CreateRoomOptions} options
+ */
+MessagingApi.prototype.createMessage = async function (options) {
+  if (!options.roomId) {
+    return {
+      statusCode: 400,
+      code: "ValidationException",
+      message: "Room id is not specidied.",
+    };
+  }
+  const room = await this.context.getMessageRoom(options.roomId);
+  if (!room) {
+    return {
+      statusCode: 404,
+      code: "NotFoundException",
+      message: "Message room not found.",
+    };
+  }
+  const messageId = id();
+  await this.context.addMessageRoomMessage(options.roomId, {
+    id: messageId,
+    body: options.body,
+    sender: options.sender,
+    createdAt: new Date().toISOString(),
+  });
+  return {
+    success: true,
+    message: {
+      id: messageId,
     },
   };
 };

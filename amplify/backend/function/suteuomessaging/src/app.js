@@ -73,7 +73,7 @@ function handleError(res, error) {
  *                   createdAt:
  *                     type: string
  *               description: メッセージ一覧
- *             total_count:
+ *             totalCount:
  *               type: number
  *               description: 全体件数
  */
@@ -130,20 +130,20 @@ app.get("/messaging", async function (req, res) {
  *               description: エラーメッセージ
  */
 app.post("/messaging", async function (req, res) {
-  const params = {
-    roomId: req.params.roomId,
-    body: req.body.body,
-  };
   try {
     const room = await api.getRoom("room-1");
     if (room.code === "NotFoundException") {
       await api.createRoom({
-        id: "room-1",
+        roomId: "room-1",
         creator: "user-1",
         participants: ["user-1", "user-2"],
       });
     }
-    const result = await api.createMessage(params).promise();
+    const params = {
+      roomId: "room-1",
+      body: req.body.body,
+    };
+    const result = await api.createMessage(params);
     res.json(result);
   } catch (error) {
     handleError(res, error);
