@@ -13,7 +13,7 @@ export const Default = Template.bind({});
 Default.args = {
   items: [
     {
-      messageId: "messageId",
+      id: "messageId",
       body: "message",
       sender: "sender",
       createdAt: "2021-01-10T10:12:31.000Z",

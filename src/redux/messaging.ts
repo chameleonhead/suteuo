@@ -3,7 +3,7 @@ import { Middleware, Reducer } from "redux";
 import { actionCreators, ApplicationState, selectors } from ".";
 
 export interface Message {
-  messageId: string;
+  id: string;
   body: string;
   sender: string;
   createdAt: string;

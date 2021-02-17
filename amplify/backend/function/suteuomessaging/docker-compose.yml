@@ -23,16 +23,16 @@ services:
     volumes:
       - ./src:/app
     ports:
-      - 3000:3000
+      - 4000:3000
     environment:
       - STORAGE_SUTEUOMESSAGING_NAME=suteuomessaging
       - ENDPOINT_OVERRIDE=http://dynamodb:8000
   swagger-ui:
     image: swaggerapi/swagger-ui
     ports:
-      - 3001:8080
+      - 4001:8080
     environment:
-      - API_URL=http://localhost:3000/api-docs.json
+      - API_URL=http://localhost:4000/api-docs.json
   aws-cli:
     image: amazon/aws-cli:2.0.56
     entrypoint: /dynamodb-init.sh
