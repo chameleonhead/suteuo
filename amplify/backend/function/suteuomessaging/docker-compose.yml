@@ -3,9 +3,7 @@ version: "3.5"
 services:
   dynamodb:
     image: amazon/dynamodb-local
-    command: -jar DynamoDBLocal.jar -dbPath ./data -sharedDb
-    volumes:
-      - ./dynamodb-local:/home/dynamodblocal/data
+    command: -jar DynamoDBLocal.jar -inMemory -sharedDb
     ports:
       - 8000:8000
   dynamodb-admin:
@@ -28,8 +26,11 @@ services:
     ports:
       - 4000:3000
     environment:
-      - STORAGE_SUTEUOMESSAGING_NAME=suteuomessaging
       - ENDPOINT_OVERRIDE=http://dynamodb:8000
+      - STORAGE_SUTEUOMESSAGING_NAME=suteuomessaging
+      - AWS_ACCESS_KEY_ID=fakeAccessKeyId
+      - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
+      - AWS_REGION=us-west-2
   swagger-ui:
     image: swaggerapi/swagger-ui
     ports:
@@ -42,7 +43,7 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID=fakeAccessKeyId
       - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
-      - DYNAMODB_REGION=us-west-2
+      - AWS_REGION=us-west-2
     volumes:
       - ./dynamodb-init.sh:/dynamodb-init.sh
     depends_on:

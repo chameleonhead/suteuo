@@ -221,7 +221,7 @@ async function updateMessageRoom(messageRoom) {
 /**
  * @param {string} messageRoomId
  */
-async function deleteMessageRoom(messageRoomId) {
+async function removeMessageRoom(messageRoomId) {
   var params = {
     TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
     ExpressionAttributeValues: {
@@ -255,5 +255,5 @@ module.exports = {
   addMessageRoom,
   addMessageRoomMessage,
   updateMessageRoom,
-  deleteMessageRoom,
+  removeMessageRoom,
 };

@@ -10,8 +10,8 @@ describe("context", () => {
     });
   });
   afterEach(async () => {
-    await context.deleteMessageRoom("room-1");
-    await context.deleteMessageRoom("room-2");
+    await context.removeMessageRoom("room-1");
+    await context.removeMessageRoom("room-2");
   });
   it("addMessageRoom", async () => {
     await context.addMessageRoom({
@@ -33,8 +33,8 @@ describe("context", () => {
     const room = await context.getMessageRoom("room-1");
     expect(room.participants).toEqual(["user-1", "user-2", "user-3"]);
   });
-  it("deleteMessageRoom", async () => {
-    await context.deleteMessageRoom("room-1");
+  it("removeMessageRoom", async () => {
+    await context.removeMessageRoom("room-1");
     const room = await context.getMessageRoom("room-1");
     expect(room).toBeNull();
   });
