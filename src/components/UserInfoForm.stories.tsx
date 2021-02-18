@@ -10,6 +10,3 @@ export default {
 const Template: Story<UserInfoFormProps> = (args) => <UserInfoForm {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {
-  userId: "userid",
-};

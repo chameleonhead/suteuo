@@ -27,7 +27,6 @@ export const userSelectors = {
 };
 
 interface RegisterUserInfo {
-  userId: string;
   area: string;
   username: string;
   displayName: string;

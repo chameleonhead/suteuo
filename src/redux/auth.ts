@@ -172,6 +172,10 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
     Auth.signUp({
       username: email,
       password,
+      attributes: {
+        preferred_username: undefined,
+        picture: undefined,
+      },
     })
       .then((value) => {
         // SIGNUP SUCCESS
