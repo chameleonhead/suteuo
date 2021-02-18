@@ -26,10 +26,12 @@ services:
     ports:
       - 4000:3000
     environment:
-      - AUTH_SUTEUO_USERPOOLID=suteuouserpoolid
-      - AUTH_SUTEUO_USERPOOL_CLIENT_ID=suteuouserpoolclientid
-      - STORAGE_SUTEUOUSERS_NAME=suteuousers
       - ENDPOINT_OVERRIDE=http://dynamodb:8000
+      - STORAGE_SUTEUOUSERS_NAME=suteuousers
+      - AUTH_SUTEUO_USERPOOLID=authsuteuouserpoolid
+      - AWS_ACCESS_KEY_ID=fakeAccessKeyId
+      - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
+      - AWS_REGION=us-west-2
   swagger-ui:
     image: swaggerapi/swagger-ui
     ports:
