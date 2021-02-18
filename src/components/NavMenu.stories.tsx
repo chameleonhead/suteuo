@@ -20,6 +20,15 @@ Initializing.args = {
   },
 };
 
+export const NotLoggedIn = Template.bind({});
+NotLoggedIn.args = {
+  ...Initializing.args,
+  authState: {
+    ...Initializing.args.authState!,
+    state: "NOT_LOGGED_IN",
+  } as any,
+};
+
 export const WaitingConfirmCode = Template.bind({});
 WaitingConfirmCode.args = {
   ...Initializing.args,
@@ -29,13 +38,13 @@ WaitingConfirmCode.args = {
   },
 };
 
-export const NotLoggedIn = Template.bind({});
-NotLoggedIn.args = {
+export const WaitingUserRegistration = Template.bind({});
+WaitingUserRegistration.args = {
   ...Initializing.args,
   authState: {
     ...Initializing.args.authState!,
-    state: "NOT_LOGGED_IN",
-  } as any,
+    state: "WAITING_USER_REGISTRATION",
+  },
 };
 
 export const LoggedIn = Template.bind({});

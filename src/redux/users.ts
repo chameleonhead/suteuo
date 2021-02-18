@@ -102,6 +102,10 @@ export const userMiddleware: Middleware = ({ dispatch, getState }) => (
       dispatch(actionCreators.registerUserSuccess());
     });
   }
+  if (action.type === "REGISTER_USER_INFO_SUCCESS") {
+    const user = selectors.getUserInfo(getState())!;
+    dispatch(actionCreators.fetchLoginUserInfo(user.id));
+  }
 };
 
 export const userReducer: Reducer<UserState> = (state, incomingAction) => {

@@ -20,6 +20,7 @@ export interface AuthState {
     | "INITIALIZING"
     | "NOT_LOGGED_IN"
     | "WAITING_CONFIRM_CODE"
+    | "WAITING_USER_REGISTRATION"
     | "LOGGED_IN";
   credential: UserCredential | undefined;
   userInfo: LoginUserInfo | undefined;
@@ -159,11 +160,14 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
         return Auth.currentUserInfo().then((value) => {
           console.log("USER INFO");
           console.log(value);
-
-          dispatch(actionCreators.fetchLoginUserInfo(value.username));
+          if (value.username) {
+            dispatch(actionCreators.fetchLoginUserInfo(value.username));
+          } else {
+            dispatch(actionCreators.initAuthCompleted());
+          }
         });
       })
-      .finally(() => {
+      .catch(() => {
         dispatch(actionCreators.initAuthCompleted());
       });
   }
@@ -256,7 +260,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
         console.log(value);
         if (value.code) {
           Auth.currentUserInfo().then((data) => {
-            console.log("FETCH_LOGIN_USER_INFO SUCCESS");
+            console.log("currentUserInfo SUCCESS");
             console.log(data);
             dispatch(
               actionCreators.loginSuccess({
@@ -323,12 +327,21 @@ export const authReducer: Reducer<AuthState> = (state, incomingAction) => {
         },
       };
     case "LOGIN_SUCCESS":
-      return {
-        ...state,
-        state: "LOGGED_IN",
-        credential: undefined,
-        userInfo: action.payload,
-      };
+      if (action.payload.username) {
+        return {
+          ...state,
+          state: "LOGGED_IN",
+          credential: undefined,
+          userInfo: action.payload,
+        };
+      } else {
+        return {
+          ...state,
+          state: "WAITING_USER_REGISTRATION",
+          credential: undefined,
+          userInfo: action.payload,
+        };
+      }
     case "LOGOUT_SUCCESS":
       return {
         ...state,

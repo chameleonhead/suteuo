@@ -20,15 +20,25 @@ type RoutesProps = ReturnType<typeof mapStateToProps> & RouteComponentProps;
 
 const Routes = (props: RoutesProps) => {
   const { auth, location } = props;
-  if (auth.state === "LOGGED_IN" && !auth.userInfo?.username) {
-    if (location.pathname !== "/initialize") {
-      return <Redirect to="/initialize" />;
-    }
+  if (auth.state === "INITIALIZING") {
+    return <div>読み込み中</div>;
   }
-  if (auth.state === "LOGGED_IN" && auth.userInfo?.username) {
-    if (location.pathname === "/initialize") {
+  if (auth.state === "LOGGED_IN") {
+    if (location.pathname === "/register" || location.pathname === "/login") {
       return <Redirect to="/" />;
     }
+  }
+  if (
+    auth.state === "WAITING_USER_REGISTRATION" &&
+    location.pathname !== "/initialize"
+  ) {
+    return <Redirect to="/initialize" />;
+  }
+  if (
+    auth.state !== "WAITING_USER_REGISTRATION" &&
+    location.pathname === "/initialize"
+  ) {
+    return <Redirect to="/" />;
   }
   return (
     <Switch>

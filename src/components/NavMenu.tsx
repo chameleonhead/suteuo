@@ -30,6 +30,16 @@ export const NavMenu = (props: NavMenuProps) => {
           </div>
         </div>
       ) : null}
+      {authState.state === "WAITING_USER_REGISTRATION" ? (
+        <div>
+          <div>
+            {authState.userInfo?.displayName || "未設定"}
+            <button type="button" onClick={onLogout}>
+              ログアウト
+            </button>
+          </div>
+        </div>
+      ) : null}
       {authState.state === "NOT_LOGGED_IN" ||
       authState.state === "WAITING_CONFIRM_CODE" ? (
         <ul>
