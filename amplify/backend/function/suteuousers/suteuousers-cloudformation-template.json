@@ -21,12 +21,6 @@
     "storagesuteuousersArn": {
       "Type": "String",
       "Default": "storagesuteuousersArn"
-    },
-    "deploymentBucketName": {
-      "Type": "String"
-    },
-    "s3Key": {
-      "Type": "String"
     }
   },
   "Conditions": {
@@ -95,12 +89,8 @@
         "Layers": [],
         "Timeout": "25",
         "Code": {
-          "S3Bucket": {
-            "Ref": "deploymentBucketName"
-          },
-          "S3Key": {
-            "Ref": "s3Key"
-          }
+          "S3Bucket": "amplify-suteuo-dev-154743-deployment",
+          "S3Key": "amplify-builds/suteuousers-527a664a302f38424457-build.zip"
         }
       }
     },
