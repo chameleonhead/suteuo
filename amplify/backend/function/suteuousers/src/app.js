@@ -54,7 +54,7 @@ app.get("/users/:userId", async function (req, res) {
 app.post("/users", async function (req, res) {
   try {
     const result = await api.updateUser({
-      id: req.body.userId,
+      userId: req.body.userId,
       area: req.body.area,
       username: req.body.username,
       displayName: req.body.displayName,

@@ -17,6 +17,12 @@
     "storagesuteuomessagingArn": {
       "Type": "String",
       "Default": "storagesuteuomessagingArn"
+    },
+    "deploymentBucketName": {
+      "Type": "String"
+    },
+    "s3Key": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -82,8 +88,12 @@
         "Layers": [],
         "Timeout": "25",
         "Code": {
-          "S3Bucket": "amplify-suteuo-dev-154743-deployment",
-          "S3Key": "amplify-builds/suteuomessaging-54324b7a714156637549-build.zip"
+          "S3Bucket": {
+            "Ref": "deploymentBucketName"
+          },
+          "S3Key": {
+            "Ref": "s3Key"
+          }
         }
       }
     },

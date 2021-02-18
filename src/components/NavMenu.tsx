@@ -22,7 +22,7 @@ export const NavMenu = (props: NavMenuProps) => {
           </ul>
           <div>
             <Link to={"/users/" + authState.userInfo?.id}>
-              {authState.userInfo?.displayName}
+              {authState.userInfo?.displayName || "未設定"}
             </Link>
             <button type="button" onClick={onLogout}>
               ログアウト

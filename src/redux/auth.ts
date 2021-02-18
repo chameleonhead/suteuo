@@ -1,4 +1,4 @@
-import { Auth } from "aws-amplify";
+import { API, Auth } from "aws-amplify";
 import { Middleware, Reducer } from "redux";
 import { actionCreators, ApplicationState } from ".";
 
@@ -7,10 +7,12 @@ export interface UserCredential {
   password: string;
 }
 
-export interface UserInfo {
+export interface LoginUserInfo {
   id: string;
+  preferred_username: string;
   username: string;
   displayName: string;
+  avatarUrl: string;
 }
 
 export interface AuthState {
@@ -20,15 +22,15 @@ export interface AuthState {
     | "WAITING_CONFIRM_CODE"
     | "LOGGED_IN";
   credential: UserCredential | undefined;
-  userInfo: UserInfo | undefined;
+  userInfo: LoginUserInfo | undefined;
 }
 
 export const authSelectors = {
   getAuthState: (state: ApplicationState) => state.auth,
+  getUserInfo: (state: ApplicationState) => state.auth?.userInfo,
 };
 
 interface SignupInfo {
-  username: string;
   email: string;
   password: string;
 }
@@ -42,7 +44,6 @@ interface ConfirmCodeInfo {
 interface LoginInfo {
   username: string;
   password: string;
-  rememberMe: boolean;
 }
 
 interface InitAuthAction {
@@ -73,9 +74,14 @@ interface LoginAction {
   payload: LoginInfo;
 }
 
+interface FetchLoginUserInfoAction {
+  type: "FETCH_LOGIN_USER_INFO";
+  payload: string;
+}
+
 interface LoginSuccessAction {
   type: "LOGIN_SUCCESS";
-  payload: UserInfo;
+  payload: LoginUserInfo;
 }
 
 interface LogoutAction {
@@ -93,6 +99,7 @@ type KnownAction =
   | RequireConfirmationAction
   | ConfirmCodeAction
   | LoginAction
+  | FetchLoginUserInfoAction
   | LoginSuccessAction
   | LogoutAction
   | LogoutSuccessAction;
@@ -122,7 +129,11 @@ export const authActionCreators = {
     type: "LOGIN",
     payload: info,
   }),
-  loginSuccess: (info: UserInfo): LoginSuccessAction => ({
+  fetchLoginUserInfo: (userId: string): FetchLoginUserInfoAction => ({
+    type: "FETCH_LOGIN_USER_INFO",
+    payload: userId,
+  }),
+  loginSuccess: (info: LoginUserInfo): LoginSuccessAction => ({
     type: "LOGIN_SUCCESS",
     payload: info,
   }),
@@ -149,13 +160,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
           console.log("USER INFO");
           console.log(value);
 
-          dispatch(
-            actionCreators.loginSuccess({
-              id: value.attributes['sub'],
-              username: value.attributes["preferred_username"],
-              displayName: value.attributes["preferred_username"],
-            })
-          );
+          dispatch(actionCreators.fetchLoginUserInfo(value.username));
         });
       })
       .finally(() => {
@@ -163,14 +168,10 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
       });
   }
   if (action.type === "SIGNUP") {
-    const { username, email, password } = action.payload;
+    const { email, password } = action.payload;
     Auth.signUp({
       username: email,
       password,
-      attributes: {
-        preferred_username: username,
-        picture: undefined,
-      },
     })
       .then((value) => {
         // SIGNUP SUCCESS
@@ -181,7 +182,6 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
             actionCreators.login({
               username: email,
               password,
-              rememberMe: false,
             })
           );
         } else {
@@ -211,9 +211,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
         // SIGNUP SUCCESS
         console.log("SIGNUP SUCCESS");
         console.log(value);
-        dispatch(
-          actionCreators.login({ username, password, rememberMe: false })
-        );
+        dispatch(actionCreators.login({ username, password }));
       })
       .catch((err) => {
         // SIGNUP FAIL
@@ -231,13 +229,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
         // LOGIN SUCCESS
         console.log("LOGIN SUCCESS");
         console.log(value);
-        dispatch(
-          actionCreators.loginSuccess({
-            id: value.attributes['sub'],
-            username: value.attributes["preferred_username"],
-            displayName: value.attributes["preferred_username"],
-          })
-        );
+        dispatch(actionCreators.fetchLoginUserInfo(value.username));
       })
       .catch((err) => {
         // LOGIN FAIL
@@ -250,6 +242,36 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
             );
           }
         }
+      });
+  }
+  if (action.type === "FETCH_LOGIN_USER_INFO") {
+    API.get("suteuo", "/users/" + action.payload, {})
+      .then((value) => {
+        // LOGIN SUCCESS
+        console.log("FETCH_LOGIN_USER_INFO SUCCESS");
+        console.log(value);
+        if (value.code) {
+          Auth.currentUserInfo().then((data) => {
+            console.log("FETCH_LOGIN_USER_INFO SUCCESS");
+            console.log(data);
+            dispatch(
+              actionCreators.loginSuccess({
+                id: data.username,
+                username: "",
+                displayName: "",
+                avatarUrl: "",
+                preferred_username: "",
+              })
+            );
+          });
+        } else {
+          dispatch(actionCreators.loginSuccess(value.user));
+        }
+      })
+      .catch((err) => {
+        // LOGIN FAIL
+        console.error("FETCH_LOGIN_USER_INFO FAIL");
+        console.error(err);
       });
   }
   if (action.type === "LOGOUT") {

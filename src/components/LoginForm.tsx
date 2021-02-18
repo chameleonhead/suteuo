@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 interface LoginFormValue {
   username: string;
   password: string;
-  rememberMe: boolean;
 }
 
 export type LoginFormProps = {
@@ -17,7 +16,6 @@ export const LoginForm = (props: LoginFormProps) => {
     initialValues: {
       username: "",
       password: "",
-      rememberMe: false,
     },
     validate: (values) => {
       const errors = {} as any;
@@ -55,17 +53,6 @@ export const LoginForm = (props: LoginFormProps) => {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
-        </div>
-        <div>
-          <input
-            id="rememberMe"
-            type="checkbox"
-            name="rememberMe"
-            checked={formik.values.rememberMe}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-          <label htmlFor="rememberMe"> ログイン情報を保持する</label>
         </div>
         <div>
           <button type="submit">ログイン</button>

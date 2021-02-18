@@ -61,7 +61,7 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
   const action = incomingAction as KnownAction;
   if (action.type === "CREATE_MESSAGE") {
     const { body } = action.payload;
-    const { userInfo } = selectors.getAuthState(getState());
+    const userInfo = selectors.getUserInfo(getState());
     API.post("suteuo", "/messaging", {
       body: {
         body,
