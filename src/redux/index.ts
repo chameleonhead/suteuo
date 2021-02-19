@@ -1,5 +1,12 @@
 import { combineReducers, Reducer } from "redux";
 import {
+  apiActionCreators,
+  apiMiddleware,
+  apiReducer,
+  apiSelectors,
+  ApiState,
+} from "./api";
+import {
   authActionCreators,
   authMiddleware,
   authReducer,
@@ -7,58 +14,51 @@ import {
   AuthState,
 } from "./auth";
 import {
-  messagingActionCreators,
-  messagingMiddleware,
-  messagingReducer,
-  messagingSelectors,
-  MessagingState,
-} from "./messaging";
+  dataActionCreators,
+  dataMiddleware,
+  dataReducer,
+  dataSelectors,
+  DataState,
+} from "./data";
 import {
-  notificationActionCreators,
-  notificationMiddleware,
-  notificationReducer,
-  notificationSelectors,
-  NotificationState,
-} from "./notification";
-import {
-  userActionCreators,
-  userMiddleware,
-  userReducer,
-  userSelectors,
-  UserState,
-} from "./users";
+  uiActionCreators,
+  uiMiddleware,
+  uiReducer,
+  uiSelectors,
+  UiState,
+} from "./ui";
 
 export interface ApplicationState {
+  api: ApiState;
   auth: AuthState;
-  users: UserState;
-  messaging: MessagingState;
-  notification: NotificationState;
+  data: DataState;
+  ui: UiState;
 }
 
 export const selectors = {
+  ...apiSelectors,
   ...authSelectors,
-  ...userSelectors,
-  ...messagingSelectors,
-  ...notificationSelectors,
+  ...dataSelectors,
+  ...uiSelectors,
 };
 
 export const actionCreators = {
+  ...apiActionCreators,
   ...authActionCreators,
-  ...userActionCreators,
-  ...messagingActionCreators,
-  ...notificationActionCreators,
+  ...dataActionCreators,
+  ...uiActionCreators,
 };
 
 export const middlewares = [
+  apiMiddleware,
   authMiddleware,
-  userMiddleware,
-  messagingMiddleware,
-  notificationMiddleware,
+  dataMiddleware,
+  ...uiMiddleware,
 ];
 
 export const reducers: Reducer<ApplicationState> = combineReducers({
+  api: apiReducer,
   auth: authReducer,
-  users: userReducer,
-  messaging: messagingReducer,
-  notification: notificationReducer,
+  data: dataReducer,
+  ui: uiReducer,
 });

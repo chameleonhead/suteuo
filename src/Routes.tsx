@@ -11,7 +11,6 @@ import { ApplicationState, selectors } from "./redux";
 
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import InitUser from "./pages/InitUser";
 import Messaging from "./pages/Messaging";
 import Home from "./pages/Home";
 import UserDetails from "./pages/UserDetails";
@@ -28,23 +27,10 @@ const Routes = (props: RoutesProps) => {
       return <Redirect to="/" />;
     }
   }
-  if (
-    auth.state === "WAITING_USER_REGISTRATION" &&
-    location.pathname !== "/initialize"
-  ) {
-    return <Redirect to="/initialize" />;
-  }
-  if (
-    auth.state !== "WAITING_USER_REGISTRATION" &&
-    location.pathname === "/initialize"
-  ) {
-    return <Redirect to="/" />;
-  }
   return (
     <Switch>
       <Route path="/register" component={Signup} />
       <Route path="/login" component={Login} />
-      <Route path="/initialize" component={InitUser} />
       <Route path="/users/:userId" component={UserDetails} />
       <Route path="/messaging" component={Messaging} />
       <Route component={Home} />

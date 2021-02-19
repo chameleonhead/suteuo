@@ -2,7 +2,6 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
-import ConfirmCodeForm from "../components/ConfirmCodeForm";
 import SignupForm from "../components/SignupForm";
 import Layout from "../components/Layout";
 
@@ -10,31 +9,33 @@ export type SignupProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;
 
 export const Signup = (props: SignupProps) => {
-  const { authState, onConfirmCode, onSignup } = props;
+  const { state, onInit, onConfirmCode, onSignup } = props;
+  React.useEffect(() => {
+    onInit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Layout>
       <h1>サインアップ</h1>
-      {authState.state === "WAITING_CONFIRM_CODE" ? (
-        <ConfirmCodeForm
-          credential={authState.credential!}
-          onSubmit={onConfirmCode}
-        />
-      ) : (
-        <SignupForm onSubmit={onSignup} />
-      )}
+      <SignupForm
+        needConfirmation={state.waitingUserConfirmation}
+        onSubmit={onSignup}
+        onConfirmCode={onConfirmCode}
+      />
       <Link to="/login">ログイン</Link>
     </Layout>
   );
 };
 
 const mapStateToProps = (state: ApplicationState) => ({
-  authState: selectors.getAuthState(state),
+  state: selectors.getSignupState(state),
 });
 
 const mapDispatchToProps = {
-  onSignup: actionCreators.signup,
-  onConfirmCode: actionCreators.confirmCode,
+  onInit: actionCreators.initSignup,
+  onSignup: actionCreators.executeSignup,
+  onConfirmCode: actionCreators.executeSignupConfirm,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signup);

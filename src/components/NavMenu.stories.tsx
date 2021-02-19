@@ -13,49 +13,29 @@ const Template: Story<NavMenuProps> = (args) => <NavMenu {...args} />;
 
 export const Initializing = Template.bind({});
 Initializing.args = {
-  authState: {
+  auth: {
     state: "INITIALIZING",
-    userInfo: undefined,
-    credential: undefined,
+    user: undefined,
   },
 };
 
 export const NotLoggedIn = Template.bind({});
 NotLoggedIn.args = {
   ...Initializing.args,
-  authState: {
-    ...Initializing.args.authState!,
+  auth: {
+    ...Initializing.args.auth!,
     state: "NOT_LOGGED_IN",
   } as any,
 };
 
-export const WaitingConfirmCode = Template.bind({});
-WaitingConfirmCode.args = {
-  ...Initializing.args,
-  authState: {
-    ...Initializing.args.authState!,
-    state: "WAITING_CONFIRM_CODE",
-  },
-};
-
-export const WaitingUserRegistration = Template.bind({});
-WaitingUserRegistration.args = {
-  ...Initializing.args,
-  authState: {
-    ...Initializing.args.authState!,
-    state: "WAITING_USER_REGISTRATION",
-  },
-};
-
 export const LoggedIn = Template.bind({});
 LoggedIn.args = {
-  authState: {
+  auth: {
     state: "LOGGED_IN",
-    userInfo: {
+    user: {
       id: "id",
       username: "username",
       displayName: "Display Name",
     } as any,
-    credential: undefined,
   },
 };

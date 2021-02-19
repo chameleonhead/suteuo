@@ -51,7 +51,7 @@ const mapStateToProps = (
 });
 
 const mapDispatchToProps = {
-  onInit: actionCreators.requestUserById,
+  onInit: actionCreators.fetchUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserDetails);

@@ -1,17 +1,26 @@
 import * as React from "react";
 import { useFormik } from "formik";
+import ConfirmCodeForm from "./ConfirmCodeForm";
 
 interface SignupFormValue {
   email: string;
   password: string;
 }
 
+interface ConfirmCodeFormValue {
+  username: string;
+  password: string;
+  code: string;
+}
+
 export type SignupFormProps = {
+  needConfirmation: boolean;
   onSubmit: (value: SignupFormValue) => void;
+  onConfirmCode: (value: ConfirmCodeFormValue) => void;
 };
 
 export const SignupForm = (props: SignupFormProps) => {
-  const { onSubmit } = props;
+  const { needConfirmation, onSubmit, onConfirmCode } = props;
   const formik = useFormik<SignupFormValue>({
     initialValues: {
       email: "",
@@ -29,6 +38,17 @@ export const SignupForm = (props: SignupFormProps) => {
     },
     onSubmit: (value, _) => onSubmit(value),
   });
+  if (needConfirmation) {
+    return (
+      <ConfirmCodeForm
+        credential={{
+          username: formik.values.email,
+          password: formik.values.password,
+        }}
+        onSubmit={(value) => onConfirmCode({ ...formik.values, ...value })}
+      />
+    );
+  }
   return (
     <form onSubmit={formik.handleSubmit}>
       <div>

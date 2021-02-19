@@ -7,13 +7,13 @@ export type NavMenuProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;
 
 export const NavMenu = (props: NavMenuProps) => {
-  const { authState, onLogout } = props;
+  const { auth, onLogout } = props;
   return (
     <nav>
       <h1>
         <Link to="/">捨魚</Link>
       </h1>
-      {authState.state === "LOGGED_IN" ? (
+      {auth.state === "LOGGED_IN" ? (
         <div>
           <ul>
             <li>
@@ -21,8 +21,8 @@ export const NavMenu = (props: NavMenuProps) => {
             </li>
           </ul>
           <div>
-            <Link to={"/users/" + authState.userInfo?.id}>
-              {authState.userInfo?.displayName || "未設定"}
+            <Link to={"/users/" + auth.user!.id}>
+              {auth.user?.displayName || "未設定"}
             </Link>
             <button type="button" onClick={onLogout}>
               ログアウト
@@ -30,18 +30,7 @@ export const NavMenu = (props: NavMenuProps) => {
           </div>
         </div>
       ) : null}
-      {authState.state === "WAITING_USER_REGISTRATION" ? (
-        <div>
-          <div>
-            {authState.userInfo?.displayName || "未設定"}
-            <button type="button" onClick={onLogout}>
-              ログアウト
-            </button>
-          </div>
-        </div>
-      ) : null}
-      {authState.state === "NOT_LOGGED_IN" ||
-      authState.state === "WAITING_CONFIRM_CODE" ? (
+      {auth.state === "NOT_LOGGED_IN" ? (
         <ul>
           <li>
             <Link to="/register">サインアップ</Link>
@@ -56,7 +45,7 @@ export const NavMenu = (props: NavMenuProps) => {
 };
 
 const mapStateToProps = (state: ApplicationState) => ({
-  authState: selectors.getAuthState(state),
+  auth: selectors.getAuthState(state),
 });
 
 const mapDispatchToProps = {
