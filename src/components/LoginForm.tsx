@@ -1,6 +1,8 @@
 import * as React from "react";
 import { useFormik } from "formik";
 import ConfirmCodeForm from "./ConfirmCodeForm";
+import Input from "../foundation/Input";
+import Button from "../foundation/Button";
 
 interface LoginFormValue {
   username: string;
@@ -38,7 +40,7 @@ export const LoginForm = (props: LoginFormProps) => {
     },
     onSubmit: (value, _) => onSubmit(value),
   });
-  console.log(needConfirmation)
+  console.log(needConfirmation);
   if (needConfirmation) {
     return (
       <ConfirmCodeForm
@@ -52,31 +54,31 @@ export const LoginForm = (props: LoginFormProps) => {
   }
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div>
+      <div className="flex flex-col space-y-3">
         <div>
-          <label htmlFor="usernmae">メールアドレス</label>
-          <input
+          <Input
             id="username"
             type="email"
             name="username"
+            placeholder="メールアドレス"
             value={formik.values.username}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
         </div>
         <div>
-          <label htmlFor="password">パスワード</label>
-          <input
+          <Input
             id="password"
             type="password"
             name="password"
+            placeholder="パスワード"
             value={formik.values.password}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
         </div>
         <div>
-          <button type="submit">ログイン</button>
+          <Button type="submit">ログイン</Button>
         </div>
       </div>
     </form>

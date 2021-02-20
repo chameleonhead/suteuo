@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
 import LoginForm from "../components/LoginForm";
@@ -17,13 +16,14 @@ export const Login = (props: LoginProps) => {
 
   return (
     <Layout>
-      <h1>ログイン</h1>
+      <div className="mt-3 mb-6">
+        <h1 className="text-3xl">ログイン</h1>
+      </div>
       <LoginForm
         needConfirmation={state.waitingUserConfirmation}
         onSubmit={onLogin}
         onConfirmCode={onConfirmCode}
       />
-      <Link to="/register">サインアップ</Link>
     </Layout>
   );
 };
