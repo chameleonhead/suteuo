@@ -90,11 +90,12 @@ export const dataActionCreators = {
   fetchMessages: (): FetchMessagesAction => ({
     type: "FETCH_MESSAGES",
   }),
-  setMessages: (messages: Message[]): SetMessagesAction => ({
+  setMessages: (info: {
+    totalCount: number;
+    messages: Message[];
+  }): SetMessagesAction => ({
     type: "SET_MESSAGES",
-    payload: {
-      messages,
-    },
+    payload: info,
   }),
 };
 

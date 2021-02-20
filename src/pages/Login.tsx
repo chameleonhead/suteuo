@@ -9,7 +9,11 @@ export type LoginProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;
 
 export const Login = (props: LoginProps) => {
-  const { state, onLogin, onConfirmCode } = props;
+  const { state, onInit, onLogin, onConfirmCode } = props;
+  React.useEffect(() => {
+    onInit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Layout>
@@ -29,6 +33,7 @@ const mapStateToProps = (state: ApplicationState) => ({
 });
 
 const mapDispatchToProps = {
+  onInit: actionCreators.initSignup,
   onLogin: actionCreators.login,
   onConfirmCode: actionCreators.executeSignupConfirm,
 };

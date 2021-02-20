@@ -99,11 +99,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
     action.type === "API_SUCCEEDED" &&
     action.meta.returnAddress === "LOGIN"
   ) {
-    if (action.payload) {
-      dispatch(actionCreators.setAuth(action.payload));
-    } else {
-      dispatch(actionCreators.clearAuth());
-    }
+    dispatch(actionCreators.initAuth());
   }
   if (action.type === "API_FAILED" && action.meta.returnAddress === "LOGIN") {
     if (action.payload.code === "UserNotConfirmedException") {

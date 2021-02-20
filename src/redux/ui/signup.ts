@@ -97,11 +97,19 @@ export const signupMiddleware: Middleware = ({ dispatch, getState }) => (
   }
   if (action.type === "SIGNUP_CONFIRM_EXECUTE") {
     dispatch(
-      actionCreators.api(action.type, "CONFIRM_CODE", {
-        username: action.payload.username,
-        password: action.payload.password,
-        code: action.payload.code,
-      })
+      actionCreators.api(
+        action.type,
+        "CONFIRM_CODE",
+        {
+          username: action.payload.username,
+          password: action.payload.password,
+          code: action.payload.code,
+        },
+        {
+          username: action.payload.username,
+          password: action.payload.password,
+        }
+      )
     );
   }
   if (

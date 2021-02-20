@@ -28,7 +28,7 @@ const mapStateToProps = (state: ApplicationState) => ({
 
 const mapDispatchToProps = {
   onInit: actionCreators.fetchMessages,
-  onCreateMessage: () => ({}),
+  onCreateMessage: actionCreators.addMessage,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Messaging);

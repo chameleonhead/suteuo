@@ -82,45 +82,26 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
   if (action.type === "API") {
     const { name, params } = action.payload;
 
+    let fetchTask = undefined;
     switch (name) {
       case "REGISTER":
-        Auth.signUp({
+        fetchTask = Auth.signUp({
           username: params.email,
           password: params.password,
           attributes: {
             preferred_username: undefined,
             picture: undefined,
           },
-        })
-          .then((data) => {
-            dispatch(actionCreators.apiSuccess(data, action.meta));
-          })
-          .catch((error) => {
-            dispatch(actionCreators.apiFail(error, action.meta));
-          });
+        });
         break;
       case "CONFIRM_CODE":
-        Auth.confirmSignUp(params.username, params.code)
-          .then((data) => {
-            dispatch(
-              actionCreators.apiSuccess(data, { ...action.meta, ...params })
-            );
-          })
-          .catch((error) => {
-            dispatch(actionCreators.apiFail(error, action.meta));
-          });
+        fetchTask = Auth.confirmSignUp(params.username, params.code);
         break;
       case "LOGIN":
-        Auth.signIn({
+        fetchTask = Auth.signIn({
           username: params.username,
           password: params.password,
-        })
-          .then((data) => {
-            dispatch(actionCreators.apiSuccess(data, action.meta));
-          })
-          .catch((error) => {
-            dispatch(actionCreators.apiFail(error, action.meta));
-          });
+        });
         break;
       case "SESSION":
         Auth.currentSession()
@@ -129,7 +110,6 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
           })
           .then((value) => {
             if (value.username) {
-              console.log(value);
               dispatch(
                 actionCreators.apiSuccess(
                   {
@@ -147,46 +127,34 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
           });
         break;
       case "LOGOUT":
-        Auth.signOut()
-          .then((data) => {
-            actionCreators.apiSuccess(data, action.meta);
-          })
-          .catch((error) => {
-            actionCreators.apiFail(error, action.meta);
-          });
+        fetchTask = Auth.signOut();
         break;
       case "GET_USER":
-        API.get("suteuo", "/users/" + params.userId, {})
-          .then((data) => {
-            actionCreators.apiSuccess(data, action.meta);
-          })
-          .catch((error) => {
-            actionCreators.apiFail(error, action.meta);
-          });
+        fetchTask = API.get("suteuo", "/users/" + params.userId, {});
         break;
       case "GET_MESSAGES":
-        API.get("suteuo", "/messaging", {})
-          .then((data) => {
-            actionCreators.apiSuccess(data, action.meta);
-          })
-          .catch((error) => {
-            actionCreators.apiFail(error, action.meta);
-          });
+        fetchTask = API.get("suteuo", "/messaging", {});
         break;
       case "POST_MESSAGE":
-        API.post("suteuo", "/messaging", params)
-          .then((data) => {
-            actionCreators.apiSuccess(data, action.meta);
-          })
-          .catch((error) => {
-            actionCreators.apiFail(error, action.meta);
-          });
+        fetchTask = API.post("suteuo", "/messaging", {
+          body: params,
+        });
         break;
+    }
+    if (fetchTask) {
+      fetchTask
+        .then((data) => {
+          console.log(data);
+          dispatch(actionCreators.apiSuccess(data, action.meta));
+        })
+        .catch((error) => {
+          dispatch(actionCreators.apiFail(error, action.meta));
+        });
     }
   }
 };
 
-export const apiReducer: Reducer<ApiState> = (state, incomingAction) => {
+export const apiReducer: Reducer<ApiState> = (state, _) => {
   if (!state) {
     state = {};
   }
