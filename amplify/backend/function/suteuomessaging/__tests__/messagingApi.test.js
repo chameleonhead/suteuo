@@ -1,4 +1,4 @@
-const Api = require("../messagingApi");
+const Api = require("../src/messagingApi");
 
 class Context {
   messageRooms = {};
