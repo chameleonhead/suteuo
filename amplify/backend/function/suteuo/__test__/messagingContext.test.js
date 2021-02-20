@@ -1,6 +1,6 @@
-const context = require("../src/context");
+const context = require("../src/messagingContext");
 
-describe("context", () => {
+describe("messagingContext", () => {
   beforeEach(async () => {
     await context.addMessageRoom({
       id: "room-1",

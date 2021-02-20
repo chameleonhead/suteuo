@@ -28,7 +28,8 @@ services:
     environment:
       - ENDPOINT_OVERRIDE=http://dynamodb:8000
       - STORAGE_SUTEUOUSERS_NAME=suteuousers
-      - AUTH_SUTEUO_USERPOOLID=authsuteuouserpoolid
+      - STORAGE_SUTEUOMESSAGING_NAME=suteuomessaging
+      - STORAGE_SUTEUOREQUESTS_NAME=suteuorequests
       - AWS_ACCESS_KEY_ID=fakeAccessKeyId
       - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
       - AWS_REGION=us-west-2

@@ -1,4 +1,4 @@
-const awsContext = require("./context");
+const awsContext = require("./messagingContext");
 
 /**
  * @type {import("../context")}

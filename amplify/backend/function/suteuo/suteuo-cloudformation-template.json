@@ -17,6 +17,22 @@
     "storagesuteuomessagingArn": {
       "Type": "String",
       "Default": "storagesuteuomessagingArn"
+    },
+    "storagesuteuousersName": {
+      "Type": "String",
+      "Default": "storagesuteuousersName"
+    },
+    "storagesuteuousersArn": {
+      "Type": "String",
+      "Default": "storagesuteuousersArn"
+    },
+    "storagesuteuorequestsName": {
+      "Type": "String",
+      "Default": "storagesuteuorequestsName"
+    },
+    "storagesuteuorequestsArn": {
+      "Type": "String",
+      "Default": "storagesuteuorequestsArn"
     }
   },
   "Conditions": {
@@ -41,12 +57,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "suteuomessaging",
+            "suteuo",
             {
               "Fn::Join": [
                 "",
                 [
-                  "suteuomessaging",
+                  "suteuo",
                   "-",
                   {
                     "Ref": "env"
@@ -69,6 +85,18 @@
             },
             "STORAGE_SUTEUOMESSAGING_ARN": {
               "Ref": "storagesuteuomessagingArn"
+            },
+            "STORAGE_SUTEUOUSERS_NAME": {
+              "Ref": "storagesuteuousersName"
+            },
+            "STORAGE_SUTEUOUSERS_ARN": {
+              "Ref": "storagesuteuousersArn"
+            },
+            "STORAGE_SUTEUOREQUESTS_NAME": {
+              "Ref": "storagesuteuorequestsName"
+            },
+            "STORAGE_SUTEUOREQUESTS_ARN": {
+              "Ref": "storagesuteuorequestsArn"
             }
           }
         },
@@ -83,7 +111,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-suteuo-dev-154743-deployment",
-          "S3Key": "amplify-builds/suteuomessaging-54324b7a714156637549-build.zip"
+          "S3Key": "amplify-builds/suteuo-4d664a4c745a496b316c-build.zip"
         }
       }
     },
@@ -93,12 +121,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "suteuoLambdaRole8d9fad7d",
+            "suteuoLambdaRole61e14a16",
             {
               "Fn::Join": [
                 "",
                 [
-                  "suteuoLambdaRole8d9fad7d",
+                  "suteuoLambdaRole61e14a16",
                   "-",
                   {
                     "Ref": "env"
@@ -210,6 +238,72 @@
                     [
                       {
                         "Ref": "storagesuteuomessagingArn"
+                      },
+                      "index/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Put*",
+                "dynamodb:Create*",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:Get*",
+                "dynamodb:BatchGetItem",
+                "dynamodb:List*",
+                "dynamodb:Describe*",
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                "dynamodb:Update*",
+                "dynamodb:RestoreTable*",
+                "dynamodb:Delete*"
+              ],
+              "Resource": [
+                {
+                  "Ref": "storagesuteuousersArn"
+                },
+                {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      {
+                        "Ref": "storagesuteuousersArn"
+                      },
+                      "index/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Put*",
+                "dynamodb:Create*",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:Get*",
+                "dynamodb:BatchGetItem",
+                "dynamodb:List*",
+                "dynamodb:Describe*",
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                "dynamodb:Update*",
+                "dynamodb:RestoreTable*",
+                "dynamodb:Delete*"
+              ],
+              "Resource": [
+                {
+                  "Ref": "storagesuteuorequestsArn"
+                },
+                {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      {
+                        "Ref": "storagesuteuorequestsArn"
                       },
                       "index/*"
                     ]

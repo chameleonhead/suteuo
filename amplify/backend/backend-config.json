@@ -21,19 +21,24 @@
     "suteuousers": {
       "service": "DynamoDB",
       "providerPlugin": "awscloudformation"
+    },
+    "suteuorequests": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
     }
   },
   "function": {
-    "suteuousers": {
+    "suteuo": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
       "dependsOn": [
         {
-          "category": "auth",
-          "resourceName": "suteuo",
+          "category": "storage",
+          "resourceName": "suteuomessaging",
           "attributes": [
-            "UserPoolId"
+            "Name",
+            "Arn"
           ]
         },
         {
@@ -43,17 +48,10 @@
             "Name",
             "Arn"
           ]
-        }
-      ]
-    },
-    "suteuomessaging": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
+        },
         {
           "category": "storage",
-          "resourceName": "suteuomessaging",
+          "resourceName": "suteuorequests",
           "attributes": [
             "Name",
             "Arn"
@@ -69,15 +67,7 @@
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "suteuousers",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "suteuomessaging",
+          "resourceName": "suteuo",
           "attributes": [
             "Name",
             "Arn"

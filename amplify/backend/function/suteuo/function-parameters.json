@@ -1,15 +1,19 @@
 {
   "permissions": {
-    "auth": {
-      "suteuo": [
+    "storage": {
+      "suteuomessaging": [
         "create",
         "read",
         "update",
         "delete"
-      ]
-    },
-    "storage": {
+      ],
       "suteuousers": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "suteuorequests": [
         "create",
         "read",
         "update",

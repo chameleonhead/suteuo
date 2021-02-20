@@ -2,7 +2,7 @@
     "paths": [
         {
             "name": "/users",
-            "lambdaFunction": "suteuousers",
+            "lambdaFunction": "suteuo",
             "privacy": {
                 "protected": true,
                 "auth": [
@@ -15,12 +15,11 @@
                 "unauth": [
                     "/GET"
                 ]
-            },
-            "policyResourceName": "/users"
+            }
         },
         {
             "name": "/messaging",
-            "lambdaFunction": "suteuomessaging",
+            "lambdaFunction": "suteuo",
             "privacy": {
                 "private": true,
                 "auth": [
@@ -30,42 +29,48 @@
                     "/PATCH",
                     "/DELETE"
                 ]
-            },
-            "policyResourceName": "/messaging"
+            }
+        },
+        {
+            "name": "/requests",
+            "lambdaFunction": "suteuo",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            }
         }
     ],
     "resourceName": "suteuo",
     "apiName": "suteuo",
     "functionArns": [
         {
-            "lambdaFunction": "suteuousers"
-        },
-        {
-            "lambdaFunction": "suteuomessaging"
+            "lambdaFunction": "suteuo"
         }
     ],
     "privacy": {
-        "auth": 2,
-        "unauth": 1,
-        "authRoleName": "amplify-suteuo-dev-124433-authRole",
-        "unAuthRoleName": "amplify-suteuo-dev-124433-unauthRole"
+        "auth": 3,
+        "unauth": 2,
+        "authRoleName": "amplify-suteuo-dev-154743-authRole",
+        "unAuthRoleName": "amplify-suteuo-dev-154743-unauthRole"
     },
     "dependsOn": [
         {
             "category": "function",
-            "resourceName": "suteuousers",
-            "attributes": [
-                "Name",
-                "Arn"
-            ]
-        },
-        {
-            "category": "function",
-            "resourceName": "suteuomessaging",
+            "resourceName": "suteuo",
             "attributes": [
                 "Name",
                 "Arn"
             ]
         }
-    ]
+    ],
+    "uuid": "3654b5a0"
 }

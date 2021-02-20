@@ -6,19 +6,24 @@ var cors = require("cors");
 app.use(cors());
 app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
+
+var UsersApi = require("./usersApi");
+const usersApi = new UsersApi();
+
 var MessagingApi = require("./messagingApi");
-const api = new MessagingApi();
+const messagingApi = new MessagingApi();
+
 
 if (process.env.ENDPOINT_OVERRIDE) {
   //swaggerの基本定義
   var options = {
     swaggerDefinition: {
       info: {
-        title: "suteuomessaging",
+        title: "suteuousers",
         version: "1.0.0.",
       },
     },
-    apis: [__dirname + "/app.js"],
+    apis: [__filename],
   };
 
   var swaggerJSDoc = require("swagger-jsdoc");
@@ -40,6 +45,29 @@ function handleError(res, error) {
     error: error,
   });
 }
+
+app.get("/users/:userId", async function (req, res) {
+  try {
+    const user = await usersApi.getUser(req.params.userId);
+    res.json(user);
+  } catch (error) {
+    handleError(res, error);
+  }
+});
+
+app.post("/users", async function (req, res) {
+  try {
+    const result = await usersApi.updateUser({
+      userId: req.body.userId,
+      area: req.body.area,
+      username: req.body.username,
+      displayName: req.body.displayName,
+    });
+    res.json(result);
+  } catch (error) {
+    handleError(res, error);
+  }
+});
 
 /**
  * @openapi
@@ -79,7 +107,7 @@ function handleError(res, error) {
  */
 app.get("/messaging", async function (req, res) {
   try {
-    const result = await api.getMessagesForRoom("room-1");
+    const result = await messagingApi.getMessagesForRoom("room-1");
     res.json(result);
   } catch (error) {
     handleError(res, error);
@@ -131,9 +159,9 @@ app.get("/messaging", async function (req, res) {
  */
 app.post("/messaging", async function (req, res) {
   try {
-    const room = await api.getRoom("room-1");
+    const room = await messagingApi.getRoom("room-1");
     if (room.code === "NotFoundException") {
-      await api.createRoom({
+      await usersApi.createRoom({
         roomId: "room-1",
         creator: "user-1",
         participants: ["user-1", "user-2"],
@@ -143,7 +171,7 @@ app.post("/messaging", async function (req, res) {
       roomId: "room-1",
       body: req.body.body,
     };
-    const result = await api.createMessage(params);
+    const result = await messagingApi.createMessage(params);
     res.json(result);
   } catch (error) {
     handleError(res, error);
