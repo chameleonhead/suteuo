@@ -1,4 +1,4 @@
-const Api = require("../usersApi");
+const Api = require("../src/usersApi");
 
 class Context {
   identities = {};

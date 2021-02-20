@@ -19,7 +19,7 @@ if (process.env.ENDPOINT_OVERRIDE) {
         version: "1.0.0.",
       },
     },
-    apis: ["./app.js"], //自分自身を指定。外部化した場合は、そのファイルを指定。配列で複数指定も可能。
+    apis: [__filename],
   };
 
   var swaggerJSDoc = require("swagger-jsdoc");

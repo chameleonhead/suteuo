@@ -22,7 +22,7 @@ services:
     command: bash -c 'npm install && npm run start'
     working_dir: /app
     volumes:
-      - ./src:/app
+      - .:/app
     ports:
       - 4000:3000
     environment:

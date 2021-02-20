@@ -1,4 +1,4 @@
-const context = require("../context");
+const context = require("../src/context");
 
 describe("context", () => {
   beforeEach(async () => {
