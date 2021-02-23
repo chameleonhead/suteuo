@@ -16,14 +16,18 @@ export const Login = (props: LoginProps) => {
 
   return (
     <Layout>
-      <div className="mt-3 mb-6">
-        <h1 className="text-3xl">ログイン</h1>
+      <div className="grid grid-cols-2">
+        <div>
+          <div className="mt-3 mb-6">
+            <h1 className="text-3xl">ログイン</h1>
+          </div>
+          <LoginForm
+            needConfirmation={state.waitingUserConfirmation}
+            onSubmit={onLogin}
+            onConfirmCode={onConfirmCode}
+          />
+        </div>
       </div>
-      <LoginForm
-        needConfirmation={state.waitingUserConfirmation}
-        onSubmit={onLogin}
-        onConfirmCode={onConfirmCode}
-      />
     </Layout>
   );
 };

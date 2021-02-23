@@ -75,7 +75,7 @@ export const NavMenu = (props: NavMenuProps) => {
                 to="/register"
                 className="text-gray-200 hover:text-gray-400"
               >
-                サインアップ
+                新規登録
               </Link>
             </li>
             <li>

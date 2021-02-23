@@ -1,8 +1,11 @@
 import * as React from "react";
-import { useFormik } from "formik";
+import { FormikErrors, useFormik } from "formik";
 import ConfirmCodeForm from "./ConfirmCodeForm";
+import Input from "../foundation/Input";
+import Button from "../foundation/Button";
 
 interface SignupFormValue {
+  username: string;
   email: string;
   password: string;
 }
@@ -23,11 +26,12 @@ export const SignupForm = (props: SignupFormProps) => {
   const { needConfirmation, onSubmit, onConfirmCode } = props;
   const formik = useFormik<SignupFormValue>({
     initialValues: {
+      username: "",
       email: "",
       password: "",
     },
     validate: (values) => {
-      const errors = {} as any;
+      const errors = {} as FormikErrors<SignupFormValue>;
       if (!values.email) {
         errors.email = "必須項目です。";
       }
@@ -51,29 +55,42 @@ export const SignupForm = (props: SignupFormProps) => {
   }
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div>
+      <div className="flex flex-col space-y-3">
         <div>
-          <label htmlFor="email">メールアドレス</label>
-          <input
+          <Input
+            id="username"
+            type="text"
+            name="username"
+            placeholder="ユーザー名"
+            value={formik.values.username}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+          />
+        </div>
+        <div>
+          <Input
+            id="email"
             type="email"
             name="email"
-            id="email"
+            placeholder="メールアドレス"
+            value={formik.values.email}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
         </div>
         <div>
-          <label htmlFor="password">パスワード</label>
-          <input
+          <Input
+            id="password"
             type="password"
             name="password"
-            id="password"
+            placeholder="パスワード"
+            value={formik.values.email}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
         </div>
         <div>
-          <button type="submit">登録</button>
+          <Button type="submit">登録</Button>
         </div>
       </div>
     </form>

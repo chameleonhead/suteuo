@@ -17,13 +17,20 @@ export const Signup = (props: SignupProps) => {
 
   return (
     <Layout>
-      <h1>サインアップ</h1>
-      <SignupForm
-        needConfirmation={state.waitingUserConfirmation}
-        onSubmit={onSignup}
-        onConfirmCode={onConfirmCode}
-      />
-      <Link to="/login">ログイン</Link>
+      <div className="grid grid-cols-2">
+        <div>
+          <div className="mt-3 mb-6">
+            <h1 className="text-3xl">新規登録</h1>
+            <p className="text-gray-500">新規ユーザーの登録</p>
+          </div>
+          <SignupForm
+            needConfirmation={state.waitingUserConfirmation}
+            onSubmit={onSignup}
+            onConfirmCode={onConfirmCode}
+          />
+          <Link to="/login">ログイン</Link>
+        </div>
+      </div>
     </Layout>
   );
 };
