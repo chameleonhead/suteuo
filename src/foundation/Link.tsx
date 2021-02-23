@@ -12,7 +12,7 @@ export const Link = (props: LinkProps) => {
     <RouterLink
       to={to}
       children={children}
-      className="text-blue-600 hover:text-blue-500 visited:text-purple-600"
+      className="text-blue-600 hover:text-blue-400 visited:text-purple-600"
     />
   );
 };
