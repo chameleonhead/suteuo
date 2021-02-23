@@ -21,6 +21,13 @@ import {
   DataState,
 } from "./data";
 import {
+  taskActionCreators,
+  taskMiddleware,
+  taskReducer,
+  taskSelectors,
+  TaskState,
+} from "./task";
+import {
   uiActionCreators,
   uiMiddleware,
   uiReducer,
@@ -33,6 +40,7 @@ export interface ApplicationState {
   auth: AuthState;
   data: DataState;
   ui: UiState;
+  task: TaskState;
 }
 
 export const selectors = {
@@ -40,6 +48,7 @@ export const selectors = {
   ...authSelectors,
   ...dataSelectors,
   ...uiSelectors,
+  ...taskSelectors,
 };
 
 export const actionCreators = {
@@ -47,6 +56,7 @@ export const actionCreators = {
   ...authActionCreators,
   ...dataActionCreators,
   ...uiActionCreators,
+  ...taskActionCreators,
 };
 
 export const middlewares = [
@@ -54,6 +64,7 @@ export const middlewares = [
   authMiddleware,
   dataMiddleware,
   ...uiMiddleware,
+  taskMiddleware,
 ];
 
 export const reducers: Reducer<ApplicationState> = combineReducers({
@@ -61,4 +72,5 @@ export const reducers: Reducer<ApplicationState> = combineReducers({
   auth: authReducer,
   data: dataReducer,
   ui: uiReducer,
+  task: taskReducer,
 });
