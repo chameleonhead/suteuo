@@ -11,7 +11,7 @@ export const Input = (props: InputProps) => {
         id={id}
         type={type}
         name={name}
-        className="mt-1 block w-full border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500"
+        className="mt-1 py-1 px-2 block w-full border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500"
         value={value}
         onBlur={onBlur}
         onChange={onChange}

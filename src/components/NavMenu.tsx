@@ -2,6 +2,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
+import Dropdown from "../foundation/Dropdown";
 
 export type NavMenuProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;
@@ -33,38 +34,38 @@ export const NavMenu = (props: NavMenuProps) => {
               </li>
             </ul>
             <div>
-              <div className="ml-3 relative">
-                <div>
+              <Dropdown
+                open={open}
+                onClose={() => setOpen(false)}
+                trigger={
                   <button
                     className="text-gray-200 focus:text-gray-400"
                     onClick={() => setOpen(true)}
-                    onBlur={() => setTimeout(() => setOpen(false), 100)}
                   >
                     {auth.user?.displayName || "未設定"}
                   </button>
-                </div>
-                {open && (
-                  <ul className="absolute origin-top-right right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
-                    <li>
-                      <Link
-                        to={"/users/" + auth.user!.id}
-                        className="block px-4 py-2 w-full text-left text-gray-700 hover:bg-gray-100"
-                      >
-                        プロフィール
-                      </Link>
-                    </li>
-                    <li className="w-full">
-                      <button
-                        type="button"
-                        onClick={onLogout}
-                        className="block px-4 py-2 w-full text-left text-gray-700 hover:bg-gray-100"
-                      >
-                        ログアウト
-                      </button>
-                    </li>
-                  </ul>
-                )}
-              </div>
+                }
+              >
+                <ul className="mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                  <li>
+                    <Link
+                      to={"/users/" + auth.user!.id}
+                      className="block px-4 py-2 w-full text-left text-gray-700 hover:bg-gray-100"
+                    >
+                      プロフィール
+                    </Link>
+                  </li>
+                  <li className="w-full">
+                    <button
+                      type="button"
+                      onClick={onLogout}
+                      className="block px-4 py-2 w-full text-left text-gray-700 hover:bg-gray-100"
+                    >
+                      ログアウト
+                    </button>
+                  </li>
+                </ul>
+              </Dropdown>
             </div>
           </div>
         ) : null}

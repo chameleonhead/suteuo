@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useFormik } from "formik";
-import ConfirmCodeForm from "./ConfirmCodeForm";
 import Input from "../foundation/Input";
 import Button from "../foundation/Button";
 
@@ -9,20 +8,12 @@ interface LoginFormValue {
   password: string;
 }
 
-interface ConfirmCodeFormValue {
-  username: string;
-  password: string;
-  code: string;
-}
-
 export type LoginFormProps = {
-  needConfirmation: boolean;
   onSubmit: (value: LoginFormValue) => void;
-  onConfirmCode: (value: ConfirmCodeFormValue) => void;
 };
 
 export const LoginForm = (props: LoginFormProps) => {
-  const { needConfirmation, onSubmit, onConfirmCode } = props;
+  const { onSubmit } = props;
   const formik = useFormik<LoginFormValue>({
     initialValues: {
       username: "",
@@ -40,18 +31,6 @@ export const LoginForm = (props: LoginFormProps) => {
     },
     onSubmit: (value, _) => onSubmit(value),
   });
-  console.log(needConfirmation);
-  if (needConfirmation) {
-    return (
-      <ConfirmCodeForm
-        credential={{
-          username: formik.values.username,
-          password: formik.values.password,
-        }}
-        onSubmit={(value) => onConfirmCode({ ...formik.values, ...value })}
-      />
-    );
-  }
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="flex flex-col space-y-3">

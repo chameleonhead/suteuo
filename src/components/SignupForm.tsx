@@ -1,6 +1,5 @@
 import * as React from "react";
 import { FormikErrors, useFormik } from "formik";
-import ConfirmCodeForm from "./ConfirmCodeForm";
 import Input from "../foundation/Input";
 import Button from "../foundation/Button";
 
@@ -10,20 +9,12 @@ interface SignupFormValue {
   password: string;
 }
 
-interface ConfirmCodeFormValue {
-  username: string;
-  password: string;
-  code: string;
-}
-
 export type SignupFormProps = {
-  needConfirmation: boolean;
   onSubmit: (value: SignupFormValue) => void;
-  onConfirmCode: (value: ConfirmCodeFormValue) => void;
 };
 
 export const SignupForm = (props: SignupFormProps) => {
-  const { needConfirmation, onSubmit, onConfirmCode } = props;
+  const { onSubmit } = props;
   const formik = useFormik<SignupFormValue>({
     initialValues: {
       username: "",
@@ -42,17 +33,6 @@ export const SignupForm = (props: SignupFormProps) => {
     },
     onSubmit: (value, _) => onSubmit(value),
   });
-  if (needConfirmation) {
-    return (
-      <ConfirmCodeForm
-        credential={{
-          username: formik.values.email,
-          password: formik.values.password,
-        }}
-        onSubmit={(value) => onConfirmCode({ ...formik.values, ...value })}
-      />
-    );
-  }
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="flex flex-col space-y-3">
@@ -84,7 +64,7 @@ export const SignupForm = (props: SignupFormProps) => {
             type="password"
             name="password"
             placeholder="パスワード"
-            value={formik.values.email}
+            value={formik.values.password}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />

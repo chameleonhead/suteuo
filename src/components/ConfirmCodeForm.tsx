@@ -1,5 +1,7 @@
 import * as React from "react";
 import { useFormik } from "formik";
+import Input from "../foundation/Input";
+import Button from "../foundation/Button";
 
 interface ConfirmCodeFormValue {
   username: string;
@@ -36,19 +38,19 @@ export const ConfirmCodeForm = (props: ConfirmCodeFormProps) => {
   });
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div>
+      <div className="flex flex-col space-y-3">
         <div>
-          <label htmlFor="code">パスコード</label>
-          <input
+          <Input
+            id="code"
             type="text"
             name="code"
-            id="code"
+            placeholder="パスコード"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
         </div>
         <div>
-          <button type="submit">送信</button>
+          <Button type="submit">送信</Button>
         </div>
       </div>
     </form>
