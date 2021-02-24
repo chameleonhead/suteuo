@@ -11,6 +11,8 @@ import { ApplicationState, selectors } from "./redux";
 
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Messaging from "./pages/Messaging";
 import Home from "./pages/Home";
 import UserDetails from "./pages/UserDetails";
@@ -31,6 +33,8 @@ const Routes = (props: RoutesProps) => {
     <Switch>
       <Route path="/register" component={Signup} />
       <Route path="/login" component={Login} />
+      <Route path="/forgotPassword" component={ForgotPassword} />
+      <Route path="/resetPassword" component={ResetPassword} />
       <Route path="/users/:userId" component={UserDetails} />
       <Route path="/messaging" component={Messaging} />
       <Route component={Home} />

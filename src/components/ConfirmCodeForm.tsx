@@ -38,7 +38,7 @@ export const ConfirmCodeForm = (props: ConfirmCodeFormProps) => {
   });
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className="flex flex-col space-y-3">
+      <div className="flex flex-col space-y-4">
         <div>
           <Input
             id="code"

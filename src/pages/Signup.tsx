@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
+import Link from "../foundation/Link";
 import Layout from "../components/Layout";
 import SignupForm from "../components/SignupForm";
 import ConfirmCodeForm from "../components/ConfirmCodeForm";
@@ -21,11 +21,11 @@ export const Signup = (props: SignupProps) => {
 
   return (
     <Layout>
-      <div className="grid grid-cols-2">
+      <div className="md:grid md:grid-cols-2">
         <div>
           <div className="mt-3 mb-6">
             <h1 className="text-3xl">新規登録</h1>
-            <p className="text-gray-500">新規ユーザーの登録</p>
+            <p className="text-gray-500">捨魚にようこそ</p>
           </div>
           {state.waitingUserConfirmation ? (
             <ConfirmCodeForm
@@ -43,7 +43,9 @@ export const Signup = (props: SignupProps) => {
               }}
             />
           )}
-          <Link to="/login">ログイン</Link>
+          <div className="mt-3">
+            <Link to="/login">アカウントをお持ちの場合</Link>
+          </div>
         </div>
       </div>
     </Layout>
