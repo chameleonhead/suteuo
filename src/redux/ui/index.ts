@@ -2,19 +2,26 @@ import { Reducer } from "redux";
 import { ApplicationState } from "..";
 import * as SignupStore from "./signup";
 import * as MessagingStore from "./messaging";
+import * as ForgotPasswordStore from "./forgotPassword";
 
 interface SignupState {
+  waitingUserConfirmation: boolean;
+}
+interface ForgotPasswordState {
   waitingUserConfirmation: boolean;
 }
 
 export interface UiState {
   ["SIGNUP"]?: SignupState;
+  ["FORGOT_PASSWORD"]?: ForgotPasswordState;
   [key: string]: any;
 }
 
 export const uiSelectors = {
   getUiState: (state: ApplicationState) => state.ui,
-  getSignupState: (state: ApplicationState) => state.ui && state.ui["SIGNUP"],
+  getSignupState: (state: ApplicationState) => state.ui["SIGNUP"],
+  getForgotPasswordState: (state: ApplicationState) =>
+    state.ui["FORGOT_PASSWORD"],
 };
 
 interface InitPageStateAction<T = any> {
@@ -68,11 +75,13 @@ export const uiActionCreators = {
   }),
   ...SignupStore.signupActionCreators,
   ...MessagingStore.messagingActionCreators,
+  ...ForgotPasswordStore.forgotPasswordActionCreators,
 };
 
 export const uiMiddleware = [
   SignupStore.signupMiddleware,
   MessagingStore.messagingMiddleware,
+  ForgotPasswordStore.forgotPasswordMiddleware,
 ];
 
 export const uiReducer: Reducer<UiState> = (state, incomingAction) => {

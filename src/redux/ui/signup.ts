@@ -69,7 +69,7 @@ export const signupMiddleware: Middleware = ({ dispatch, getState }) => (
   }
   if (action.type === "SIGNUP_SET_WAITING_USER_CONFIRMATION") {
     dispatch(
-      actionCreators.updatePage("SIGNUP", { waitingUserConfirmation: false })
+      actionCreators.updatePage("SIGNUP", { waitingUserConfirmation: true })
     );
   }
   if (action.type === "SIGNUP_EXECUTE") {

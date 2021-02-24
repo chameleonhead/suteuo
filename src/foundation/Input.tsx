@@ -7,15 +7,24 @@ export const Input = (props: InputProps) => {
       <label htmlFor={id} className="block text-sm font-medium text-gray-700">
         {placeholder}
       </label>
-      <input
-        id={id}
-        type={type}
-        name={name}
-        className="mt-1 py-1 px-2 block w-full border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500"
-        value={value}
-        onBlur={onBlur}
-        onChange={onChange}
-      />
+      {type === "plaintext" ? (
+        <p
+          id={id}
+          className="mt-1 py-1 px-2 block w-full border border-transparent"
+        >
+          {value}
+        </p>
+      ) : (
+        <input
+          id={id}
+          type={type}
+          name={name}
+          className="mt-1 py-1 px-2 block w-full border border-gray-300 rounded focus:ring-indigo-500 focus:border-indigo-500"
+          value={value}
+          onBlur={onBlur}
+          onChange={onChange}
+        />
+      )}
     </div>
   );
 };

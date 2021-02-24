@@ -9,6 +9,13 @@ export default {
 
 const Template: Story<InputProps> = (args) => <Input {...args} />;
 
+export const PlainText = Template.bind({});
+PlainText.args = {
+  type: "plaintext",
+  value: "text",
+  placeholder: "プレーンテキスト",
+};
+
 export const Text = Template.bind({});
 Text.args = {
   type: "text",
