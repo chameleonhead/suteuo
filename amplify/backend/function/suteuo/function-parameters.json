@@ -1,5 +1,10 @@
 {
   "permissions": {
+    "auth": {
+      "suteuo": [
+        "read"
+      ]
+    },
     "storage": {
       "suteuomessaging": [
         "create",

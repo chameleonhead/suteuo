@@ -35,7 +35,7 @@ LoggedIn.args = {
     user: {
       id: "id",
       username: "username",
-      displayName: "Display Name",
+      nickname: "Display Name",
     } as any,
   },
 };

@@ -6,7 +6,7 @@ describe("context", () => {
       id: "user-1",
       area: "Area",
       username: "username",
-      displayName: "Display Name",
+      nickname: "Display Name",
       createdAt: "2021-02-01T10:20:30.010Z",
     });
   });
@@ -19,7 +19,7 @@ describe("context", () => {
       id: "user-2",
       area: "Area",
       username: "username",
-      displayName: "Display Name",
+      nickname: "Display Name",
       createdAt: "2021-02-01T10:20:30.010Z",
     });
     const user = await context.getUser("user-2");
@@ -30,7 +30,7 @@ describe("context", () => {
       id: "user-1",
       area: "New Area",
       username: "New username",
-      displayName: "New Display Name",
+      nickname: "New Display Name",
       createdAt: "2021-02-02T10:20:30.010Z",
     });
     const user = await context.getUser("user-1");
@@ -38,7 +38,7 @@ describe("context", () => {
       id: "user-1",
       area: "New Area",
       username: "New username",
-      displayName: "New Display Name",
+      nickname: "New Display Name",
       createdAt: "2021-02-02T10:20:30.010Z",
     });
   });

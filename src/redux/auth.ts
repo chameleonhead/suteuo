@@ -11,7 +11,7 @@ interface LoginUserInfo {
   id: string;
   preferred_username: string;
   username: string;
-  displayName: string;
+  nickname: string;
   avatarUrl: string;
 }
 

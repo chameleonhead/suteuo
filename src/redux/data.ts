@@ -5,7 +5,7 @@ import { KnownAction as ApiAction } from "./api";
 interface User {
   id: string;
   username: string;
-  displayName: string;
+  nickname: string;
   avatarUrl: string | null;
   email: string | null;
   area: string | null;

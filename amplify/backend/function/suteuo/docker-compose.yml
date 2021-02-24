@@ -27,6 +27,7 @@ services:
       - 4000:3000
     environment:
       - ENDPOINT_OVERRIDE=http://dynamodb:8000
+      - AUTH_SUTEUO_USERPOOLID=authsuteuoUserPoolId
       - STORAGE_SUTEUOUSERS_NAME=suteuousers
       - STORAGE_SUTEUOMESSAGING_NAME=suteuomessaging
       - STORAGE_SUTEUOREQUESTS_NAME=suteuorequests

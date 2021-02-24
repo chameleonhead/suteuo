@@ -58,7 +58,7 @@ describe("users api", () => {
         userId: userId,
         area: "Area",
         username: "username",
-        displayName: "Display Name",
+        nickname: "Display Name",
       });
       expect(result).toEqual({ success: true });
       const user = (await api.getUser(userId)).user;
@@ -66,7 +66,7 @@ describe("users api", () => {
         id: userId,
         area: "Area",
         username: "username",
-        displayName: "Display Name",
+        nickname: "Display Name",
         createdAt: expect.anything(),
       });
     });
@@ -82,13 +82,13 @@ describe("users api", () => {
         userId: userId,
         area: "Area",
         username: "username",
-        displayName: "Display Name",
+        nickname: "Display Name",
       });
       const result = await api.updateUser({
         userId: userId,
         area: "New Area",
         username: "newusername",
-        displayName: "New Display Name",
+        nickname: "New Display Name",
       });
       expect(result).toMatchObject({
         success: true,
@@ -98,7 +98,7 @@ describe("users api", () => {
         id: userId,
         area: "New Area",
         username: "newusername",
-        displayName: "New Display Name",
+        nickname: "New Display Name",
         createdAt: expect.anything(),
       });
     });

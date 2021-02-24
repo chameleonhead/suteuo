@@ -34,6 +34,13 @@
       "service": "Lambda",
       "dependsOn": [
         {
+          "category": "auth",
+          "resourceName": "suteuo",
+          "attributes": [
+            "UserPoolId"
+          ]
+        },
+        {
           "category": "storage",
           "resourceName": "suteuomessaging",
           "attributes": [

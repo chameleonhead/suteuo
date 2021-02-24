@@ -13,7 +13,7 @@ function UsersApi(context) {
  * @property {string} id
  * @property {string} area
  * @property {string} username
- * @property {string} displayName
+ * @property {string} nickname
  * @property {string} avatarUrl
  * @property {string} createdAt
  */
@@ -30,11 +30,25 @@ UsersApi.prototype.getUser = async function (userId) {
       user,
     };
   }
+  const identity = await this.context.getIdentity(userId);
+  if (identity) {
+    return {
+      success: true,
+      user: {
+        id: userId,
+        nickname: undefined,
+        username: identity.preferred_username,
+        area: undefined,
+        avatarUrl: identity.picture,
+        createdAt: identity.createdAt,
+      },
+    };
+  }
   return {
     success: false,
     statusCode: 404,
     code: "NotFoundException",
-    message: "Specified message room not found.",
+    message: "Specified user room not found.",
     retryable: false,
   };
 };
@@ -44,7 +58,7 @@ UsersApi.prototype.getUser = async function (userId) {
  * @property {string} userId
  * @property {string} area
  * @property {string} username
- * @property {string} displayName
+ * @property {string} nickname
  */
 /**
  * @param {UreateUserOptions} options
@@ -65,7 +79,7 @@ UsersApi.prototype.updateUser = async function (options) {
       id: options.userId,
       area: options.area,
       username: options.username,
-      displayName: options.displayName,
+      nickname: options.nickname,
       createdAt: identity.createdAt,
     });
     return {
@@ -74,7 +88,7 @@ UsersApi.prototype.updateUser = async function (options) {
   }
   user.area = options.area;
   user.username = options.username;
-  user.displayName = options.displayName;
+  user.nickname = options.nickname;
   await this.context.updateUser(user);
   return {
     success: true,

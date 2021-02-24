@@ -17,7 +17,7 @@ const docClient = new AWS.DynamoDB.DocumentClient();
  * @property {string} id
  * @property {string} area
  * @property {string} username
- * @property {string} displayName
+ * @property {string} nickname
  * @property {string} createdAt
  */
 
@@ -41,7 +41,7 @@ async function getUser(userId) {
     id: userId,
     area: result.Item.area,
     username: result.Item.username,
-    displayName: result.Item.displayName,
+    nickname: result.Item.nickname,
     createdAt: result.Item.createdAt,
   };
 }
@@ -57,7 +57,7 @@ async function addUser(user) {
       SK: "Details",
       area: user.area,
       username: user.username,
-      displayName: user.displayName,
+      nickname: user.nickname,
       createdAt: user.createdAt,
     },
   };
@@ -83,9 +83,9 @@ async function updateUser(user) {
         Action: "PUT",
         Value: user.username,
       },
-      displayName: {
+      nickname: {
         Action: "PUT",
-        Value: user.displayName,
+        Value: user.nickname,
       },
       createdAt: {
         Action: "PUT",
@@ -112,11 +112,16 @@ async function removeUser(userId) {
 
 /**
  * @typedef IdentityModel
- * @param {string} id
- * @param {string} preferred_username
- * @param {string} email
- * @param {string} phone_number
- * @param {string} picture
+ * @property {string} id
+ * @property {string} preferred_username
+ * @property {string} nickname
+ * @property {string} email
+ * @property {string} phone_number
+ * @property {string} picture
+ * @property {string} enabled
+ * @property {string} status
+ * @property {string} createdAt
+ * @property {string} lastModified
  */
 
 /**
@@ -140,6 +145,7 @@ async function findIdentityByEmail(email) {
     return {
       id: user.Username,
       preferred_username: findAttrValue("preferred_username"),
+      nickname: findAttrValue("nickname"),
       email: findAttrValue("email"),
       phone_number: findAttrValue("phone_number"),
       picture: findAttrValue("picture"),

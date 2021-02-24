@@ -48,8 +48,8 @@ function handleError(res, error) {
 
 app.get("/users/:userId", async function (req, res) {
   try {
-    const user = await usersApi.getUser(req.params.userId);
-    res.json(user);
+    const result = await usersApi.getUser(req.params.userId);
+    res.json(result);
   } catch (error) {
     handleError(res, error);
   }
@@ -61,7 +61,7 @@ app.post("/users", async function (req, res) {
       userId: req.body.userId,
       area: req.body.area,
       username: req.body.username,
-      displayName: req.body.displayName,
+      nickname: req.body.nickname,
     });
     res.json(result);
   } catch (error) {
@@ -159,8 +159,8 @@ app.get("/messaging", async function (req, res) {
  */
 app.post("/messaging", async function (req, res) {
   try {
-    const room = await messagingApi.getRoom("room-1");
-    if (room.code === "NotFoundException") {
+    const roomResult = await messagingApi.getRoom("room-1");
+    if (roomResult.code === "NotFoundException") {
       await usersApi.createRoom({
         roomId: "room-1",
         creator: "user-1",
