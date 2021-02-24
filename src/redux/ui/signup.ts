@@ -64,12 +64,12 @@ export const signupMiddleware: Middleware = ({ dispatch, getState }) => (
   const action = incomingAction as KnownAction;
   if (action.type === "SIGNUP_INIT") {
     dispatch(
-      actionCreators.initPage("SIGNUP", { waitingUserConfirmation: false })
+      actionCreators.setPageState("SIGNUP", { waitingUserConfirmation: false })
     );
   }
   if (action.type === "SIGNUP_SET_WAITING_USER_CONFIRMATION") {
     dispatch(
-      actionCreators.updatePage("SIGNUP", { waitingUserConfirmation: true })
+      actionCreators.setPageState("SIGNUP", { waitingUserConfirmation: true })
     );
   }
   if (action.type === "SIGNUP_EXECUTE") {

@@ -64,14 +64,14 @@ export const forgotPasswordMiddleware: Middleware = ({
   const action = incomingAction as KnownAction;
   if (action.type === "FORGOT_PASSWORD_INIT") {
     dispatch(
-      actionCreators.initPage("FORGOT_PASSWORD", {
+      actionCreators.setPageState("FORGOT_PASSWORD", {
         waitingUserConfirmation: false,
       })
     );
   }
   if (action.type === "FORGOT_PASSWORD_SET_WAITING_USER_CONFIRMATION") {
     dispatch(
-      actionCreators.updatePage("FORGOT_PASSWORD", {
+      actionCreators.setPageState("FORGOT_PASSWORD", {
         waitingUserConfirmation: true,
       })
     );

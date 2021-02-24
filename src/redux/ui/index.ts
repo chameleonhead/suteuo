@@ -24,16 +24,8 @@ export const uiSelectors = {
     state.ui["FORGOT_PASSWORD"],
 };
 
-interface InitPageStateAction<T = any> {
-  type: "INIT_PAGE_STATE";
-  payload: {
-    pageKey: string;
-    data: T;
-  };
-}
-
-interface UpdatePageStateAction<T = any> {
-  type: "UPDATE_PAGE_STATE";
+interface SetPageStateAction<T = any> {
+  type: "SET_PAGE_STATE";
   payload: {
     pageKey: string;
     data: T;
@@ -47,27 +39,17 @@ interface ClearPageStateAction {
   };
 }
 
-type KnownAction =
-  | InitPageStateAction
-  | UpdatePageStateAction
-  | ClearPageStateAction;
+type KnownAction = SetPageStateAction | ClearPageStateAction;
 
 export const uiActionCreators = {
-  initPage: <T>(pageKey: string, initialData: T): InitPageStateAction<T> => ({
-    type: "INIT_PAGE_STATE",
+  setPageState: <T>(pageKey: string, initialData: T): SetPageStateAction<T> => ({
+    type: "SET_PAGE_STATE",
     payload: {
       pageKey,
       data: initialData,
     },
   }),
-  updatePage: <T>(pageKey: string, data: T): UpdatePageStateAction<T> => ({
-    type: "UPDATE_PAGE_STATE",
-    payload: {
-      pageKey,
-      data,
-    },
-  }),
-  clearPage: <T>(pageKey: string, data: T): ClearPageStateAction => ({
+  clearPageState: <T>(pageKey: string, data: T): ClearPageStateAction => ({
     type: "CLEAR_PAGE_STATE",
     payload: {
       pageKey,
@@ -90,13 +72,7 @@ export const uiReducer: Reducer<UiState> = (state, incomingAction) => {
   }
   const action = incomingAction as KnownAction;
   switch (action.type) {
-    case "INIT_PAGE_STATE": {
-      return {
-        ...state,
-        [action.payload.pageKey]: action.payload.data,
-      };
-    }
-    case "UPDATE_PAGE_STATE": {
+    case "SET_PAGE_STATE": {
       return {
         ...state,
         [action.payload.pageKey]: action.payload.data,
