@@ -19,6 +19,10 @@ export const Signup = (props: SignupProps) => {
     undefined as undefined | { username: string; password: string }
   );
 
+  if (!state) {
+    return null;
+  }
+
   return (
     <Layout>
       <div className="md:grid md:grid-cols-2">

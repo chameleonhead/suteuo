@@ -14,7 +14,7 @@ export const NavMenu = (props: NavMenuProps) => {
     setOpen(false);
   }, []);
   return (
-    <nav className="bg-gray-800 px-10">
+    <nav className="bg-gray-800 px-4 md:px-10">
       <div className="flex items-center justify-between">
         <div className="flex items-center py-2">
           <h1 className="text-white text-xl">

@@ -1,5 +1,5 @@
-import { Middleware, Reducer } from "redux";
-import { actionCreators, ApplicationState, selectors } from "..";
+import { Middleware } from "redux";
+import { actionCreators } from "..";
 import { KnownAction as ApiAction } from "../api";
 
 interface SignupInfo {
@@ -12,16 +12,6 @@ interface ConfirmSignupInfo {
   password: string;
   code: string;
 }
-
-export interface SignupState {
-  waitingUserConfirmation: boolean;
-  executing: boolean;
-}
-
-export const signupSelectors = {
-  getSignupState: (state: ApplicationState) =>
-    selectors.getUiState(state).signup,
-};
 
 interface SignupInitAction {
   type: "SIGNUP_INIT";
@@ -72,6 +62,16 @@ export const signupMiddleware: Middleware = ({ dispatch, getState }) => (
 ) => (incomingAction) => {
   next(incomingAction);
   const action = incomingAction as KnownAction;
+  if (action.type === "SIGNUP_INIT") {
+    dispatch(
+      actionCreators.initPage("SIGNUP", { waitingUserConfirmation: false })
+    );
+  }
+  if (action.type === "SIGNUP_SET_WAITING_USER_CONFIRMATION") {
+    dispatch(
+      actionCreators.updatePage("SIGNUP", { waitingUserConfirmation: false })
+    );
+  }
   if (action.type === "SIGNUP_EXECUTE") {
     dispatch(actionCreators.api(action.type, "REGISTER", action.payload));
   }
@@ -123,33 +123,4 @@ export const signupMiddleware: Middleware = ({ dispatch, getState }) => (
       })
     );
   }
-};
-
-export const signupReducer: Reducer<SignupState> = (state, incomingAction) => {
-  if (!state) {
-    state = {
-      waitingUserConfirmation: false,
-      executing: false,
-    };
-  }
-
-  const action = incomingAction as KnownAction;
-  switch (action.type) {
-    case "SIGNUP_INIT":
-      return {
-        waitingUserConfirmation: false,
-        executing: false,
-      };
-    case "SIGNUP_EXECUTE":
-      return {
-        ...state,
-        executing: true,
-      };
-    case "SIGNUP_SET_WAITING_USER_CONFIRMATION":
-      return {
-        ...state,
-        waitingUserConfirmation: true,
-      };
-  }
-  return state;
 };

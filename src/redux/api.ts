@@ -129,6 +129,9 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
       case "LOGOUT":
         fetchTask = Auth.signOut();
         break;
+      case "RESET_PASSWORD":
+        fetchTask = Auth.forgotPassword(action.payload.params.username);
+        break;
       case "GET_USER":
         fetchTask = API.get("suteuo", "/users/" + params.userId, {});
         break;

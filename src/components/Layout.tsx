@@ -7,7 +7,7 @@ export const Layout = (props: LayoutProps) => {
   return (
     <div className="App">
       <NavMenu />
-      <div className="px-10">{props.children}</div>
+      <div className="px-4 md:px-10">{props.children}</div>
     </div>
   );
 };

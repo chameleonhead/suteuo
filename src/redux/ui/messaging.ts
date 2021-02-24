@@ -1,17 +1,10 @@
-import { Middleware, Reducer } from "redux";
-import { actionCreators, ApplicationState, selectors } from "..";
+import { Middleware } from "redux";
+import { actionCreators } from "..";
 import { KnownAction as ApiAction } from "../api";
 
 interface AddMessageInfo {
   body: string;
 }
-
-export interface MessagingState {}
-
-export const messagingSelectors = {
-  getMessagingState: (state: ApplicationState) =>
-    selectors.getUiState(state).messaging,
-};
 
 interface AddMessageAction {
   type: "ADD_MESSAGE";
@@ -47,11 +40,4 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
   ) {
     console.error("登録に失敗しました。");
   }
-};
-
-export const messagingReducer: Reducer<MessagingState> = (state, _) => {
-  if (!state) {
-    state = {};
-  }
-  return state;
 };
