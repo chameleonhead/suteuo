@@ -54,7 +54,7 @@ async function getMessageRoomsForUser(userId) {
     totalCount: result.Count,
     items: data.Responses[process.env.STORAGE_SUTEUOMESSAGING_NAME].map(
       (messageRoom) => ({
-        id: messageRoom.PK.replace("MESSAGE_ROOM#"),
+        id: messageRoom.Id,
         participants: messageRoom.Participants,
         creator: messageRoom.Creator,
         createdAt: messageRoom.CreatedAt,
@@ -78,7 +78,7 @@ async function getMessageRoom(messageRoomId) {
   const messageRoom = await docClient.get(params).promise();
   if (messageRoom.Item) {
     return {
-      id: messageRoom.Item.PK.replace("MESSAGE_ROOM#", ""),
+      id: messageRoom.Item.Id,
       participants: messageRoom.Item.Participants,
       creator: messageRoom.Item.Creator,
       createdAt: messageRoom.Item.CreatedAt,
@@ -103,7 +103,7 @@ async function getMessageRoomMessages(messageRoomId) {
   };
   const result = await docClient.query(params).promise();
   return result.Items.map((item) => ({
-    id: item.SK.replace("MESSAGE#", ""),
+    id: item.Id,
     body: item.Body,
     sender: item.Sender,
     createdAt: item.CreatedAt,
@@ -120,6 +120,7 @@ async function addMessageRoom(messageRoom) {
       Item: {
         PK: "MESSAGE_ROOM#" + messageRoom.id,
         SK: "Details",
+        Id: messageRoom.id,
         Participants: messageRoom.participants,
         Creator: messageRoom.creator,
         CreatedAt: messageRoom.createdAt,
@@ -157,6 +158,7 @@ async function addMessageRoomMessage(messageRoomId, message) {
     Item: {
       PK: "MESSAGE_ROOM#" + messageRoomId,
       SK: "MESSAGE#" + message.id,
+      Id: message.id,
       Body: message.body,
       Sender: message.sender,
       CreatedAt: message.createdAt,
@@ -177,6 +179,7 @@ async function updateMessageRoom(messageRoom) {
       Item: {
         PK: "MESSAGE_ROOM#" + messageRoom.id,
         SK: "Details",
+        Id: messageRoom.id,
         Participants: messageRoom.participants,
         Creator: messageRoom.creator,
         CreatedAt: messageRoom.createdAt,

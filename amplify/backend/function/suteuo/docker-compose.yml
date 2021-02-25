@@ -30,6 +30,7 @@ services:
       - AUTH_SUTEUO_USERPOOLID=authsuteuoUserPoolId
       - STORAGE_SUTEUOUSERS_NAME=suteuousers
       - STORAGE_SUTEUOMESSAGING_NAME=suteuomessaging
+      - STORAGE_SUTEUONOTIFICATION_NAME=suteuonotification
       - STORAGE_SUTEUOREQUESTS_NAME=suteuorequests
       - AWS_ACCESS_KEY_ID=fakeAccessKeyId
       - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
