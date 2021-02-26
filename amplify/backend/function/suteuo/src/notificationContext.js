@@ -11,11 +11,11 @@ if (process.env.ENDPOINT_OVERRIDE) {
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 /**
- * @typedef NotificationTarget
+ * @typedef Subscription
  * @property {string} id
  * @property {string} user
- * @property {string} targetName
- * @property {object} preference
+ * @property {string} clientInfo
+ * @property {object} data
  * @property {string} createdAt
  */
 
@@ -39,35 +39,70 @@ const convertNotificationFromDbToModel = (notification) => ({
 });
 
 /**
- * @param {string} userId
- * @returns {{totalCount: number; items: Notification[]}}
+ * @param {string} subscriptionId
+ * @returns {Subscription}
  */
-async function getNotificationsForTarget(targetId) {
+async function getSubscription(subscriptionId) {
   var params = {
     TableName: process.env.STORAGE_SUTEUONOTIFICATION_NAME,
+    FilterExpression: "SK = :sk",
     ExpressionAttributeValues: {
-      ":id": "TARGET#" + targetId,
-      ":value": "NOTIFICATION#",
+      ":sk": "SUBSCRIPTION#" + subscriptionId,
     },
-    KeyConditionExpression: "PK = :id and begins_with(SK, :value)",
   };
-  const result = await docClient.query(params).promise();
+
+  const result = await docClient.scan(params).promise();
+  if (result.Items.length === 0) {
+    return null;
+  }
   return {
-    totalCount: result.Count,
-    items: result.Items.map(convertNotificationFromDbToModel),
+    id: result.Items[0].Id,
+    user: result.Items[0].User,
+    clientInfo: result.Items[0].ClientInfo,
+    data: result.Items[0].Data,
+    createdAt: result.Items[0].CreatedAt,
   };
 }
 
 /**
  * @param {string} userId
- * @returns {NotificationTarget[]}
+ * @returns {{totalCount: number; items: Notification[]}}
  */
-async function getNotificationTargetsByUser(userId) {
+async function getNotificationsForSubscription(subscriptionId, notDeliveredOnly) {
+  var params = {
+    TableName: process.env.STORAGE_SUTEUONOTIFICATION_NAME,
+    ExpressionAttributeValues: {
+      ":id": "SUBSCRIPTION#" + subscriptionId,
+      ":value": "NOTIFICATION#",
+    },
+    KeyConditionExpression: "PK = :id and begins_with(SK, :value)",
+  };
+  const result = await docClient.query(params).promise();
+  if (notDeliveredOnly) {
+    return {
+      totalCount: result.Count,
+      items: result.Items.map(convertNotificationFromDbToModel).filter(
+        (e) => !e.isSent
+      ),
+    };
+  } else {
+    return {
+      totalCount: result.Count,
+      items: result.Items.map(convertNotificationFromDbToModel),
+    };
+  }
+}
+
+/**
+ * @param {string} userId
+ * @returns {Subscription[]}
+ */
+async function getSubscriptionsForUser(userId) {
   var params = {
     TableName: process.env.STORAGE_SUTEUONOTIFICATION_NAME,
     ExpressionAttributeValues: {
       ":id": "USER#" + userId,
-      ":value": "TARGET#",
+      ":value": "SUBSCRIPTION#",
     },
     KeyConditionExpression: "PK = :id and begins_with(SK, :value)",
   };
@@ -75,42 +110,42 @@ async function getNotificationTargetsByUser(userId) {
   return result.Items.map((item) => ({
     id: item.Id,
     user: item.User,
-    targetName: item.TargetName,
-    preference: item.Preference,
+    subscriptionName: item.TargetName,
+    data: item.Data,
     createdAt: item.CreatedAt,
   }));
 }
 
 /**
- * @param {NotificationTarget} target
+ * @param {Subscription} subscription
  */
-async function addNotificationTarget(target) {
+async function addSubscription(subscription) {
   var params = {
     TableName: process.env.STORAGE_SUTEUONOTIFICATION_NAME,
     Item: {
-      PK: "USER#" + target.user,
-      SK: "TARGET#" + target.id,
-      Id: target.id,
-      User: target.user,
-      TargetName: target.targetName,
-      Preference: target.preference,
-      CreatedAt: target.createdAt,
-      Creator: target.creator,
+      PK: "USER#" + subscription.user,
+      SK: "SUBSCRIPTION#" + subscription.id,
+      Id: subscription.id,
+      User: subscription.user,
+      ClientInfo: subscription.clientInfo,
+      Data: subscription.data,
+      CreatedAt: subscription.createdAt,
+      Creator: subscription.creator,
     },
   };
   await docClient.put(params).promise();
 }
 
 /**
- * @param {string} targetId
+ * @param {string} subscriptionId
  */
-async function removeNotificationTarget(targetId) {
+async function removeSubscription(subscriptionId) {
   const deleteList = [];
   var params = {
     TableName: process.env.STORAGE_SUTEUONOTIFICATION_NAME,
     FilterExpression: "SK = :sk",
     ExpressionAttributeValues: {
-      ":sk": "TARGET#" + targetId,
+      ":sk": "SUBSCRIPTION#" + subscriptionId,
     },
   };
   const result = await docClient.scan(params).promise();
@@ -128,7 +163,7 @@ async function removeNotificationTarget(targetId) {
   var notificationParams = {
     TableName: process.env.STORAGE_SUTEUONOTIFICATION_NAME,
     ExpressionAttributeValues: {
-      ":id": "TARGET#" + targetId,
+      ":id": "SUBSCRIPTION#" + subscriptionId,
       ":value": "NOTIFICATION#",
     },
     KeyConditionExpression: "PK = :id and begins_with(SK, :value)",
@@ -160,14 +195,14 @@ async function removeNotificationTarget(targetId) {
 }
 
 /**
- * @param {string} targetId
+ * @param {string} subscriptionId
  * @param {Notification} notification
  */
-async function addNotification(targetId, notification) {
+async function addNotification(subscriptionId, notification) {
   var params = {
     TableName: process.env.STORAGE_SUTEUONOTIFICATION_NAME,
     Item: {
-      PK: "TARGET#" + targetId,
+      PK: "SUBSCRIPTION#" + subscriptionId,
       SK: "NOTIFICATION#" + notification.id,
       Id: notification.id,
       Payload: notification.payload,
@@ -255,10 +290,11 @@ async function removeNotification(notificationId) {
 }
 
 module.exports = {
-  getNotificationsForTarget,
-  getNotificationTargetsByUser,
-  addNotificationTarget,
-  removeNotificationTarget,
+  getSubscription,
+  getNotificationsForSubscription,
+  getSubscriptionsForUser,
+  addSubscription,
+  removeSubscription,
   addNotification,
   updateNotificationSent,
   updateNotificationRead,
