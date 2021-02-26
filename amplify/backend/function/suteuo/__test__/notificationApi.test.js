@@ -4,6 +4,7 @@ class Context {
   subscriptions = {};
   notifications = {};
   notificationsBySubscriptionId = {};
+  events = {};
   getSubscription(subscriptionId) {
     return this.subscriptions[subscriptionId];
   }
@@ -54,10 +55,33 @@ class Context {
         notifications.splice(notifications.indexOf(notification), 1);
     }
   }
+  addEventSubscription(eventSubscription) {
+    this.eventSubscriptions[eventSubscription.id] = eventSubscription;
+    this.eventDistribution[eventSubscription.id] = [];
+  }
+  removeEventSubscription(eventSubscriptionId) {
+    delete this.eventSubscriptions[eventSubscriptionId];
+    delete this.eventDistribution[eventSubscriptionId];
+  }
+  addEvent(event) {
+    for (let eventSubscriptionId in this.eventSubscriptions) {
+      if (
+        this.eventSubscriptions[eventSubscriptionId].eventTypes.contains(
+          event.type
+        )
+      ) {
+        this.eventDistribution[eventSubscriptionId].push({
+          event: event.id,
+          isSent: false,
+          createdAt: event.createdAt,
+        });
+      }
+    }
+  }
 }
 
 describe("notification api", () => {
-  describe("createNotificationTarget", () => {
+  describe("createSubscription", () => {
     it("should create subscription", async () => {
       const api = new Api(new Context());
       const result = await api.createSubscription({
@@ -91,6 +115,34 @@ describe("notification api", () => {
             p256dh: "p256dh",
           },
         },
+        createdAt: expect.anything(),
+      });
+    });
+  });
+  describe("createNotification", () => {
+    it("should create subscription", async () => {
+      const api = new Api(new Context());
+      const subResult = await api.createSubscription({ type: "webpush" });
+      const result = await api.createNotification(subResult.subscription.id, {
+        type: "subtype",
+        payload: { payload: "data" },
+      });
+      expect(result).toMatchObject({
+        success: true,
+        notification: {
+          id: expect.anything(),
+        },
+      });
+      const { notifications } = await api.getNotificationsForSubscription(
+        subResult.subscription.id
+      );
+      expect(notifications[0]).toMatchObject({
+        id: expect.anything(),
+        type: "subtype",
+        payload: { payload: "data" },
+        expireAt: undefined,
+        isSent: false,
+        isRead: false,
         createdAt: expect.anything(),
       });
     });

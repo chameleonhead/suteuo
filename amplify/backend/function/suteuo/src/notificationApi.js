@@ -31,17 +31,41 @@ NotificationApi.prototype.getSubscription = async function (subscriptionId) {
 };
 
 /**
+ * @param {string} subscriptionId
+ */
+NotificationApi.prototype.getNotificationsForSubscription = async function (
+  subscriptionId
+) {
+  const subscription = await this.context.getSubscription(subscriptionId);
+  if (!subscription) {
+    return {
+      statusCode: 404,
+      code: "NotFoundException",
+      message: "Subscription not found.",
+    };
+  }
+  const notifications = await this.context.getNotificationsForSubscription(
+    subscriptionId
+  );
+  return {
+    success: true,
+    totalCount: notifications.totalCount,
+    notifications: notifications.items,
+  };
+};
+
+/**
  * @param {string} userId
  */
 NotificationApi.prototype.getSubscriptionForUser = async function (userId) {
-  const notifications = await this.context.getSubscriptionForUser(
+  const subscriptions = await this.context.getSubscriptionsForUser(
     userId,
     false
   );
   return {
     success: true,
-    totalCount: notifications.totalCount,
-    notifications: notifications.notifications,
+    totalCount: subscriptions.totalCount,
+    subscriptions: subscriptions.subscriptions,
   };
 };
 
@@ -69,6 +93,38 @@ NotificationApi.prototype.createSubscription = async function (options) {
     success: true,
     subscription: {
       id: subscriptionId,
+    },
+  };
+};
+
+/**
+ * @typedef CreateNotificationOptions
+ * @property {string} type
+ * @property {string} payload
+ * @property {string|undefined} expireAt
+ */
+/**
+ * @param {string} subscriptionId
+ * @param {CreateNotificationOptions} options
+ */
+NotificationApi.prototype.createNotification = async function (
+  subscriptionId,
+  options
+) {
+  const notificationId = id();
+  await this.context.addNotification(subscriptionId, {
+    id: notificationId,
+    type: options.type,
+    payload: options.payload,
+    expireAt: options.expireAt,
+    isSent: false,
+    isRead: false,
+    createdAt: new Date().toISOString(),
+  });
+  return {
+    success: true,
+    notification: {
+      id: notificationId,
     },
   };
 };
