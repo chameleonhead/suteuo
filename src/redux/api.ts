@@ -140,13 +140,13 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
         );
         break;
       case "GET_USER":
-        fetchTask = API.get("suteuo", "/users/" + params.userId, {});
+        fetchTask = API.get("suteuorest", "/users/" + params.userId, {});
         break;
       case "GET_MESSAGES":
-        fetchTask = API.get("suteuo", "/messaging", {});
+        fetchTask = API.get("suteuorest", "/messaging", {});
         break;
       case "POST_MESSAGE":
-        fetchTask = API.post("suteuo", "/messaging", {
+        fetchTask = API.post("suteuorest", "/messaging", {
           body: params,
         });
         break;
