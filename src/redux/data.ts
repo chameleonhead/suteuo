@@ -111,7 +111,7 @@ export const dataMiddleware: Middleware = ({ dispatch, getState }) => (
     action.type === "API_SUCCEEDED" &&
     action.meta.returnAddress === "FETCH_USER"
   ) {
-    dispatch(actionCreators.setUser(action.payload));
+    dispatch(actionCreators.setUser(action.payload.user));
   }
   if (action.type === "FETCH_MESSAGES") {
     dispatch(actionCreators.api(action.type, "GET_MESSAGES"));
