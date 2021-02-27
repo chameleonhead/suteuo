@@ -15,7 +15,8 @@
                 "unauth": [
                     "/GET"
                 ]
-            }
+            },
+            "policyResourceName": "/users"
         },
         {
             "name": "/messaging",
@@ -29,36 +30,20 @@
                     "/PATCH",
                     "/DELETE"
                 ]
-            }
-        },
-        {
-            "name": "/requests",
-            "lambdaFunction": "suteuo",
-            "privacy": {
-                "protected": true,
-                "auth": [
-                    "/POST",
-                    "/GET",
-                    "/PUT",
-                    "/PATCH",
-                    "/DELETE"
-                ],
-                "unauth": [
-                    "/GET"
-                ]
-            }
+            },
+            "policyResourceName": "/messaging"
         }
     ],
-    "resourceName": "suteuo",
-    "apiName": "suteuo",
+    "resourceName": "suteuorest",
+    "apiName": "suteuorest",
     "functionArns": [
         {
             "lambdaFunction": "suteuo"
         }
     ],
     "privacy": {
-        "auth": 3,
-        "unauth": 2,
+        "auth": 2,
+        "unauth": 1,
         "authRoleName": "amplify-suteuo-dev-154743-authRole",
         "unAuthRoleName": "amplify-suteuo-dev-154743-unauthRole"
     },
@@ -71,6 +56,5 @@
                 "Arn"
             ]
         }
-    ],
-    "uuid": "3654b5a0"
+    ]
 }

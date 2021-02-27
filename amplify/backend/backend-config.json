@@ -1,86 +1,86 @@
 {
-  "hosting": {
-    "amplifyhosting": {
-      "service": "amplifyhosting",
-      "type": "cicd"
-    }
-  },
-  "auth": {
-    "suteuo": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "customAuth": false
-    }
-  },
-  "storage": {
-    "suteuomessaging": {
-      "service": "DynamoDB",
-      "providerPlugin": "awscloudformation"
-    },
-    "suteuousers": {
-      "service": "DynamoDB",
-      "providerPlugin": "awscloudformation"
-    },
-    "suteuorequests": {
-      "service": "DynamoDB",
-      "providerPlugin": "awscloudformation"
-    }
-  },
-  "function": {
-    "suteuo": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "auth",
-          "resourceName": "suteuo",
-          "attributes": [
-            "UserPoolId"
-          ]
-        },
-        {
-          "category": "storage",
-          "resourceName": "suteuomessaging",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        },
-        {
-          "category": "storage",
-          "resourceName": "suteuousers",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        },
-        {
-          "category": "storage",
-          "resourceName": "suteuorequests",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
+    "hosting": {
+        "amplifyhosting": {
+            "service": "amplifyhosting",
+            "type": "cicd"
         }
-      ]
-    }
-  },
-  "api": {
-    "suteuo": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "suteuo",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
+    },
+    "auth": {
+        "suteuo": {
+            "service": "Cognito",
+            "providerPlugin": "awscloudformation",
+            "dependsOn": [],
+            "customAuth": false
         }
-      ]
+    },
+    "storage": {
+        "suteuomessaging": {
+            "service": "DynamoDB",
+            "providerPlugin": "awscloudformation"
+        },
+        "suteuousers": {
+            "service": "DynamoDB",
+            "providerPlugin": "awscloudformation"
+        },
+        "suteuorequests": {
+            "service": "DynamoDB",
+            "providerPlugin": "awscloudformation"
+        }
+    },
+    "function": {
+        "suteuo": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda",
+            "dependsOn": [
+                {
+                    "category": "auth",
+                    "resourceName": "suteuo",
+                    "attributes": [
+                        "UserPoolId"
+                    ]
+                },
+                {
+                    "category": "storage",
+                    "resourceName": "suteuomessaging",
+                    "attributes": [
+                        "Name",
+                        "Arn"
+                    ]
+                },
+                {
+                    "category": "storage",
+                    "resourceName": "suteuousers",
+                    "attributes": [
+                        "Name",
+                        "Arn"
+                    ]
+                },
+                {
+                    "category": "storage",
+                    "resourceName": "suteuorequests",
+                    "attributes": [
+                        "Name",
+                        "Arn"
+                    ]
+                }
+            ]
+        }
+    },
+    "api": {
+        "suteuorest": {
+            "service": "API Gateway",
+            "providerPlugin": "awscloudformation",
+            "dependsOn": [
+                {
+                    "category": "function",
+                    "resourceName": "suteuo",
+                    "attributes": [
+                        "Name",
+                        "Arn"
+                    ]
+                }
+            ]
+        }
     }
-  }
 }
