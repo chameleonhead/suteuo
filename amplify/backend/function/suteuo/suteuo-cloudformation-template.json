@@ -37,6 +37,14 @@
     "authsuteuoUserPoolId": {
       "Type": "String",
       "Default": "authsuteuoUserPoolId"
+    },
+    "storagesuteuonotificationName": {
+      "Type": "String",
+      "Default": "storagesuteuonotificationName"
+    },
+    "storagesuteuonotificationArn": {
+      "Type": "String",
+      "Default": "storagesuteuonotificationArn"
     }
   },
   "Conditions": {
@@ -104,6 +112,12 @@
             },
             "AUTH_SUTEUO_USERPOOLID": {
               "Ref": "authsuteuoUserPoolId"
+            },
+            "STORAGE_SUTEUONOTIFICATION_NAME": {
+              "Ref": "storagesuteuonotificationName"
+            },
+            "STORAGE_SUTEUONOTIFICATION_ARN": {
+              "Ref": "storagesuteuonotificationArn"
             }
           }
         },
@@ -118,7 +132,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-suteuo-dev-154743-deployment",
-          "S3Key": "amplify-builds/suteuo-4d664a4c745a496b316c-build.zip"
+          "S3Key": "amplify-builds/suteuo-7939655466484b52734b-build.zip"
         }
       }
     },
@@ -351,6 +365,39 @@
                     [
                       {
                         "Ref": "storagesuteuorequestsArn"
+                      },
+                      "index/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Put*",
+                "dynamodb:Create*",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:Get*",
+                "dynamodb:BatchGetItem",
+                "dynamodb:List*",
+                "dynamodb:Describe*",
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                "dynamodb:Update*",
+                "dynamodb:RestoreTable*",
+                "dynamodb:Delete*"
+              ],
+              "Resource": [
+                {
+                  "Ref": "storagesuteuonotificationArn"
+                },
+                {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      {
+                        "Ref": "storagesuteuonotificationArn"
                       },
                       "index/*"
                     ]

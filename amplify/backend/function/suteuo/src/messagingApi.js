@@ -1,4 +1,5 @@
 const awsContext = require("./messagingContext");
+const uuid = require("uuid");
 
 /**
  * @constructor
@@ -8,10 +9,6 @@ const awsContext = require("./messagingContext");
 function MessagingApi(bus, context) {
   this.bus = bus;
   this.context = context || awsContext;
-}
-
-function id() {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
 /**
@@ -74,13 +71,15 @@ MessagingApi.prototype.getMessagesForRoom = async function (messageRoomId) {
  * @param {CreateRoomOptions} options
  */
 MessagingApi.prototype.createRoom = async function (options) {
-  const roomId = options.roomId || id();
-  await this.context.addMessageRoom({
+  const roomId = options.roomId || uuid.v4();
+  const room = {
     id: roomId,
     participants: options.participants,
     creator: options.creator,
     createdAt: new Date().toISOString(),
-  });
+  };
+  await this.context.addMessageRoom(room);
+  await this.bus.publish("EVENT:MESSAGE_ROOM:CREATED", roomId, room);
   return {
     success: true,
     room: {
@@ -114,13 +113,15 @@ MessagingApi.prototype.createMessage = async function (options) {
       message: "Message room not found.",
     };
   }
-  const messageId = id();
-  await this.context.addMessageRoomMessage(options.roomId, {
+  const messageId = uuid.v4();
+  const message = {
     id: messageId,
     body: options.body,
     sender: options.sender,
     createdAt: new Date().toISOString(),
-  });
+  };
+  await this.context.addMessageRoomMessage(options.roomId, message);
+  await this.bus.publish("EVENT:MESSAGE:CREATED", messageId, message);
   return {
     success: true,
     message: {
@@ -141,6 +142,7 @@ MessagingApi.prototype.updateRoom = async function (options) {
   const room = await this.context.getMessageRoom(options.roomId);
   room.participants = options.participants;
   await this.context.updateMessageRoom(room);
+  await this.bus.publish("EVENT:MESSAGE_ROOM:UPDATED", room.id, room);
   return {
     success: true,
   };

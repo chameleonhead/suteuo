@@ -23,6 +23,12 @@
         "read",
         "update",
         "delete"
+      ],
+      "suteuonotification": [
+        "create",
+        "read",
+        "update",
+        "delete"
       ]
     }
   },

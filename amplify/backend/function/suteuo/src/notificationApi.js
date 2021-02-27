@@ -1,4 +1,5 @@
 const awsContext = require("./notificationContext");
+const uuid = require("uuid");
 
 /**
  * @constructor
@@ -8,10 +9,6 @@ const awsContext = require("./notificationContext");
 function NotificationApi(bus, context) {
   this.bus = bus;
   this.context = context || awsContext;
-}
-
-function id() {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
 /**
@@ -82,15 +79,21 @@ NotificationApi.prototype.getSubscriptionForUser = async function (userId) {
  * @param {CreateSubscriptionOptions} options
  */
 NotificationApi.prototype.createSubscription = async function (options) {
-  const subscriptionId = id();
-  await this.context.addSubscription({
+  const subscriptionId = uuid.v4();
+  const subscription = {
     id: subscriptionId,
     type: options.type,
     user: options.user,
     clientInfo: options.clientInfo,
     data: options.data,
     createdAt: new Date().toISOString(),
-  });
+  };
+  await this.context.addSubscription(subscription);
+  await this.bus.publish(
+    "EVENT:SUBSCRIPTION:CREATED",
+    subscriptionId,
+    subscription
+  );
   return {
     success: true,
     subscription: {
@@ -121,7 +124,7 @@ NotificationApi.prototype.createNotification = async function (
       message: "Specified subscription not found.",
     };
   }
-  const notificationId = id();
+  const notificationId = uuid.v4();
   const notification = {
     id: notificationId,
     type: options.type,
@@ -132,6 +135,11 @@ NotificationApi.prototype.createNotification = async function (
     createdAt: new Date().toISOString(),
   };
   await this.context.addNotification(subscriptionId, notification);
+  await this.bus.publish(
+    "EVENT:NOTIFICATION:CREATED",
+    notificationId,
+    notification
+  );
   return {
     success: true,
     notification: {
