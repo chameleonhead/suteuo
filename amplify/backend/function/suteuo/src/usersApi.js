@@ -2,9 +2,11 @@ const awsContext = require("./usersContext");
 
 /**
  * @constructor
+ * @param {import('./bus')} bus
  * @param {awsContext} context
  */
-function UsersApi(context) {
+function UsersApi(bus, context) {
+  this.bus = bus;
   this.context = context || awsContext;
 }
 
@@ -82,14 +84,13 @@ UsersApi.prototype.updateUser = async function (options) {
       nickname: options.nickname,
       createdAt: identity.createdAt,
     });
-    return {
-      success: true,
-    };
+  } else {
+    user.area = options.area;
+    user.username = options.username;
+    user.nickname = options.nickname;
+    await this.context.updateUser(user);
+    this.bus.dispatch();
   }
-  user.area = options.area;
-  user.username = options.username;
-  user.nickname = options.nickname;
-  await this.context.updateUser(user);
   return {
     success: true,
   };
