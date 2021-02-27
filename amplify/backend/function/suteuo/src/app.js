@@ -7,12 +7,18 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
 
+var Bus = require("./bus");
+var eventMessageHandler = require("./busEventHandler");
+var notificationMessageHandler = require("./busNotificationHandler");
+var bus = new Bus();
+bus.subscribe(eventMessageHandler);
+bus.subscribe(notificationMessageHandler);
+
 var UsersApi = require("./usersApi");
-const usersApi = new UsersApi();
+const usersApi = new UsersApi(bus);
 
 var MessagingApi = require("./messagingApi");
-const messagingApi = new MessagingApi();
-
+const messagingApi = new MessagingApi(bus);
 
 if (process.env.ENDPOINT_OVERRIDE) {
   //swaggerの基本定義

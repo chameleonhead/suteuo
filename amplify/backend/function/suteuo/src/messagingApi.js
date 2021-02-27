@@ -1,13 +1,12 @@
 const awsContext = require("./messagingContext");
 
 /**
- * @type {import("../context")}
- */
-/**
  * @constructor
- * @param {Context} context
+ * @param {import('./bus')} bus
+ * @param {awsContext} context
  */
-function MessagingApi(context) {
+function MessagingApi(bus, context) {
+  this.bus = bus;
   this.context = context || awsContext;
 }
 

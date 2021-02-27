@@ -2,9 +2,11 @@ const awsContext = require("./usersContext");
 
 /**
  * @constructor
+ * @param {import('./bus')} bus
  * @param {awsContext} context
  */
-function UsersApi(context) {
+function UsersApi(bus, context) {
+  this.bus = bus;
   this.context = context || awsContext;
 }
 
@@ -64,7 +66,7 @@ UsersApi.prototype.getUser = async function (userId) {
  * @param {UreateUserOptions} options
  */
 UsersApi.prototype.updateUser = async function (options) {
-  const user = await this.context.getUser(options.userId);
+  let user = await this.context.getUser(options.userId);
   if (!user) {
     const identity = await this.context.getIdentity(options.userId);
     if (!identity) {
@@ -75,21 +77,22 @@ UsersApi.prototype.updateUser = async function (options) {
         retryable: false,
       };
     }
-    await this.context.addUser({
+    user = {
       id: options.userId,
       area: options.area,
       username: options.username,
       nickname: options.nickname,
       createdAt: identity.createdAt,
-    });
-    return {
-      success: true,
     };
+    await this.context.addUser(user);
+    await this.bus.publish("EVENT:USER:CREATED", user.id, user);
+  } else {
+    user.area = options.area;
+    user.username = options.username;
+    user.nickname = options.nickname;
+    await this.context.updateUser(user);
+    await this.bus.publish("EVENT:USER:UPDATED", user.id, user);
   }
-  user.area = options.area;
-  user.username = options.username;
-  user.nickname = options.nickname;
-  await this.context.updateUser(user);
   return {
     success: true,
   };
@@ -113,6 +116,7 @@ UsersApi.prototype.deleteUser = async function (options) {
     };
   }
   await this.context.removeUser(user);
+  await this.bus.publish("EVENT:USER:DELETED", user.id, user);
   return {
     success: true,
   };

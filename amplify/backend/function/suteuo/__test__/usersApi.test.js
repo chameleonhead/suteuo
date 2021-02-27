@@ -1,4 +1,6 @@
 const Api = require("../src/usersApi");
+const Bus = require("../src/bus");
+const bus = new Bus();
 
 class Context {
   identities = {};
@@ -40,7 +42,7 @@ class Context {
 describe("users api", () => {
   describe("getUser", () => {
     it("should fail if identity not exists", async () => {
-      const api = new Api(new Context());
+      const api = new Api(bus, new Context());
       const result = await api.getUser("invaliduserid");
       expect(result).toMatchObject({ success: false });
     });
@@ -53,7 +55,7 @@ describe("users api", () => {
         "P@ssw0rd"
       );
       const userId = idResult.identity.id;
-      const api = new Api(context);
+      const api = new Api(bus, context);
       const result = await api.updateUser({
         userId: userId,
         area: "Area",
@@ -77,7 +79,7 @@ describe("users api", () => {
         "P@ssw0rd"
       );
       const userId = idResult.identity.id;
-      const api = new Api(context);
+      const api = new Api(bus, context);
       await api.updateUser({
         userId: userId,
         area: "Area",

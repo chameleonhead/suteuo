@@ -1,4 +1,6 @@
 const Api = require("../src/messagingApi");
+const Bus = require("../src/bus");
+const bus = new Bus();
 
 class Context {
   messageRooms = {};
@@ -32,7 +34,7 @@ class Context {
 describe("messaging api", () => {
   describe("createRoom", () => {
     it("should create message room", async () => {
-      const api = new Api(new Context());
+      const api = new Api(bus, new Context());
       const result = await api.createRoom({
         participants: ["user-1", "user-2"],
         creator: "user-1",
@@ -54,7 +56,7 @@ describe("messaging api", () => {
   });
   describe("createMessage", () => {
     it("should create message in message room", async () => {
-      const api = new Api(new Context());
+      const api = new Api(bus, new Context());
       const roomResult = await api.createRoom({
         participants: ["user-1", "user-2"],
         creator: "user-1",
@@ -84,7 +86,7 @@ describe("messaging api", () => {
   });
   describe("updateRoom", () => {
     it("should update message room participants", async () => {
-      const api = new Api(new Context());
+      const api = new Api(bus, new Context());
       const createResult = await api.createRoom({
         participants: ["user-1", "user-2"],
         creator: "user-1",

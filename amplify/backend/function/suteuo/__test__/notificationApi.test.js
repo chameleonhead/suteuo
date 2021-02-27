@@ -1,4 +1,6 @@
 const Api = require("../src/notificationApi");
+const Bus = require("../src/bus");
+const bus = new Bus();
 
 class Context {
   subscriptions = {};
@@ -83,7 +85,7 @@ class Context {
 describe("notification api", () => {
   describe("createSubscription", () => {
     it("should create subscription", async () => {
-      const api = new Api(new Context());
+      const api = new Api(bus, new Context());
       const result = await api.createSubscription({
         type: "webpush",
         data: {
@@ -121,7 +123,7 @@ describe("notification api", () => {
   });
   describe("createNotification", () => {
     it("should create subscription", async () => {
-      const api = new Api(new Context());
+      const api = new Api(bus, new Context());
       const subResult = await api.createSubscription({ type: "webpush" });
       const result = await api.createNotification(subResult.subscription.id, {
         type: "subtype",

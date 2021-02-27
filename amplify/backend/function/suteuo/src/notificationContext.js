@@ -68,7 +68,10 @@ async function getSubscription(subscriptionId) {
  * @param {string} userId
  * @returns {{totalCount: number; items: Notification[]}}
  */
-async function getNotificationsForSubscription(subscriptionId, notDeliveredOnly) {
+async function getNotificationsForSubscription(
+  subscriptionId,
+  notDeliveredOnly
+) {
   var params = {
     TableName: process.env.STORAGE_SUTEUONOTIFICATION_NAME,
     ExpressionAttributeValues: {
@@ -289,6 +292,32 @@ async function removeNotification(notificationId) {
     .promise();
 }
 
+/**
+ * @typedef Event
+ * @param {string} type
+ * @param {string} key
+ * @param {object} data
+ * @param {string} createdAt
+ */
+/**
+ * @param {Event} event
+ */
+async function addEvent(event) {
+  var params = {
+    TableName: process.env.STORAGE_SUTEUONOTIFICATION_NAME,
+    Item: {
+      PK: "EVENT#" + event.id,
+      SK: event.createdAt,
+      Id: event.id,
+      Type: event.type,
+      Key: event.key,
+      Data: event.data,
+      CreatedAt: event.createdAt,
+    },
+  };
+  await docClient.put(params).promise();
+}
+
 module.exports = {
   getSubscription,
   getNotificationsForSubscription,
@@ -299,4 +328,5 @@ module.exports = {
   updateNotificationSent,
   updateNotificationRead,
   removeNotification,
+  addEvent,
 };

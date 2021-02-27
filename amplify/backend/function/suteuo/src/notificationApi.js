@@ -2,9 +2,11 @@ const awsContext = require("./notificationContext");
 
 /**
  * @constructor
+ * @param {import('./bus')} bus
  * @param {awsContext} context
  */
-function NotificationApi(context) {
+function NotificationApi(bus, context) {
+  this.bus = bus;
   this.context = context || awsContext;
 }
 
@@ -111,8 +113,16 @@ NotificationApi.prototype.createNotification = async function (
   subscriptionId,
   options
 ) {
+  const subscription = await this.context.getSubscription(subscriptionId);
+  if (!subscription) {
+    return {
+      statusCode: 404,
+      code: "NotFoundException",
+      message: "Specified subscription not found.",
+    };
+  }
   const notificationId = id();
-  await this.context.addNotification(subscriptionId, {
+  const notification = {
     id: notificationId,
     type: options.type,
     payload: options.payload,
@@ -120,7 +130,8 @@ NotificationApi.prototype.createNotification = async function (
     isSent: false,
     isRead: false,
     createdAt: new Date().toISOString(),
-  });
+  };
+  await this.context.addNotification(subscriptionId, notification);
   return {
     success: true,
     notification: {
