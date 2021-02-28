@@ -142,13 +142,29 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
       case "GET_USER":
         fetchTask = API.get("suteuorest", "/users/" + params.userId, {});
         break;
-      case "GET_MESSAGES":
-        fetchTask = API.get("suteuorest", "/messaging", {});
+      case "GET_MESSAGE_ROOMS":
+        fetchTask = API.get("suteuorest", "/messaging/rooms", {});
         break;
-      case "POST_MESSAGE":
-        fetchTask = API.post("suteuorest", "/messaging", {
+      case "POST_MESSAGE_ROOM":
+        fetchTask = API.post("suteuorest", "/messaging/rooms", {
           body: params,
         });
+        break;
+      case "GET_MESSAGES":
+        fetchTask = API.get(
+          "suteuorest",
+          `/messaging/rooms/${params.roomId}/messages`,
+          {}
+        );
+        break;
+      case "POST_MESSAGE":
+        fetchTask = API.post(
+          "suteuorest",
+          `/messaging/rooms/${params.roomId}/messages`,
+          {
+            body: params,
+          }
+        );
         break;
     }
     if (fetchTask) {

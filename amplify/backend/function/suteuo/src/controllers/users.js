@@ -37,7 +37,7 @@ const getUser = async (req, res) => {
     notfound(res, "Specified user not found.");
     return;
   }
-  res.status(200).json({ success: true, user });
+  res.status(200).json({ success: true, user, req: req.headers });
 };
 
 module.exports = {

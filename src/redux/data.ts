@@ -65,7 +65,7 @@ interface FetchMessagesAction {
 interface SetMessagesAction {
   type: "SET_MESSAGES";
   payload: {
-    messages: Message[];
+    items: Message[];
   };
 }
 
@@ -92,7 +92,7 @@ export const dataActionCreators = {
   }),
   setMessages: (info: {
     totalCount: number;
-    messages: Message[];
+    items: Message[];
   }): SetMessagesAction => ({
     type: "SET_MESSAGES",
     payload: info,
@@ -114,7 +114,11 @@ export const dataMiddleware: Middleware = ({ dispatch, getState }) => (
     dispatch(actionCreators.setUser(action.payload.user));
   }
   if (action.type === "FETCH_MESSAGES") {
-    dispatch(actionCreators.api(action.type, "GET_MESSAGES"));
+    dispatch(
+      actionCreators.api(action.type, "GET_MESSAGES", {
+        roomId: "4c737d7c-afd7-4157-bf6a-c89f5971f529",
+      })
+    );
   }
   if (
     action.type === "API_SUCCEEDED" &&
@@ -147,10 +151,10 @@ export const dataReducer: Reducer<DataState> = (state, incomingAction) => {
         },
       };
     case "SET_MESSAGES":
-      const { messages } = action.payload;
+      const { items } = action.payload;
       const list = [] as string[];
       const entities = {} as { [id: string]: Message };
-      for (const message of messages) {
+      for (const message of items) {
         list.push(message.id);
         entities[message.id] = message;
       }

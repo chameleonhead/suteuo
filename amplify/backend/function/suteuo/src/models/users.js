@@ -1,12 +1,9 @@
 const findUserById = async (userId) => {
-  return Promise.resolve({});
+  return {};
 };
 
 const searchUser = async (query) => {
-  return Promise.resolve({
-    totalCount: 0,
-    items: [],
-  });
+  return { totalCount: 0, items: [] };
 };
 
 module.exports = {

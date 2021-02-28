@@ -1,6 +1,7 @@
 const uuid = require("uuid");
 const messaging = require("../models/messaging");
-const { notfound } = require("../utils/responseGenerator");
+const { notfound, notvalid } = require("../utils/responseGenerator");
+const { getUserId } = require("../utils/helpers");
 
 /**
  * @typedef {import('express').Request} Request
@@ -14,7 +15,11 @@ const { notfound } = require("../utils/responseGenerator");
  * @param {Response} res
  */
 const getMessageRooms = async (req, res) => {
-  const result = await messaging.searchMessageRoomsForUser("user-1");
+  const userId = getUserId(req);
+  if (userId === "UNAUTH") {
+    return notvalid(res, "User is not valid.");
+  }
+  const result = await messaging.searchMessageRoomsForUser(userId);
   res.status(200).json({ success: true, ...result });
 };
 
@@ -39,12 +44,16 @@ const getMessageRoom = async (req, res) => {
  * @param {Response} res
  */
 const postMessageRoom = async (req, res) => {
+  const userId = getUserId(req);
+  if (userId === "UNAUTH") {
+    return notvalid(res, "User is not valid.");
+  }
   const { participants } = req.body;
   const messageRoomId = uuid.v4();
   await messaging.addMessageRoom({
     id: messageRoomId,
-    participants: participants || ["user-1"],
-    creator: "user-1",
+    participants: participants || [userId],
+    creator: userId,
     createdAt: new Date().toISOString(),
   });
   res.status(200).json({ success: true, messageRoom: { id: messageRoomId } });
