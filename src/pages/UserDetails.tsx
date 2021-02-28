@@ -25,9 +25,9 @@ export const UserDetails = (props: UserDetailsProps) => {
     <Layout>
       <img
         src={details.avatarUrl || "/assets/nodata.svg"}
-        alt={details.nickname + " の画像"}
+        alt={details.name + " の画像"}
       />
-      <h1>{details.nickname}</h1>
+      <h1>{details.name}</h1>
       <div>@{details.username}</div>
       <div>
         <dl>

@@ -4,7 +4,7 @@ import Input from "../foundation/Input";
 import Button from "../foundation/Button";
 
 interface SignupFormValue {
-  username: string;
+  name: string;
   email: string;
   password: string;
 }
@@ -17,12 +17,15 @@ export const SignupForm = (props: SignupFormProps) => {
   const { onSubmit } = props;
   const formik = useFormik<SignupFormValue>({
     initialValues: {
-      username: "",
+      name: "",
       email: "",
       password: "",
     },
     validate: (values) => {
       const errors = {} as FormikErrors<SignupFormValue>;
+      if (!values.name) {
+        errors.name = "必須項目です。";
+      }
       if (!values.email) {
         errors.email = "必須項目です。";
       }
@@ -38,11 +41,11 @@ export const SignupForm = (props: SignupFormProps) => {
       <div className="flex flex-col space-y-4">
         <div>
           <Input
-            id="username"
+            id="name"
             type="text"
-            name="username"
-            placeholder="ユーザー名"
-            value={formik.values.username}
+            name="name"
+            placeholder="表示名"
+            value={formik.values.name}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />

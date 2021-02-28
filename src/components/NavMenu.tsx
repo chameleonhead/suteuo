@@ -42,7 +42,7 @@ export const NavMenu = (props: NavMenuProps) => {
                     className="text-gray-200 focus:text-gray-400"
                     onClick={() => setOpen(true)}
                   >
-                    {auth.user?.nickname || "未設定"}
+                    {auth.user?.name || "未設定"}
                   </button>
                 }
               >

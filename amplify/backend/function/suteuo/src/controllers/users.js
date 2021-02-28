@@ -1,5 +1,5 @@
 const users = require("../models/users");
-const { notfound, notvalid } = require("../utils/responseGenerator");
+const { notfound } = require("../utils/responseGenerator");
 
 /**
  * @typedef {import('express').Request} Request
@@ -14,10 +14,6 @@ const { notfound, notvalid } = require("../utils/responseGenerator");
  */
 const getUsers = async (req, res) => {
   const { q } = req.query;
-  if (!q) {
-    notvalid(res, "Query must be specified.");
-    return;
-  }
   const result = await users.searchUser(q);
   res.status(200).json({
     success: true,

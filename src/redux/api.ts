@@ -89,8 +89,7 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
           username: params.email,
           password: params.password,
           attributes: {
-            preferred_username: undefined,
-            picture: undefined,
+            name: params.name,
           },
         });
         break;
@@ -114,6 +113,8 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
                 actionCreators.apiSuccess(
                   {
                     id: value.attributes["sub"],
+                    name: value.attributes["name"],
+                    email: value.attributes["email"],
                   },
                   action.meta
                 )
@@ -140,9 +141,11 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
         );
         break;
       case "GET_USERS":
-        fetchTask = API.get("suteuorest", "/users", {
-          q: params.query,
-        });
+        fetchTask = API.get(
+          "suteuorest",
+          "/users?q=" + encodeURIComponent(params.query || ""),
+          {}
+        );
         break;
       case "GET_USER":
         fetchTask = API.get("suteuorest", "/users/" + params.userId, {});

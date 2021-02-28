@@ -18,19 +18,18 @@
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
-        "preferred_username",
-        "email",
-        "picture"
+        "name",
+        "email"
     ],
     "userpoolClientGenerateSecret": true,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
-        "preferred_username",
+        "name",
         "email",
         "picture"
     ],
     "userpoolClientReadAttributes": [
-        "preferred_username",
+        "name",
         "email",
         "picture"
     ],

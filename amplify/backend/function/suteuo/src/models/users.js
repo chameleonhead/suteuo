@@ -14,14 +14,14 @@ const cognitoProvider = new AWS.CognitoIdentityServiceProvider();
 
 const convertToUser = (idUser, isOwner) => {
   function findAttrValue(attrName) {
-    const filtered = idUser.UserAttributes.filter(
+    const filtered = (idUser.UserAttributes || idUser.Attributes).filter(
       (attr) => attr.Name === attrName
     );
     return filtered.length > 0 ? filtered[0].Value : null;
   }
   return {
     id: idUser.Username,
-    nickname: findAttrValue("nickname"),
+    name: findAttrValue("name"),
     email: isOwner ? findAttrValue("email") : undefined,
     email_verified: isOwner ? findAttrValue("email_verified") : undefined,
     phone_number: isOwner ? findAttrValue("phone_number") : undefined,
@@ -49,7 +49,7 @@ const findUserById = async (userId, isOwner) => {
   return null;
 };
 
-const searchUser = async (query, loginUserName) => {
+const searchUser = async (query, loginUserId) => {
   const users = [];
   let result;
   do {
@@ -60,7 +60,7 @@ const searchUser = async (query, loginUserName) => {
       })
       .promise();
     result.Users.forEach((user) =>
-      users.push(convertToUser(user, user.Username === loginUserName))
+      users.push(convertToUser(user, user.Username === loginUserId))
     );
   } while (result.PaginationToken);
   return { totalCount: users.length, items: users };

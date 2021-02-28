@@ -5,6 +5,7 @@ import { KnownAction as ApiAction } from "../api";
 interface SignupInfo {
   email: string;
   password: string;
+  name: string;
 }
 
 interface ConfirmSignupInfo {

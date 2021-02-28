@@ -184,17 +184,12 @@ Resources:
       Schema:
         
         -
-          Name: preferred_username
-          Required: true
-          Mutable: true
-        
-        -
           Name: email
           Required: true
           Mutable: true
-        
+      
         -
-          Name: picture
+          Name: name
           Required: true
           Mutable: true
         

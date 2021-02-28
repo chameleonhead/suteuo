@@ -54,7 +54,7 @@ var messaging = require("./controllers/messaging");
 /**
  * GET /users
  * @summary ユーザーの一覧を取得する
- * @param {string} q.query.required - 検索条件
+ * @param {string} q.query - 検索条件
  * @return {object} 200 - 正常
  */
 app.get("/users", asyncHandler(users.getUsers));

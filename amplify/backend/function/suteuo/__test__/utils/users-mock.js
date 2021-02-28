@@ -19,7 +19,7 @@ const findUserById = async (userId) => {
 };
 const searchUser = async (searchQuery) => {
   const filtered = all.filter(
-    (e) => e.id === searchQuery || e.nickname.includes(searchQuery)
+    (e) => e.id === searchQuery || e.name.includes(searchQuery)
   );
   return {
     totalCount: filtered.length,

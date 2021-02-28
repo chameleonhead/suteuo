@@ -15,7 +15,7 @@ describe("user controller", () => {
       const user1 = {
         id: "user-1",
         area: "Area",
-        nickname: "Nickname",
+        name: "User Name",
       };
       mockUsers.addUser(user1);
 
@@ -46,7 +46,7 @@ describe("user controller", () => {
       const user1 = {
         id: "user-1",
         area: "Area",
-        nickname: "Nickname",
+        name: "User Name",
       };
       mockUsers.addUser(user1);
 
@@ -59,15 +59,6 @@ describe("user controller", () => {
         totalCount: 1,
         items: [user1],
       });
-    });
-    it("クエリが指定されていない場合はエラー", async () => {
-      const req = mockRequest();
-      const res = mockResponse();
-      await controller.getUsers(req, res);
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ code: "ValidationException" })
-      );
     });
   });
 });

@@ -9,9 +9,8 @@ interface LoginInfo {
 
 interface LoginUserInfo {
   id: string;
-  preferred_username: string;
-  username: string;
-  nickname: string;
+  email: string;
+  name: string;
   avatarUrl: string;
 }
 

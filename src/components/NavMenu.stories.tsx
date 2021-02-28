@@ -34,8 +34,7 @@ LoggedIn.args = {
     state: "LOGGED_IN",
     user: {
       id: "id",
-      username: "username",
-      nickname: "Display Name",
+      name: "Display Name",
     } as any,
   },
 };

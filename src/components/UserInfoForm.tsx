@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 interface UserInfoFormValue {
   area: string;
   username: string;
-  nickname: string;
+  name: string;
 }
 
 export type UserInfoFormProps = {
@@ -17,7 +17,7 @@ export const UserInfoForm = (props: UserInfoFormProps) => {
     initialValues: {
       area: "",
       username: "",
-      nickname: "",
+      name: "",
     },
     validate: (values) => {
       const errors = {} as any;
@@ -54,12 +54,12 @@ export const UserInfoForm = (props: UserInfoFormProps) => {
           />
         </div>
         <div>
-          <label htmlFor="nickname">表示名</label>
+          <label htmlFor="name">表示名</label>
           <input
-            id="nickname"
+            id="name"
             type="text"
-            name="nickname"
-            value={formik.values.nickname}
+            name="name"
+            value={formik.values.name}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
