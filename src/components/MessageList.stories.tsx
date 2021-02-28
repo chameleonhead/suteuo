@@ -20,7 +20,7 @@ Default.args = {
     {
       id: "messageId",
       body: "message",
-      sender: "sender",
+      sender: { id: "user-1", name: "sender" },
       createdAt: "2021-01-10T10:12:31.000Z",
     },
   ],
@@ -32,13 +32,13 @@ TwoItems.args = {
     {
       id: "message-1",
       body: "message1",
-      sender: "sender",
+      sender: { id: "user-1", name: "sender" },
       createdAt: "2021-01-10T10:12:31.000Z",
     },
     {
       id: "message-2",
       body: "message2",
-      sender: "sender",
+      sender: { id: "user-1", name: "sender" },
       createdAt: "2021-01-10T10:12:31.000Z",
     },
   ],

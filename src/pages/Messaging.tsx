@@ -36,48 +36,52 @@ export const Messaging = (props: MessagingProps) => {
         <h1 className="text-3xl">メッセージ</h1>
       </div>
       <div className="md:grid md:grid-cols-2">
-        <div className="p-3">
+        <div className="p-3 mb-6 md:mb-0">
           <MessageRoomList
             items={messageRooms}
             selectedMessageRoom={selectedMessageRoom}
             loginUserId={auth?.user?.id || ""}
             onMessageRoomSelect={(mr) => onSelectMessageRoom(mr.id)}
           />
-          <Button type="button" onClick={() => setOpen(true)}>
-            追加
-          </Button>
-          <Modal open={open} onClose={() => setOpen(false)}>
-            <div className="bg-white w-64 mt-3 m-auto p-3">
-              <CreateMessageRoomForm
-                userCandidates={
-                  userQuery
-                    ? users
-                        .filter((u) => u.id !== auth.user?.id)
-                        .filter((u) => u.name.includes(userQuery))
-                        .map((u) => ({ value: u.id, text: u.name }))
-                    : []
-                }
-                userQuery={userQuery}
-                onUserQueryChange={(value) => onChangeUserQuery(value)}
-                onSubmit={onCreateMessageRoom}
-              />
-            </div>
-          </Modal>
+          <div className="mt-3">
+            <Button type="button" onClick={() => setOpen(true)}>
+              追加
+            </Button>
+          </div>
         </div>
         {selectedMessageRoom && (
           <div className="p-3">
             <MessageList items={messages} />
-            <MessageForm
-              onSubmit={(value) =>
-                onCreateMessage({
-                  roomId: selectedMessageRoom.id,
-                  body: value.body,
-                })
-              }
-            />
+            <div className="mt-3">
+              <MessageForm
+                onSubmit={(value) =>
+                  onCreateMessage({
+                    roomId: selectedMessageRoom.id,
+                    body: value.body,
+                  })
+                }
+              />
+            </div>
           </div>
         )}
       </div>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <div className="bg-white w-64 mt-3 m-auto p-3">
+          <CreateMessageRoomForm
+            userCandidates={
+              userQuery
+                ? users
+                    .filter((u) => u.id !== auth.user?.id)
+                    .filter((u) => u.name.includes(userQuery))
+                    .map((u) => ({ value: u.id, text: u.name }))
+                : []
+            }
+            userQuery={userQuery}
+            onUserQueryChange={(value) => onChangeUserQuery(value)}
+            onSubmit={onCreateMessageRoom}
+          />
+        </div>
+      </Modal>
     </Layout>
   );
 };

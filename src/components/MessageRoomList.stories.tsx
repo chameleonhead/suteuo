@@ -21,7 +21,7 @@ Default.args = {
   items: [
     {
       id: "messageId",
-      participants: ["user-1"],
+      participants: [{ id: "user-1", name: "user1" }],
       createdAt: "2021-01-10T10:12:31.000Z",
     },
   ],
@@ -32,12 +32,15 @@ TwoItems.args = {
   items: [
     {
       id: "message-1",
-      participants: ["user-1"],
+      participants: [{ id: "user-1", name: "user1" }],
       createdAt: "2021-01-10T10:12:31.000Z",
     },
     {
       id: "message-2",
-      participants: ["user-1", "user-2"],
+      participants: [
+        { id: "user-1", name: "user1" },
+        { id: "user-2", name: "user2" },
+      ],
       createdAt: "2021-01-10T10:12:31.000Z",
     },
   ],
@@ -46,7 +49,7 @@ TwoItems.args = {
 export const Selected = Template.bind({});
 const item = {
   id: "message-1",
-  participants: ["user-1"],
+  participants: [{ id: "user-1", name: "user1" }],
   createdAt: "2021-01-10T10:12:31.000Z",
 };
 Selected.args = {
@@ -54,7 +57,10 @@ Selected.args = {
     item,
     {
       id: "message-2",
-      participants: ["user-1", "user-2"],
+      participants: [
+        { id: "user-1", name: "user1" },
+        { id: "user-2", name: "user2" },
+      ],
       createdAt: "2021-01-10T10:12:31.000Z",
     },
   ],

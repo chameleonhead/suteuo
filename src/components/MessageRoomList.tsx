@@ -2,7 +2,7 @@ import * as React from "react";
 
 export interface MessageRoomItem {
   id: string;
-  participants: string[];
+  participants: { id: string; name: string }[];
   createdAt: string;
 }
 
@@ -34,9 +34,11 @@ export const MessageRoomList = (props: MessageRoomListProps) => {
             >
               <div onClick={() => onMessageRoomSelect(e)}>
                 {(e.participants.length > 1
-                  ? e.participants.filter((p) => p !== loginUserId)
+                  ? e.participants.filter((p) => p.id !== loginUserId)
                   : e.participants
-                ).join("、")}
+                )
+                  .map((u) => u.name)
+                  .join("、")}
               </div>
             </div>
           ))}

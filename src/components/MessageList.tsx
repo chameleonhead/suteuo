@@ -3,7 +3,7 @@ import * as React from "react";
 interface MessageItem {
   id: string;
   body: string;
-  sender: string;
+  sender: { id: string; name: string };
   createdAt: string;
 }
 
@@ -23,7 +23,7 @@ export const MessageList = (props: MessageListProps) => {
                 <div>{e.body}</div>
                 <div className="text-sm text-gray-600">{e.createdAt}</div>
               </div>
-              <div className="text-sm text-gray-600">{e.sender}</div>
+              <div className="text-sm text-gray-600">{e.sender.name}</div>
             </div>
           ))}
         </div>

@@ -54,13 +54,24 @@ export const dataSelectors = {
   getUserById: (state: ApplicationState, id: string) =>
     state.data.users.entities[id],
   getMessageRoomById: (state: ApplicationState, id: string) =>
-    state.data.messageRooms.entities[id],
+    state.data.messageRooms.entities[id] && {
+      ...state.data.messageRooms.entities[id],
+      participants: state.data.messageRooms.entities[id].participants.map((u) =>
+        selectors.getUserById(state, u)
+      ),
+    },
   getMessageRooms: (state: ApplicationState) =>
     state.data.messageRooms.list.map((item) =>
       selectors.getMessageRoomById(state, item)
     ),
   getMessageById: (state: ApplicationState, id: string) =>
-    state.data.messages.entities[id],
+    state.data.messages.entities[id] && {
+      ...state.data.messages.entities[id],
+      sender: selectors.getUserById(
+        state,
+        state.data.messages.entities[id].sender
+      ),
+    },
   getMessagesByRoomId: (state: ApplicationState, roomId: string) =>
     state.data.messages.listByRoomId[roomId]
       ? state.data.messages.listByRoomId[roomId].map((item) =>
