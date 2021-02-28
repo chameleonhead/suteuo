@@ -139,6 +139,11 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
           action.payload.params.password
         );
         break;
+      case "GET_USERS":
+        fetchTask = API.get("suteuorest", "/users", {
+          q: params.query,
+        });
+        break;
       case "GET_USER":
         fetchTask = API.get("suteuorest", "/users/" + params.userId, {});
         break;
