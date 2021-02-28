@@ -8,14 +8,14 @@ interface CreateMessageRoomFormValue {
 }
 
 export type CreateMessageRoomFormProps = {
-  userCandidates: [{ value: string; text: string }];
+  userCandidates: { value: string; text: string }[];
+  userQuery: string;
   onUserQueryChange: (userQuery: string) => void;
   onSubmit: (value: CreateMessageRoomFormValue) => void;
 };
 
 export const CreateMessageRoomForm = (props: CreateMessageRoomFormProps) => {
-  const { userCandidates, onUserQueryChange, onSubmit } = props;
-  const [userQuery, setUserQuery] = React.useState("");
+  const { userQuery, userCandidates, onUserQueryChange, onSubmit } = props;
   const [selectedUsers, setSelectedUsers] = React.useState(
     [] as { value: string; text: string }[]
   );
@@ -48,11 +48,8 @@ export const CreateMessageRoomForm = (props: CreateMessageRoomFormProps) => {
                 value.map((e) => e.value)
               );
             }}
-            onInputBlur={formik.handleBlur}
-            onInputChange={(e) => {
-              setUserQuery(e.target.value);
-              onUserQueryChange(e.target.value);
-            }}
+            onInputBlur={(e) => formik.handleBlur("participants")}
+            onInputValueChange={onUserQueryChange}
           />
         </div>
         <div>

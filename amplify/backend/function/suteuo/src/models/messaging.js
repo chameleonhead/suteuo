@@ -21,6 +21,7 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 /**
  * @typedef Message
  * @property {string} id
+ * @property {string} roomId
  * @property {string} body
  * @property {string} sender
  * @property {string} createdAt
@@ -111,6 +112,7 @@ async function searchMessageRoomMessages(messageRoomId) {
   const result = await docClient.query(params).promise();
   const messages = result.Items.map((item) => ({
     id: item.Id,
+    roomId: messageRoomId,
     body: item.Body,
     sender: item.Sender,
     createdAt: item.CreatedAt,
@@ -170,6 +172,7 @@ async function addMessageRoomMessage(messageRoomId, message) {
       PK: "MESSAGE_ROOM#" + messageRoomId,
       SK: "MESSAGE#" + message.id,
       Id: message.id,
+      RoomId: messageRoomId,
       Body: message.body,
       Sender: message.sender,
       CreatedAt: message.createdAt,

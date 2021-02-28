@@ -11,6 +11,7 @@ export type MessageFormProps = {
 
 export const MessageForm = (props: MessageFormProps) => {
   const { onSubmit } = props;
+  const [focus, setFocus] = React.useState(false);
   const formik = useFormik<MessageFormValue>({
     initialValues: {
       body: "",
@@ -26,19 +27,31 @@ export const MessageForm = (props: MessageFormProps) => {
   });
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div>
-        <label htmlFor="body">メッセージ本文</label>
+      <div
+        className={
+          "relative flex items-stretch border rounded p-0" +
+          (focus ? " ring-offset-2 ring-2 ring-indigo-500" : "")
+        }
+      >
         <input
+          className="flex-auto block py-1 px-2 rounded-l outline-none focus:outline-none"
           id="body"
           type="text"
           name="body"
+          placeholder="メッセージ"
           value={formik.values.body}
-          onBlur={formik.handleBlur}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
           onChange={formik.handleChange}
         />
-      </div>
-      <div>
-        <button type="submit">送信</button>
+        <button
+          type="submit"
+          className="block py-2 px-4 border-l text-sm rounded-r text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
+        >
+          送信
+        </button>
       </div>
     </form>
   );

@@ -13,36 +13,75 @@ interface User {
 }
 
 interface UsersDataState {
+  list: string[];
   entities: { [id: string]: User };
 }
+interface MessageRoom {
+  id: string;
+  participants: string[];
+  createdAt: string;
+}
+
+interface MessageRoomDataState {
+  list: string[];
+  entities: { [id: string]: MessageRoom };
+}
+
 interface Message {
   id: string;
+  roomId: string;
   body: string;
   sender: string;
   createdAt: string;
 }
 
 interface MessageDataState {
-  list: string[];
+  listByRoomId: { [roomId: string]: string[] };
   entities: { [id: string]: Message };
 }
 
 export interface DataState {
   users: UsersDataState;
+  messageRooms: MessageRoomDataState;
   messages: MessageDataState;
 }
 
 export const dataSelectors = {
   getDataState: (state: ApplicationState) => state.data,
+  getUsers: (state: ApplicationState) =>
+    state.data.users.list.map((item) => selectors.getUserById(state, item)),
+
   getUserById: (state: ApplicationState, id: string) =>
     state.data.users.entities[id],
+  getMessageRoomById: (state: ApplicationState, id: string) =>
+    state.data.messageRooms.entities[id],
+  getMessageRooms: (state: ApplicationState) =>
+    state.data.messageRooms.list.map((item) =>
+      selectors.getMessageRoomById(state, item)
+    ),
   getMessageById: (state: ApplicationState, id: string) =>
     state.data.messages.entities[id],
-  getMessages: (state: ApplicationState) =>
-    state.data.messages.list.map((item) =>
-      selectors.getMessageById(state, item)
-    ),
+  getMessagesByRoomId: (state: ApplicationState, roomId: string) =>
+    state.data.messages.listByRoomId[roomId]
+      ? state.data.messages.listByRoomId[roomId].map((item) =>
+          selectors.getMessageById(state, item)
+        )
+      : [],
 };
+
+interface FetchUsersAction {
+  type: "FETCH_USERS";
+  payload: {
+    query: string;
+  };
+}
+
+interface SetUsersAction {
+  type: "SET_USERS";
+  payload: {
+    items: User[];
+  };
+}
 
 interface FetchUserAction {
   type: "FETCH_USER";
@@ -58,8 +97,22 @@ interface SetUserAction {
   };
 }
 
+interface FetchMessageRoomsAction {
+  type: "FETCH_MESSAGE_ROOMS";
+}
+
+interface SetMessageRoomsAction {
+  type: "SET_MESSAGE_ROOMS";
+  payload: {
+    items: MessageRoom[];
+  };
+}
+
 interface FetchMessagesAction {
   type: "FETCH_MESSAGES";
+  payload: {
+    roomId: string;
+  };
 }
 
 interface SetMessagesAction {
@@ -70,13 +123,27 @@ interface SetMessagesAction {
 }
 
 type KnownAction =
+  | FetchUsersAction
+  | SetUsersAction
   | FetchUserAction
   | SetUserAction
+  | FetchMessageRoomsAction
+  | SetMessageRoomsAction
   | FetchMessagesAction
   | SetMessagesAction
   | ApiAction;
 
 export const dataActionCreators = {
+  fetchUsers: (query: string = ""): FetchUsersAction => ({
+    type: "FETCH_USERS",
+    payload: {
+      query,
+    },
+  }),
+  setUsers: (info: { totalCount: number; items: User[] }): SetUsersAction => ({
+    type: "SET_USERS",
+    payload: info,
+  }),
   fetchUser: (userId: string): FetchUserAction => ({
     type: "FETCH_USER",
     payload: {
@@ -87,8 +154,21 @@ export const dataActionCreators = {
     type: "SET_USER",
     payload: { user },
   }),
-  fetchMessages: (): FetchMessagesAction => ({
+  fetchMessageRooms: (): FetchMessageRoomsAction => ({
+    type: "FETCH_MESSAGE_ROOMS",
+  }),
+  setMessageRooms: (info: {
+    totalCount: number;
+    items: MessageRoom[];
+  }): SetMessageRoomsAction => ({
+    type: "SET_MESSAGE_ROOMS",
+    payload: info,
+  }),
+  fetchMessages: (roomId: string): FetchMessagesAction => ({
     type: "FETCH_MESSAGES",
+    payload: {
+      roomId,
+    },
   }),
   setMessages: (info: {
     totalCount: number;
@@ -104,6 +184,15 @@ export const dataMiddleware: Middleware = ({ dispatch, getState }) => (
 ) => (incomingAction) => {
   next(incomingAction);
   const action = incomingAction as KnownAction;
+  if (action.type === "FETCH_USERS") {
+    dispatch(actionCreators.api(action.type, "GET_USERS", action.payload));
+  }
+  if (
+    action.type === "API_SUCCEEDED" &&
+    action.meta.returnAddress === "FETCH_USERS"
+  ) {
+    dispatch(actionCreators.setUsers(action.payload));
+  }
   if (action.type === "FETCH_USER") {
     dispatch(actionCreators.api(action.type, "GET_USER", action.payload));
   }
@@ -113,12 +202,17 @@ export const dataMiddleware: Middleware = ({ dispatch, getState }) => (
   ) {
     dispatch(actionCreators.setUser(action.payload.user));
   }
+  if (action.type === "FETCH_MESSAGE_ROOMS") {
+    dispatch(actionCreators.api(action.type, "GET_MESSAGE_ROOMS"));
+  }
+  if (
+    action.type === "API_SUCCEEDED" &&
+    action.meta.returnAddress === "FETCH_MESSAGE_ROOMS"
+  ) {
+    dispatch(actionCreators.setMessageRooms(action.payload));
+  }
   if (action.type === "FETCH_MESSAGES") {
-    dispatch(
-      actionCreators.api(action.type, "GET_MESSAGES", {
-        roomId: "4c737d7c-afd7-4157-bf6a-c89f5971f529",
-      })
-    );
+    dispatch(actionCreators.api(action.type, "GET_MESSAGES", action.payload));
   }
   if (
     action.type === "API_SUCCEEDED" &&
@@ -131,14 +225,35 @@ export const dataMiddleware: Middleware = ({ dispatch, getState }) => (
 export const dataReducer: Reducer<DataState> = (state, incomingAction) => {
   if (!state) {
     state = {
-      users: { entities: {} } as UsersDataState,
-      messages: { entities: {}, list: [] } as MessageDataState,
+      users: { entities: {}, list: [] } as UsersDataState,
+      messages: { entities: {}, listByRoomId: {} } as MessageDataState,
+      messageRooms: { entities: {}, list: [] } as MessageRoomDataState,
     };
   }
 
   const action = incomingAction as KnownAction;
   switch (action.type) {
-    case "SET_USER":
+    case "SET_USERS": {
+      const { items } = action.payload;
+      const list = [] as string[];
+      const entities = {} as { [id: string]: User };
+      for (const item of items) {
+        list.push(item.id);
+        entities[item.id] = item;
+      }
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          list: list,
+          entities: {
+            ...state.users.entities,
+            ...entities,
+          },
+        },
+      };
+    }
+    case "SET_USER": {
       const { user } = action.payload;
       return {
         ...state,
@@ -150,25 +265,56 @@ export const dataReducer: Reducer<DataState> = (state, incomingAction) => {
           },
         },
       };
-    case "SET_MESSAGES":
+    }
+    case "SET_MESSAGE_ROOMS": {
       const { items } = action.payload;
-      const list = [] as string[];
-      const entities = {} as { [id: string]: Message };
-      for (const message of items) {
-        list.push(message.id);
-        entities[message.id] = message;
-      }
-      return {
-        ...state,
-        messages: {
-          ...state.messages,
-          list: list,
-          entities: {
-            ...state.messages.entities,
-            ...entities,
+      if (items.length) {
+        const list = [] as string[];
+        const entities = {} as { [id: string]: MessageRoom };
+        for (const item of items) {
+          list.push(item.id);
+          entities[item.id] = item;
+        }
+        return {
+          ...state,
+          messageRooms: {
+            ...state.messageRooms,
+            list: list,
+            entities: {
+              ...state.messageRooms.entities,
+              ...entities,
+            },
           },
-        },
-      };
+        };
+      }
+      break;
+    }
+    case "SET_MESSAGES": {
+      const { items } = action.payload;
+      if (items.length > 0) {
+        const list = [] as string[];
+        const entities = {} as { [id: string]: Message };
+        for (const message of items) {
+          list.push(message.id);
+          entities[message.id] = message;
+        }
+        return {
+          ...state,
+          messages: {
+            ...state.messages,
+            listByRoomId: {
+              ...state.messages.listByRoomId,
+              [items[0].roomId]: list,
+            },
+            entities: {
+              ...state.messages.entities,
+              ...entities,
+            },
+          },
+        };
+      }
+      break;
+    }
   }
 
   return state;

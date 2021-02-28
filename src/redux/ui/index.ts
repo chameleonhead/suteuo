@@ -11,9 +11,15 @@ interface ForgotPasswordState {
   waitingUserConfirmation: boolean;
 }
 
+interface MessagingUiState {
+  userQuery: string | undefined;
+  selectedMessageRoomId: string | undefined;
+}
+
 export interface UiState {
   ["SIGNUP"]?: SignupState;
   ["FORGOT_PASSWORD"]?: ForgotPasswordState;
+  ["MESSAGING"]?: MessagingUiState;
   [key: string]: any;
 }
 
@@ -22,12 +28,14 @@ export const uiSelectors = {
   getSignupState: (state: ApplicationState) => state.ui["SIGNUP"],
   getForgotPasswordState: (state: ApplicationState) =>
     state.ui["FORGOT_PASSWORD"],
+  getMessagingState: (state: ApplicationState) => state.ui["MESSAGING"],
 };
 
-interface SetPageStateAction<T = any> {
+type UiStateKey = string & keyof UiState;
+interface SetPageStateAction<K extends UiStateKey = any, T = UiState[K]> {
   type: "SET_PAGE_STATE";
   payload: {
-    pageKey: string;
+    pageKey: K;
     data: T;
   };
 }
@@ -42,7 +50,10 @@ interface ClearPageStateAction {
 type KnownAction = SetPageStateAction | ClearPageStateAction;
 
 export const uiActionCreators = {
-  setPageState: <T>(pageKey: string, initialData: T): SetPageStateAction<T> => ({
+  setPageState: <K extends UiStateKey, T = UiState[K]>(
+    pageKey: K,
+    initialData: T
+  ): SetPageStateAction<K, T> => ({
     type: "SET_PAGE_STATE",
     payload: {
       pageKey,

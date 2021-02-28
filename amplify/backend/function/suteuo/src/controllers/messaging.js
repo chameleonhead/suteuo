@@ -52,7 +52,9 @@ const postMessageRoom = async (req, res) => {
   const messageRoomId = uuid.v4();
   await messaging.addMessageRoom({
     id: messageRoomId,
-    participants: participants || [userId],
+    participants: (participants || [])
+      .filter((p) => p !== userId)
+      .concat([userId]),
     creator: userId,
     createdAt: new Date().toISOString(),
   });
@@ -115,18 +117,23 @@ const getMessageRoomMessages = async (req, res) => {
  * @param {Response} res
  */
 const postMessageRoomMessage = async (req, res) => {
+  const userId = getUserId(req);
+  if (userId === "UNAUTH") {
+    return notvalid(res, "User is not valid.");
+  }
   const { roomId } = req.params;
   const messageRoom = await messaging.findMessageRoomById(roomId);
   if (!messageRoom) {
     notfound(res, "Specified message room not found.");
     return;
   }
-  const { body, sender } = req.body;
+  const { body } = req.body;
+
   const messageId = uuid.v4();
   await messaging.addMessageRoomMessage(roomId, {
     id: messageId,
     body,
-    sender,
+    sender: userId,
     createdAt: new Date().toISOString(),
   });
   res.status(200).json({ success: true, message: { id: messageId } });

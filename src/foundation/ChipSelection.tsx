@@ -12,7 +12,7 @@ export type ChipSelectionProps = {
   disabled?: boolean;
   selection: ChipData[];
   onChipChange: (value: ChipData[]) => void;
-  onInputChange: React.ChangeEventHandler<any>;
+  onInputValueChange: (value: string) => void;
   onInputBlur: React.FocusEventHandler<any>;
 };
 
@@ -24,7 +24,7 @@ export const ChipSelection = (props: ChipSelectionProps) => {
     disabled = false,
     selection = [],
     onChipChange,
-    onInputChange,
+    onInputValueChange,
     onInputBlur,
   } = props;
   const divRef = React.useRef<HTMLElement>();
@@ -83,19 +83,23 @@ export const ChipSelection = (props: ChipSelectionProps) => {
                 setFocus(false);
                 onInputBlur(e);
               }}
-              onChange={onInputChange}
+              onChange={(e) => onInputValueChange(e.target.value)}
             />
           )}
         </div>
         {selection.length > 0 && (
-          <div className="absolute mt-1 left-0 w-full">
+          <div className="absolute mt-1 left-0 w-full bg-white z-10">
             <div className="border rounded">
               {selection.map((e, i) => (
                 <div
+                  key={i}
                   className={
                     "p-2 hover:bg-gray-100" + (i > 0 ? " border-t" : "")
                   }
-                  onClick={() => onChipChange(selectedData.concat([e]))}
+                  onClick={() => {
+                    onInputValueChange("");
+                    onChipChange(selectedData.concat([e]));
+                  }}
                 >
                   {e.text}
                 </div>
