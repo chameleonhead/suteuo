@@ -167,7 +167,7 @@ app.post("/messaging", async function (req, res) {
   try {
     const roomResult = await messagingApi.getRoom("room-1");
     if (roomResult.code === "NotFoundException") {
-      await usersApi.createRoom({
+      await messagingApi.createRoom({
         roomId: "room-1",
         creator: "user-1",
         participants: ["user-1", "user-2"],
