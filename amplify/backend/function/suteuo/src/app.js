@@ -7,182 +7,115 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
 
-var Bus = require("./bus");
-var eventMessageHandler = require("./busEventHandler");
-var notificationMessageHandler = require("./busNotificationHandler");
-var bus = new Bus();
-bus.subscribe(eventMessageHandler);
-bus.subscribe(notificationMessageHandler);
-
-var UsersApi = require("./usersApi");
-const usersApi = new UsersApi(bus);
-
-var MessagingApi = require("./messagingApi");
-const messagingApi = new MessagingApi(bus);
-
 if (process.env.ENDPOINT_OVERRIDE) {
+  const expressJSDocSwagger = require("express-jsdoc-swagger");
   //swaggerの基本定義
-  var options = {
-    swaggerDefinition: {
-      info: {
-        title: "suteuousers",
-        version: "1.0.0.",
+  const options = {
+    info: {
+      version: "1.0.0",
+      title: "Suteuo API",
+      description: "捨魚のAPI仕様",
+      license: {
+        name: "MIT",
       },
     },
-    apis: [__filename],
+    filesPattern: "./**/*.js", // Glob pattern to find your jsdoc files (it supports arrays too ['./**/*.controller.js', './**/*.route.js'])
+    swaggerUIPath: "/api-docs", // SwaggerUI will be render in this url. Default: '/api-docs'
+    baseDir: __dirname,
+    exposeSwaggerUI: false, // Expose OpenAPI UI. Default true
+    exposeApiDocs: true, // Expose Open API JSON Docs documentation in `apiDocsPath` path. Default false.
+    apiDocsPath: "/api-docs.json", // Open API JSON Docs endpoint. Default value '/v3/api-docs'.
   };
 
-  var swaggerJSDoc = require("swagger-jsdoc");
-  var swaggerSpec = swaggerJSDoc(options);
-
-  //swagger-ui向けにjsonを返すAPI
-  app.get("/api-docs.json", function (req, res) {
-    res.setHeader("Content-Type", "application/json");
-    res.send(swaggerSpec);
-  });
+  expressJSDocSwagger(app)(options);
 }
 
-function handleError(res, error) {
-  res.status(500);
-  res.json({
-    statusCode: 500,
-    code: "UnknownException",
-    message: "Error occured while accessing database.",
-    error: error,
-  });
-}
-
-app.get("/users/:userId", async function (req, res) {
-  try {
-    const result = await usersApi.getUser(req.params.userId);
-    res.json(result);
-  } catch (error) {
-    handleError(res, error);
-  }
-});
-
-app.post("/users", async function (req, res) {
-  try {
-    const result = await usersApi.updateUser({
-      userId: req.body.userId,
-      area: req.body.area,
-      username: req.body.username,
-      nickname: req.body.nickname,
-    });
-    res.json(result);
-  } catch (error) {
-    handleError(res, error);
-  }
-});
-
-/**
- * @openapi
- * /messaging:
- *   get:
- *     description: List messages
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: 正常終了
- *         headers:
- *           Link:
- *             example: <https://api.github.com/resource?page=2>; rel="next", <https://api.github.com/resource?page=5>; rel="last"
- *             schema:
- *               type: string
- *         schema:
- *           type: object
- *           properties:
- *             messages:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   messageId:
- *                     type: string
- *                   body:
- *                     type: string
- *                   sender:
- *                     type: string
- *                   createdAt:
- *                     type: string
- *               description: メッセージ一覧
- *             totalCount:
- *               type: number
- *               description: 全体件数
- */
-app.get("/messaging", async function (req, res) {
-  try {
-    const result = await messagingApi.getMessagesForRoom("room-1");
-    res.json(result);
-  } catch (error) {
-    handleError(res, error);
-  }
-});
-
-/**
- * @openapi
- * /messaging:
- *   post:
- *     description: Create message
- *     consumes:
- *       - application/json
- *     produces:
- *       - application/json
- *     parameters:
- *       - in: body
- *         name: message
- *         description: メッセージ内容
- *         required: true
- *         schema:
- *           type: object
- *           required:
- *             - body
- *           properties:
- *             body:
- *               type: string
- *               description: メッセージ本文
- *     responses:
- *       200:
- *         description: 正常終了
- *         schema:
- *           type: object
- *           properties:
- *             messageId:
- *               type: string
- *               description: 生成されたキー
- *       400:
- *         description: BadRequest
- *         schema:
- *           type: object
- *           properties:
- *             code:
- *               type: string
- *               description: エラーコード
- *             message:
- *               type: string
- *               description: エラーメッセージ
- */
-app.post("/messaging", async function (req, res) {
-  try {
-    const roomResult = await messagingApi.getRoom("room-1");
-    if (roomResult.code === "NotFoundException") {
-      await messagingApi.createRoom({
-        roomId: "room-1",
-        creator: "user-1",
-        participants: ["user-1", "user-2"],
+function asyncHandler(fn) {
+  return (req, res) => {
+    return Promise.resolve(fn(req, res)).catch((error) => {
+      res.status(500);
+      res.json({
+        statusCode: 500,
+        code: "UnknownException",
+        message: "Error occured while accessing database.",
+        error: error,
       });
-    }
-    const params = {
-      roomId: "room-1",
-      body: req.body.body,
-    };
-    const result = await messagingApi.createMessage(params);
-    res.json(result);
-  } catch (error) {
-    handleError(res, error);
-  }
-});
+    });
+  };
+}
+
+/*
+ * Suteuo API
+ */
+
+var users = require("./controllers/users");
+var messaging = require("./controllers/messaging");
+
+/**
+ * GET /users
+ * @summary ユーザーの一覧を取得する
+ * @param {string} q.query.required - 検索条件
+ * @return {object} 200 - 正常
+ */
+app.get("/users", asyncHandler(users.getUsers));
+
+/**
+ * GET /users/{userId}
+ * @summary 指定したユーザーの情報を取得する
+ * @param {string} userId.path.required - ユーザーID
+ * @return {object} 200 - 正常
+ */
+app.get("/users/:userId", asyncHandler(users.getUser));
+
+/**
+ * GET /messaging/rooms
+ * @summary メッセージルーム内のメッセージ一覧を取得する
+ * @return {object} 200 - success response
+ */
+app.get("/messaging/rooms", asyncHandler(messaging.getMessageRooms));
+
+/**
+ * GET /messaging/rooms/{roomId}
+ * @summary メッセージルーム内のメッセージ一覧を取得する
+ * @param {string} roomId.path.required - メッセージルームID
+ * @return {object} 200 - success response
+ */
+app.get("/messaging/rooms/:roomId", asyncHandler(messaging.getMessageRooms));
+
+/**
+ * POST /messaging/rooms
+ * @summary メッセージルームを作成する
+ * @return {object} 200 - success response
+ */
+app.post("/messaging/rooms", asyncHandler(messaging.postMessageRoom));
+
+/**
+ * GET /messaging/rooms/{roomId}/messages
+ * @summary メッセージルーム内のメッセージを取得する
+ * @param {string} roomId.path.required - メッセージルームID
+ * @return {object} 200 - success response
+ */
+app.get(
+  "/messaging/rooms/:roomId/messages",
+  asyncHandler(messaging.getMessageRoomMessages)
+);
+
+/**
+ * メッセージ
+ * @typedef {object} PostMessageOptions
+ * @property {string} body.required - メッセージ本文
+ */
+/**
+ * POST /messaging/rooms/{roomId}/messages
+ * @summary メッセージルームにメッセージを投稿する
+ * @param {string} roomId.path.required - メッセージルームID
+ * @param {PostMessageOptions} request.body.required - メッセージ
+ * @return {object} 200 - success response
+ */
+app.post(
+  "/messaging/rooms/:roomId/messages",
+  asyncHandler(messaging.postMessageRoomMessage)
+);
 
 app.listen(3000, function () {
   console.log("App started");
