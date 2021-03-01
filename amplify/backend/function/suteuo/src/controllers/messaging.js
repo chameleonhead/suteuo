@@ -49,16 +49,16 @@ const postMessageRoom = async (req, res) => {
     return notvalid(res, "User is not valid.");
   }
   const { participants } = req.body;
-  const messageRoomId = uuid.v4();
+  const roomId = uuid.v4();
   await messaging.addMessageRoom({
-    id: messageRoomId,
+    id: roomId,
     participants: (participants || [])
       .filter((p) => p !== userId)
       .concat([userId]),
     creator: userId,
     createdAt: new Date().toISOString(),
   });
-  res.status(200).json({ success: true, messageRoom: { id: messageRoomId } });
+  res.status(200).json({ success: true, messageRoom: { id: roomId } });
 };
 
 /**

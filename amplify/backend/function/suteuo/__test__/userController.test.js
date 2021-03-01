@@ -1,15 +1,15 @@
-const { mockRequest, mockResponse } = require("./utils/express-mock");
 const controller = require("../src/controllers/users");
+const { mockRequest, mockResponse } = require("./utils/express-mock");
 jest.mock("../src/models/users", () => {
-  const mockUsers = require("./utils/users-mock");
-  return mockUsers;
+  const mockModel = require("./utils/users-mock");
+  return mockModel;
 });
-const mockUsers = require("./utils/users-mock");
+const mockModel = require("./utils/users-mock");
 
 describe("user controller", () => {
   describe("getUser", () => {
     beforeEach(() => {
-      mockUsers.clear();
+      mockModel.clear();
     });
     it("ユーザーIDに該当するユーザー情報がある場合にユーザー情報を取得する", async () => {
       const user1 = {
@@ -17,7 +17,7 @@ describe("user controller", () => {
         area: "Area",
         name: "User Name",
       };
-      mockUsers.addUser(user1);
+      mockModel.addUser(user1);
 
       const req = mockRequest({ params: { userId: "user-1" } });
       const res = mockResponse();
@@ -40,7 +40,7 @@ describe("user controller", () => {
   });
   describe("searchUsers", () => {
     beforeEach(() => {
-      mockUsers.clear();
+      mockModel.clear();
     });
     it("クエリを指定した場合にユーザーを検索する", async () => {
       const user1 = {
@@ -48,9 +48,9 @@ describe("user controller", () => {
         area: "Area",
         name: "User Name",
       };
-      mockUsers.addUser(user1);
+      mockModel.addUser(user1);
 
-      const req = mockRequest({ query: { q: "Nickname" } });
+      const req = mockRequest({ query: { q: "User" } });
       const res = mockResponse();
       await controller.getUsers(req, res);
       expect(res.status).toHaveBeenCalledWith(200);

@@ -72,14 +72,14 @@ async function searchMessageRoomsForUser(userId) {
 }
 
 /**
- * @param {string} messageRoomId
+ * @param {string} roomId
  * @returns {MessageRoom}
  */
-async function findMessageRoomById(messageRoomId) {
+async function findMessageRoomById(roomId) {
   var params = {
     TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
     Key: {
-      PK: "MESSAGE_ROOM#" + messageRoomId,
+      PK: "MESSAGE_ROOM#" + roomId,
       SK: "Details",
     },
   };
@@ -97,14 +97,14 @@ async function findMessageRoomById(messageRoomId) {
 }
 
 /**
- * @param {string} messageRoomId
+ * @param {string} roomId
  * @returns {Message[]}
  */
-async function searchMessageRoomMessages(messageRoomId) {
+async function searchMessageRoomMessages(roomId) {
   var params = {
     TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
     ExpressionAttributeValues: {
-      ":id": "MESSAGE_ROOM#" + messageRoomId,
+      ":id": "MESSAGE_ROOM#" + roomId,
       ":value": "MESSAGE#",
     },
     KeyConditionExpression: "PK = :id and begins_with(SK, :value)",
@@ -112,7 +112,7 @@ async function searchMessageRoomMessages(messageRoomId) {
   const result = await docClient.query(params).promise();
   const messages = result.Items.map((item) => ({
     id: item.Id,
-    roomId: messageRoomId,
+    roomId: item.MessageRoomId,
     body: item.Body,
     sender: item.Sender,
     createdAt: item.CreatedAt,
@@ -162,17 +162,17 @@ async function addMessageRoom(messageRoom) {
 }
 
 /**
- * @param {string} messageRoomId
+ * @param {string} roomId
  * @param {Message} message
  */
-async function addMessageRoomMessage(messageRoomId, message) {
+async function addMessageRoomMessage(roomId, message) {
   var params = {
     TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
     Item: {
-      PK: "MESSAGE_ROOM#" + messageRoomId,
+      PK: "MESSAGE_ROOM#" + roomId,
       SK: "MESSAGE#" + message.id,
       Id: message.id,
-      RoomId: messageRoomId,
+      MessageRoomId: roomId,
       Body: message.body,
       Sender: message.sender,
       CreatedAt: message.createdAt,
@@ -236,13 +236,13 @@ async function updateMessageRoom(messageRoom) {
 }
 
 /**
- * @param {string} messageRoomId
+ * @param {string} roomId
  */
-async function removeMessageRoom(messageRoomId) {
+async function removeMessageRoom(roomId) {
   var params = {
     TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
     ExpressionAttributeValues: {
-      ":id": "MESSAGE_ROOM#" + messageRoomId,
+      ":id": "MESSAGE_ROOM#" + roomId,
     },
     KeyConditionExpression: "PK = :id",
   };

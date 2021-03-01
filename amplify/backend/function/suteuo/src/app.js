@@ -80,7 +80,10 @@ app.get("/messaging/rooms", asyncHandler(messaging.getMessageRooms));
  * @param {string} roomId.path.required - メッセージルームID
  * @return {object} 200 - success response
  */
-app.get("/messaging/rooms/:roomId", asyncHandler(messaging.getMessageRooms));
+app.get(
+  "/messaging/rooms/:roomId",
+  asyncHandler(messaging.getMessageRooms)
+);
 
 /**
  * POST /messaging/rooms
