@@ -1,30 +1,47 @@
-const store = {};
-const all = [];
+const Store = require("./store");
+const messageRoomStore = new Store();
+const messageStore = new Store();
+const messagesByMessageRoomId = {};
 
 const clear = () => {
-  for (const key in store) {
-    if (Object.hasOwnProperty.call(store, key)) {
-      delete store[key];
-    }
-  }
-  all.splice(0, all.length);
+  messageRoomStore.clear();
+  messageStore.clear();
 };
 
-const getAll = () => {
-  return all;
+const getAllMessageRooms = () => {
+  return messageRoomStore.getAll();
 };
-const addMessageRoom = async (user) => {
-  store[user.id] = user;
-  all.push(user);
+const addMessageRoom = async (messageRoom) => {
+  messageRoomStore.add(messageRoom);
+};
+
+const addMessage = async (roomId, message) => {
+  messageStore.add(message);
+  const messages = messagesByMessageRoomId[roomId];
+  if (messages) {
+    messages.push(message);
+  } else {
+    messagesByMessageRoomId[roomId] = [message];
+  }
 };
 
 const findMessageRoomById = async (roomId) => {
-  return store[roomId] || null;
+  return messageRoomStore.findById(roomId);
+};
+
+const searchMessageRoomMessages = async (roomId) => {
+  const messages = messagesByMessageRoomId[roomId] || [];
+  return {
+    totalCount: messages.length,
+    items: messages,
+  };
 };
 
 module.exports = {
   clear,
-  getAll,
-  addMessageRoom: addMessageRoom,
-  findMessageRoomById: findMessageRoomById,
+  getAllMessageRooms,
+  searchMessageRoomMessages,
+  addMessageRoom,
+  addMessage,
+  findMessageRoomById,
 };

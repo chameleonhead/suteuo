@@ -1,31 +1,26 @@
-const store = {};
-const all = [];
+const Store = require("./store");
+
+const store = new Store();
 
 const clear = () => {
-  for (const key in store) {
-    if (Object.hasOwnProperty.call(store, key)) {
-      delete store[key];
-    }
-  }
-  all.splice(0, all.length);
+  store.clear();
 };
 
 const getAll = () => {
-  return all;
+  return store.getAll();
 };
 
 const addUser = async (user) => {
-  store[user.id] = user;
-  all.push(user);
+  store.add(user);
 };
 
 const findUserById = async (userId) => {
-  return store[userId] || null;
+  return store.findById(userId);
 };
 const searchUser = async (searchQuery) => {
-  const filtered = all.filter(
-    (e) => e.id === searchQuery || e.name.includes(searchQuery)
-  );
+  const filtered = store
+    .getAll()
+    .filter((e) => e.id === searchQuery || e.name.includes(searchQuery));
   return {
     totalCount: filtered.length,
     items: filtered,

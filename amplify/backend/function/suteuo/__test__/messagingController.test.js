@@ -37,6 +37,35 @@ describe("messaging controller", () => {
       );
     });
   });
+  describe("getMessageRoomMessages", () => {
+    beforeEach(() => {
+      mockModel.clear();
+    });
+    it("メッセージルームのメッセージを取得する", async () => {
+      const messageRoom1 = {
+        id: "room-1",
+        participanst: ["user-1"],
+      };
+      const message1 = {
+        id: "message-1",
+        roomId: "room-1",
+        body: "body",
+      };
+      mockModel.addMessageRoom(messageRoom1);
+      mockModel.addMessage("room-1", message1);
+
+      const req = mockRequest({ params: { roomId: "room-1" } });
+      const res = mockResponse();
+      await controller.getMessageRoomMessages(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        totalCount: 1,
+        items: [message1],
+      });
+    });
+  });
+
   describe("postMesageRoom", () => {
     beforeEach(() => {
       mockModel.clear();
@@ -56,7 +85,7 @@ describe("messaging controller", () => {
           id: expect.anything(),
         },
       });
-      expect(mockModel.getAll()[0]).toEqual({
+      expect(mockModel.getAllMessageRooms()[0]).toEqual({
         id: expect.anything(),
         participants: ["user-2", "user-1"],
         creator: "user-1",
