@@ -9,6 +9,10 @@ const clear = () => {
   }
   all.splice(0, all.length);
 };
+
+const getAll = () => {
+  return all;
+};
 const addMessageRoom = async (user) => {
   store[user.id] = user;
   all.push(user);
@@ -17,19 +21,10 @@ const addMessageRoom = async (user) => {
 const findMessageRoomById = async (roomId) => {
   return store[roomId] || null;
 };
-const searchUser = async (searchQuery) => {
-  const filtered = all.filter(
-    (e) => e.id === searchQuery || e.name.includes(searchQuery)
-  );
-  return {
-    totalCount: filtered.length,
-    items: filtered,
-  };
-};
 
 module.exports = {
   clear,
-  addMessageRoom,
-  findMessageRoomById,
-  searchUser,
+  getAll,
+  addMessageRoom: addMessageRoom,
+  findMessageRoomById: findMessageRoomById,
 };

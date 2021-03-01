@@ -9,6 +9,11 @@ const clear = () => {
   }
   all.splice(0, all.length);
 };
+
+const getAll = () => {
+  return all;
+};
+
 const addUser = async (user) => {
   store[user.id] = user;
   all.push(user);
@@ -29,6 +34,7 @@ const searchUser = async (searchQuery) => {
 
 module.exports = {
   clear,
+  getAll,
   addUser,
   findUserById,
   searchUser,

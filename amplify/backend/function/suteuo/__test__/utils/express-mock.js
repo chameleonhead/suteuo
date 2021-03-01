@@ -6,11 +6,22 @@
 /**
  * @returns {Request}
  */
-const mockRequest = ({ params, body, query } = {}) => {
+const mockRequest = ({ params, body, query } = {}, user = undefined) => {
   const req = {};
   req.params = params || {};
   req.body = body || {};
   req.query = query || {};
+  if (user) {
+    req.apiGateway = {
+      event: {
+        requestContext: {
+          identity: {
+            cognitoAuthenticationProvider: user,
+          },
+        },
+      },
+    };
+  }
   return req;
 };
 
