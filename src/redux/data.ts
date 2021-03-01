@@ -79,6 +79,9 @@ export const dataSelectors = {
         )
       : [],
 };
+interface ClearDataAction {
+  type: "CLEAR_DATA";
+}
 
 interface FetchUsersAction {
   type: "FETCH_USERS";
@@ -134,6 +137,7 @@ interface SetMessagesAction {
 }
 
 type KnownAction =
+  | ClearDataAction
   | FetchUsersAction
   | SetUsersAction
   | FetchUserAction
@@ -145,6 +149,9 @@ type KnownAction =
   | ApiAction;
 
 export const dataActionCreators = {
+  clearData: (): ClearDataAction => ({
+    type: "CLEAR_DATA",
+  }),
   fetchUsers: (query: string = ""): FetchUsersAction => ({
     type: "FETCH_USERS",
     payload: {
@@ -233,17 +240,22 @@ export const dataMiddleware: Middleware = ({ dispatch, getState }) => (
   }
 };
 
+const initialValue = {
+  users: { entities: {}, list: [] } as UsersDataState,
+  messages: { entities: {}, listByRoomId: {} } as MessageDataState,
+  messageRooms: { entities: {}, list: [] } as MessageRoomDataState,
+};
+
 export const dataReducer: Reducer<DataState> = (state, incomingAction) => {
   if (!state) {
-    state = {
-      users: { entities: {}, list: [] } as UsersDataState,
-      messages: { entities: {}, listByRoomId: {} } as MessageDataState,
-      messageRooms: { entities: {}, list: [] } as MessageRoomDataState,
-    };
+    state = initialValue;
   }
 
   const action = incomingAction as KnownAction;
   switch (action.type) {
+    case "CLEAR_DATA": {
+      return initialValue;
+    }
     case "SET_USERS": {
       const { items } = action.payload;
       const list = [] as string[];

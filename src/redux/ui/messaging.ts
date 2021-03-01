@@ -95,6 +95,7 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
   }
   if (action.type === "SET_MESSAGE_ROOM_ID") {
     const messagingState = selectors.getMessagingState(getState());
+    dispatch(actionCreators.fetchMessages(action.payload.roomId));
     dispatch(
       actionCreators.setPageState("MESSAGING", {
         ...messagingState,

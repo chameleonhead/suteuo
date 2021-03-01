@@ -108,6 +108,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
   if (action.type === "LOGOUT") {
     dispatch(actionCreators.api(action.type, "LOGOUT"));
     dispatch(actionCreators.clearAuth());
+    dispatch(actionCreators.clearData());
   }
 };
 

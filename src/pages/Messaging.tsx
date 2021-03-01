@@ -35,7 +35,7 @@ export const Messaging = (props: MessagingProps) => {
       <div className="mt-3 mb-6">
         <h1 className="text-3xl">メッセージ</h1>
       </div>
-      <div className="md:grid md:grid-cols-2">
+      <div className="md:grid md:grid-cols-3">
         <div className="p-3 mb-6 md:mb-0">
           <MessageRoomList
             items={messageRooms}
@@ -50,7 +50,7 @@ export const Messaging = (props: MessagingProps) => {
           </div>
         </div>
         {selectedMessageRoom && (
-          <div className="p-3">
+          <div className="p-3 mb-6 md:mb-0 md:col-span-2">
             <MessageList items={messages} />
             <div className="mt-3">
               <MessageForm
