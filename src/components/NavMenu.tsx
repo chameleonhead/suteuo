@@ -40,17 +40,21 @@ export const NavMenu = (props: NavMenuProps) => {
                   onClose={() => setNotificationOpen(false)}
                   trigger={
                     <button
+                      type="button"
                       className="text-gray-200 focus:text-gray-400"
                       onClick={() => setNotificationOpen(true)}
                     >
                       通知
                     </button>
                   }
+                  align="left"
                 >
-                  <NotificationList
-                    items={notifications}
-                    onNotificationSelect={(e) => onNotificationSelect(e.id)}
-                  ></NotificationList>
+                  <div className="mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                    <NotificationList
+                      items={notifications}
+                      onNotificationSelect={(e) => onNotificationSelect(e.id)}
+                    ></NotificationList>
+                  </div>
                 </Dropdown>
               </li>
             </ul>

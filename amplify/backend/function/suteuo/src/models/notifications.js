@@ -70,29 +70,18 @@ const addNotification = async (notification) => {
 /**
  *
  * @param {string} userId
- * @param {string[]} notificationIds
+ * @param {string} notificationId
+ * @param {string} loginUserId
  */
-const updateNotificationsRead = async (userId, notificationIds) => {
-  const result = await table.batchFind(
-    notificationIds.map((id) => ({
-      PK: "USER#" + userId,
-      SK: "NOTIFICATION#" + id,
-    }))
+const updateNotificationRead = async (userId, notificationId, loginUserId) => {
+  const result = await table.find(
+    "USER#" + userId,
+    "NOTIFICATION#" + notificationId
   );
-  await table.batchUpdate(
-    result.map((item) => {
-      return {
-        type: "UPDATE",
-        item: {
-          ...item,
-          Entity: {
-            ...item.Entity,
-            isRead: true,
-          },
-        },
-      };
-    })
-  );
+  await table.update({
+    ...result.Item,
+    isRead: true,
+  });
 };
 
 /**
@@ -127,5 +116,5 @@ module.exports = {
   addNotification,
   findNotificationById,
   searchNotificationsForUser,
-  updateNotificationsRead,
+  updateNotificationRead: updateNotificationRead,
 };

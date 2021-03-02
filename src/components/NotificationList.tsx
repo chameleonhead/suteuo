@@ -2,6 +2,7 @@ import * as React from "react";
 
 export interface NotificationItem {
   id: string;
+  type: string;
   timestamp: string;
   message: string;
 }
@@ -12,13 +13,17 @@ type NotificationListRowProps = {
 };
 
 const NotificationListRow = (props: NotificationListRowProps) => {
-  const { data: e, onNotificationSelect } = props;
+  const { data, onNotificationSelect } = props;
   return (
     <div
       className="p-2 hover:bg-gray-100"
-      onClick={() => onNotificationSelect(e)}
+      onClick={() => onNotificationSelect(data)}
     >
-      <div>{e.message}</div>
+      <div>
+        {data.type === "MESSAGE"
+          ? "メッセージがあります。"
+          : "通知があります。"}
+      </div>
     </div>
   );
 };
@@ -32,20 +37,18 @@ export const NotificationList = (props: NotificationListProps) => {
   const { items, onNotificationSelect } = props;
   if (items && items.length > 0) {
     return (
-      <div>
-        <div className="border rounded divide-y">
-          {items.map((e) => (
-            <NotificationListRow
-              key={e.id}
-              data={e}
-              onNotificationSelect={onNotificationSelect}
-            />
-          ))}
-        </div>
+      <div className="divide-y">
+        {items.map((e) => (
+          <NotificationListRow
+            key={e.id}
+            data={e}
+            onNotificationSelect={onNotificationSelect}
+          />
+        ))}
       </div>
     );
   }
-  return null;
+  return <div className="p-2">通知はありません。</div>;
 };
 
 export default NotificationList;

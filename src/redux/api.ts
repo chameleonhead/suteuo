@@ -174,6 +174,16 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
           }
         );
         break;
+      case "GET_NOTIFICATIONS":
+        fetchTask = API.get("suteuorest", "/notifications", {});
+        break;
+      case "POST_NOTIFICATION_READ":
+        fetchTask = API.post(
+          "suteuorest",
+          `/notifications/${params.notificationId}/read`,
+          {}
+        );
+        break;
     }
     if (fetchTask) {
       fetchTask

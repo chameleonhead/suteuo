@@ -32,12 +32,10 @@ const addNotification = async (notification) => {
   }
 };
 
-const updateNotificationsRead = async (userId, notificationIds) => {
-  for (const notificationId of notificationIds) {
-    const notification = notificationStore.findById(notificationId);
-    notification.isRead = true;
-    notificationStore.update(notification);
-  }
+const updateNotificationRead = async (userId, notificationId) => {
+  const notification = notificationStore.findById(notificationId);
+  notification.isRead = true;
+  notificationStore.update(notification);
 };
 
 const findNotificationById = async (userId, notificationId) => {
@@ -57,7 +55,7 @@ module.exports = {
   addNotificationConfig,
   findNotificationConfigByType,
   addNotification,
-  updateNotificationsRead,
+  updateNotificationRead,
   findNotificationById,
   searchNotificationsForUser,
 };

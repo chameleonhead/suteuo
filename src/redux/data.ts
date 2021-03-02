@@ -42,8 +42,10 @@ interface MessageDataState {
 
 interface Notification {
   id: string;
+  type: string;
   timestamp: string;
   message: string;
+  data: object;
 }
 
 interface NotificationDataState {
@@ -268,13 +270,13 @@ export const dataMiddleware: Middleware = ({ dispatch, getState }) => (
     dispatch(actionCreators.setMessages(action.payload));
   }
   if (action.type === "FETCH_NOTIFICATIONS") {
-    dispatch(actionCreators.api(action.type, "GET_MESSAGES"));
+    dispatch(actionCreators.api(action.type, "GET_NOTIFICATIONS"));
   }
   if (
     action.type === "API_SUCCEEDED" &&
     action.meta.returnAddress === "FETCH_NOTIFICATIONS"
   ) {
-    dispatch(actionCreators.setMessages(action.payload));
+    dispatch(actionCreators.setNotifications(action.payload));
   }
 };
 
@@ -390,6 +392,7 @@ export const dataReducer: Reducer<DataState> = (state, incomingAction) => {
           ...state,
           notifications: {
             ...state.notifications,
+            list,
             entities: {
               ...state.notifications.entities,
               ...entities,

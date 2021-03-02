@@ -56,7 +56,7 @@ describe("notifications controller", () => {
       });
     });
   });
-  describe("postNotificationsRead", () => {
+  describe("postNotificationRead", () => {
     beforeEach(() => {
       mockModel.clear();
     });
@@ -70,14 +70,14 @@ describe("notifications controller", () => {
 
       const req = mockRequest(
         {
-          body: {
+          params: {
             notificationId: "notification-1",
           },
         },
         "user-1"
       );
       const res = mockResponse();
-      await controller.postNotificationsRead(req, res);
+      await controller.postNotificationRead(req, res);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         success: true,

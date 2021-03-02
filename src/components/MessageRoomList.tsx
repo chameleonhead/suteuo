@@ -34,7 +34,7 @@ export const MessageRoomList = (props: MessageRoomListProps) => {
             >
               <div onClick={() => onMessageRoomSelect(e)}>
                 {(e.participants.length > 1
-                  ? e.participants.filter((p) => p.id !== loginUserId)
+                  ? e.participants.filter((p) => p && p.id !== loginUserId)
                   : e.participants
                 )
                   .map((u) => u.name)

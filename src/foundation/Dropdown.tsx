@@ -4,11 +4,12 @@ export type DropdownProps = {
   trigger: React.ReactNode;
   children: React.ReactNode;
   open?: boolean;
+  align?: "left" | "right";
   onClose: () => void;
 };
 
 export const Dropdown = (props: DropdownProps) => {
-  const { open, onClose, trigger, children } = props;
+  const { open, align = "right", onClose, trigger, children } = props;
   const dropdownRef = React.useRef<HTMLDivElement>();
 
   React.useEffect(() => {
@@ -28,7 +29,7 @@ export const Dropdown = (props: DropdownProps) => {
     <div className="relative" ref={dropdownRef as any}>
       {trigger}
       {open && (
-        <div className="absolute origin-top-right right-0">{children}</div>
+        <div className={`absolute origin-top-${align} ${align}-0`}>{children}</div>
       )}
     </div>
   );

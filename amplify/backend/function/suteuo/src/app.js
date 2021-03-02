@@ -136,12 +136,13 @@ app.get("/notifications", asyncHandler(notifications.getNotifications));
  * @property {string[]} notificationIds
  */
 /**
- * POST /notifications
+ * POST /notifications/{notificationId}/read
  * @summary 通知を既読に変更する
+ * @param {string} notificationId.path.required - 通知ID
  * @param {PostNotificationsOptions} request.body.required
  * @return {object} 200 - success response
  */
-app.post("/notifications", asyncHandler(notifications.postNotificationsRead));
+app.post("/notifications/:notificationId/read", asyncHandler(notifications.postNotificationRead));
 
 app.listen(3000, function () {
   console.log("App started");

@@ -15,15 +15,22 @@ const { getUserId } = require("../utils/helpers");
  * @param {Response} res
  */
 const putWebPushNotificationConfig = async (req, res) => {
+  const userId = getUserId(req);
   const config = await notifications.findNotificationConfigByType("webpush");
   if (config) {
-    await notifications.updateNotificationConfig({ ...config, data: req.body });
+    await notifications.updateNotificationConfig(
+      { ...config, data: req.body },
+      userId
+    );
   } else {
-    await notifications.addNotificationConfig({
-      id: uuid.v4(),
-      notificationType: "webpush",
-      data: req.body,
-    });
+    await notifications.addNotificationConfig(
+      {
+        id: uuid.v4(),
+        notificationType: "webpush",
+        data: req.body,
+      },
+      userId
+    );
   }
   return res.status(200).json({
     success: true,
@@ -66,15 +73,10 @@ const getNotifications = async (req, res) => {
  * @param {Request} req
  * @param {Response} res
  */
-const postNotificationsRead = async (req, res) => {
+const postNotificationRead = async (req, res) => {
   const userId = getUserId(req);
-  let notificationIds = req.body.notificationId
-    ? [req.body.notificationId]
-    : [];
-  if (req.body.notificationIds) {
-    notificationIds = notificationIds.concat(req.body.notificationIds);
-  }
-  await notifications.updateNotificationsRead(userId, notificationIds);
+  const { notificationId } = req.params;
+  await notifications.updateNotificationRead(userId, notificationId, userId);
   return res.status(200).json({
     success: true,
   });
@@ -84,5 +86,5 @@ module.exports = {
   getWebPushNotificationConfig,
   putWebPushNotificationConfig,
   getNotifications,
-  postNotificationsRead,
+  postNotificationRead,
 };

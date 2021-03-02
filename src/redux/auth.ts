@@ -87,6 +87,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
   ) {
     if (action.payload) {
       dispatch(actionCreators.setAuth(action.payload));
+      dispatch(actionCreators.initNotifications());
     } else {
       dispatch(actionCreators.clearAuth());
     }
