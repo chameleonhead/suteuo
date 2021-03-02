@@ -82,6 +82,64 @@ class DynamoDb {
     return result;
   }
 
+  /**
+   * @param {{type: 'CREATE' | 'UPDATE' | 'DELETE', item: object}[]} updateList
+   */
+  async batchUpdate(updateList, loginUserId = "anonymous") {
+    const requests = [];
+    for (const update of updateList) {
+      switch (update.type) {
+        case "CREATE": {
+          requests.push({
+            PutRequest: {
+              Item: {
+                CreatedAt: Date.now(),
+                CreatedBy: loginUserId,
+                ModifiedAt: Date.now(),
+                ModifiedBy: loginUserId,
+                ...update.item,
+              },
+            },
+          });
+          break;
+        }
+        case "UPDATE": {
+          requests.push({
+            PutRequest: {
+              Item: {
+                ModifiedAt: Date.now(),
+                ModifiedBy: loginUserId,
+                ...update.item,
+              },
+            },
+          });
+          break;
+        }
+        case "DELETE": {
+          requests.push({
+            DeleteRequest: {
+              Item: {
+                PK: update.item.PK,
+                SK: update.item.SK,
+              },
+            },
+          });
+          break;
+        }
+        default:
+          break;
+      }
+    }
+
+    await docClient
+      .batchWrite({
+        RequestItems: {
+          [process.env.STORAGE_SUTEUOMESSAGING_NAME]: requests,
+        },
+      })
+      .promise();
+  }
+
   async searchPk(pk) {
     var params = {
       TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,

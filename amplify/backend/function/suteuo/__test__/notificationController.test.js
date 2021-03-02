@@ -8,6 +8,9 @@ const mockModel = require("./utils/notifications-mock");
 
 describe("notifications controller", () => {
   describe("getWebPushNotificationConfig", () => {
+    beforeEach(() => {
+      mockModel.clear();
+    });
     test("WEB通知の公開鍵を取得する", async () => {
       const notificationConfig1 = {
         id: "config-1",
@@ -27,6 +30,57 @@ describe("notifications controller", () => {
         config: {
           publicKey: "publicKey",
         },
+      });
+    });
+  });
+  describe("getNotifications", () => {
+    beforeEach(() => {
+      mockModel.clear();
+    });
+    test("ログインユーザーの通知をすべて取得する", async () => {
+      const notification = {
+        id: "notification-1",
+        userId: "user-1",
+        message: { body: "text" },
+      };
+      mockModel.addNotification(notification);
+
+      const req = mockRequest(undefined, "user-1");
+      const res = mockResponse();
+      await controller.getNotifications(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        totalCount: 1,
+        items: [notification],
+      });
+    });
+  });
+  describe("postNotificationsRead", () => {
+    beforeEach(() => {
+      mockModel.clear();
+    });
+    test("1件の通知を既読にする", async () => {
+      const notification = {
+        id: "notification-1",
+        userId: "user-1",
+        message: { body: "text" },
+      };
+      mockModel.addNotification(notification);
+
+      const req = mockRequest(
+        {
+          body: {
+            notificationId: "notification-1",
+          },
+        },
+        "user-1"
+      );
+      const res = mockResponse();
+      await controller.postNotificationsRead(req, res);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
       });
     });
   });

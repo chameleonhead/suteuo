@@ -21,6 +21,7 @@ class Store {
 
   add(entity) {
     if (this.kvData[entity.id]) {
+      console.error("already exists")
       throw new Error("already exists");
     }
     this.kvData[entity.id] = entity;
