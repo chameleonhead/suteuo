@@ -1,5 +1,6 @@
 const DynamoDb = require("./dynamodb");
-const table = new DynamoDb(process.env.STORAGE_SUTEUONOTIFICATIONS_NAME);
+const table = new DynamoDb(process.env.STORAGE_SUTEUONOTIFICATION_NAME);
+const uuid = require("uuid");
 
 /**
  * @typedef NotificationConfig
@@ -39,17 +40,29 @@ const findNotificationConfigByType = async (notificationType) => {
  * @param {string} id
  * @param {string} userId
  * @param {string} timestamp
+ * @param {string} type
  * @param {string} message
  * @param {boolean} isRead
  */
+
+const createNotification = (userId, type, message) => {
+  return {
+    id: uuid.v4(),
+    userId,
+    timestamp: Date.now(),
+    type,
+    message,
+    isRead: false,
+  };
+};
 
 /**
  * @param {Notification} notification
  */
 const addNotification = async (notification) => {
   await table.add({
-    SK: "USER#" + notification.userId,
-    PK: "NOTIFICATION#" + notification.id,
+    PK: "USER#" + notification.userId,
+    SK: "NOTIFICATION#" + notification.id,
     Entity: notification,
   });
 };
@@ -67,7 +80,7 @@ const updateNotificationsRead = async (userId, notificationIds) => {
     }))
   );
   await table.batchUpdate(
-    result.Items.map((item) => {
+    result.map((item) => {
       return {
         type: "UPDATE",
         item: {
@@ -108,6 +121,7 @@ const searchNotificationsForUser = async (userId) => {
 };
 
 module.exports = {
+  createNotification,
   addNotificationConfig,
   findNotificationConfigByType,
   addNotification,

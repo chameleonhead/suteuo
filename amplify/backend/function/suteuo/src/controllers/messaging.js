@@ -1,5 +1,6 @@
 const uuid = require("uuid");
 const messaging = require("../models/messaging");
+const notifications = require("../models/notifications");
 const { notfound } = require("../utils/responseGenerator");
 const { getUserId } = require("../utils/helpers");
 
@@ -121,12 +122,18 @@ const postMessageRoomMessage = async (req, res) => {
   const { body } = req.body;
 
   const messageId = uuid.v4();
-  await messaging.addMessageRoomMessage(roomId, {
+  const message = {
     id: messageId,
     body,
     sender: userId,
     createdAt: new Date().toISOString(),
-  });
+  };
+  await messaging.addMessageRoomMessage(roomId, message);
+  for (const participant of messageRoom.participants) {
+    await notifications.addNotification(
+      notifications.createNotification(participant, "MESSAGE", message)
+    );
+  }
   res.status(200).json({ success: true, message: { id: messageId } });
 };
 

@@ -1,5 +1,5 @@
 const DynamoDb = require("./dynamodb");
-const messagingTable = new DynamoDb(process.env.STORAGE_SUTEUOMESSAGING_NAME);
+const table = new DynamoDb(process.env.STORAGE_SUTEUOMESSAGING_NAME);
 
 /**
  * @typedef MessageRoom
@@ -23,14 +23,14 @@ const messagingTable = new DynamoDb(process.env.STORAGE_SUTEUOMESSAGING_NAME);
  * @returns {{totalCount: number; items: MessageRoom[]}}
  */
 async function searchMessageRoomsForUser(userId) {
-  const result = await messagingTable.searchSk("USER#" + userId);
+  const result = await table.searchSk("USER#" + userId);
   if (result.Count === 0) {
     return {
       totalCount: 0,
       items: [],
     };
   }
-  const data = await messagingTable.batchFind(
+  const data = await table.batchFind(
     result.Items.map((item) => ({
       PK: item.PK,
       SK: "Details",
@@ -38,14 +38,12 @@ async function searchMessageRoomsForUser(userId) {
   );
   return {
     totalCount: result.Count,
-    items: data.Responses[process.env.STORAGE_SUTEUOMESSAGING_NAME].map(
-      (messageRoom) => ({
-        id: messageRoom.Id,
-        participants: messageRoom.Participants,
-        creator: messageRoom.Creator,
-        createdAt: messageRoom.CreatedAt,
-      })
-    ),
+    items: data.map((messageRoom) => ({
+      id: messageRoom.Id,
+      participants: messageRoom.Participants,
+      creator: messageRoom.Creator,
+      createdAt: messageRoom.CreatedAt,
+    })),
   };
 }
 
@@ -54,10 +52,7 @@ async function searchMessageRoomsForUser(userId) {
  * @returns {MessageRoom}
  */
 async function findMessageRoomById(roomId) {
-  const messageRoom = await messagingTable.find(
-    "MESSAGE_ROOM#" + roomId,
-    "Details"
-  );
+  const messageRoom = await table.find("MESSAGE_ROOM#" + roomId, "Details");
   if (messageRoom.Item) {
     return {
       id: messageRoom.Item.Id,
@@ -76,14 +71,14 @@ async function findMessageRoomById(roomId) {
  */
 async function searchMessageRoomMessages(roomId) {
   var params = {
-    TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
+    TableName: table.tableName,
     ExpressionAttributeValues: {
       ":id": "MESSAGE_ROOM#" + roomId,
       ":value": "MESSAGE#",
     },
     KeyConditionExpression: "PK = :id and begins_with(SK, :value)",
   };
-  const result = await messagingTable.client.query(params).promise();
+  const result = await table.client.query(params).promise();
   const messages = result.Items.map((item) => ({
     id: item.Id,
     roomId: item.MessageRoomId,
@@ -129,10 +124,10 @@ async function addMessageRoom(messageRoom) {
 
   var params = {
     RequestItems: {
-      [process.env.STORAGE_SUTEUOMESSAGING_NAME]: requests,
+      [table.tableName]: requests,
     },
   };
-  await messagingTable.client.batchWrite(params).promise();
+  await table.client.batchWrite(params).promise();
 }
 
 /**
@@ -140,7 +135,7 @@ async function addMessageRoom(messageRoom) {
  * @param {Message} message
  */
 async function addMessageRoomMessage(roomId, message, loginUserId) {
-  await messagingTable.add(
+  await table.add(
     {
       PK: "MESSAGE_ROOM#" + roomId,
       SK: "MESSAGE#" + message.id,
@@ -205,19 +200,19 @@ async function updateMessageRoom(messageRoom) {
       [process.env.STORAGE_SUTEUOMESSAGING_NAME]: requests,
     },
   };
-  await messagingTable.client.batchWrite(params).promise();
+  await table.client.batchWrite(params).promise();
 }
 
 /**
  * @param {string} roomId
  */
 async function removeMessageRoom(roomId) {
-  const result = await messagingTable.searchPk("MESSAGE_ROOM#" + roomId);
+  const result = await table.searchPk("MESSAGE_ROOM#" + roomId);
   if (result.Items.length) {
-    await messagingTable.client
+    await table.client
       .batchWrite({
         RequestItems: {
-          [process.env.STORAGE_SUTEUOMESSAGING_NAME]: result.Items.map((e) => ({
+          [table.tableName]: result.Items.map((e) => ({
             DeleteRequest: {
               Key: {
                 PK: e.PK,

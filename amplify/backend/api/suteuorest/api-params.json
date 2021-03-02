@@ -32,6 +32,21 @@
                 ]
             },
             "policyResourceName": "/messaging"
+        },
+        {
+            "name": "/notifications",
+            "lambdaFunction": "suteuo",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            },
+            "policyResourceName": "/notifications"
         }
     ],
     "resourceName": "suteuorest",
@@ -42,10 +57,10 @@
         }
     ],
     "privacy": {
-        "auth": 2,
+        "auth": 3,
         "unauth": 1,
-        "authRoleName": "amplify-suteuo-dev-154743-authRole",
-        "unAuthRoleName": "amplify-suteuo-dev-154743-unauthRole"
+        "authRoleName": "amplify-suteuo-dev-144743-authRole",
+        "unAuthRoleName": "amplify-suteuo-dev-144743-unauthRole"
     },
     "dependsOn": [
         {
@@ -56,5 +71,6 @@
                 "Arn"
             ]
         }
-    ]
+    ],
+    "uuid": "0477294e"
 }

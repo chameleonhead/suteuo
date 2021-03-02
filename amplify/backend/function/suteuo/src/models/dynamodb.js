@@ -79,7 +79,7 @@ class DynamoDb {
         },
       })
       .promise();
-    return result;
+    return result.Responses[this.tableName];
   }
 
   /**
@@ -134,7 +134,7 @@ class DynamoDb {
     await docClient
       .batchWrite({
         RequestItems: {
-          [process.env.STORAGE_SUTEUOMESSAGING_NAME]: requests,
+          [this.tableName]: requests,
         },
       })
       .promise();
@@ -142,7 +142,7 @@ class DynamoDb {
 
   async searchPk(pk) {
     var params = {
-      TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
+      TableName: this.tableName,
       ExpressionAttributeValues: {
         ":id": pk,
       },

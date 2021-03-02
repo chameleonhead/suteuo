@@ -178,7 +178,6 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
     if (fetchTask) {
       fetchTask
         .then((data) => {
-          console.log(data);
           dispatch(actionCreators.apiSuccess(data, action.meta));
         })
         .catch((error) => {

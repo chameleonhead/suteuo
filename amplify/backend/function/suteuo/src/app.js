@@ -50,6 +50,7 @@ function asyncHandler(fn) {
 
 var users = require("./controllers/users");
 var messaging = require("./controllers/messaging");
+var notifications = require("./controllers/notifications");
 
 /**
  * GET /users
@@ -122,6 +123,25 @@ app.post(
   "/messaging/rooms/:roomId/messages",
   asyncHandler(messaging.postMessageRoomMessage)
 );
+
+/**
+ * GET /notifications
+ * @summary 通知一覧を取得する
+ * @return {object} 200 - success response
+ */
+app.get("/notifications", asyncHandler(notifications.getNotifications));
+
+/**
+ * @typedef PostNotificationsOptions
+ * @property {string[]} notificationIds
+ */
+/**
+ * POST /notifications
+ * @summary 通知を既読に変更する
+ * @param {PostNotificationsOptions} request.body.required
+ * @return {object} 200 - success response
+ */
+app.post("/notifications", asyncHandler(notifications.postNotificationsRead));
 
 app.listen(3000, function () {
   console.log("App started");

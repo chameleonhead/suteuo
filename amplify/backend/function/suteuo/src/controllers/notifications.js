@@ -62,23 +62,6 @@ const getNotifications = async (req, res) => {
 };
 
 /**
- * 通知を取得する
- * @param {Request} req
- * @param {Response} res
- */
-const getNotification = async (req, res) => {
-  const userId = getUserId(req);
-  const result = await notifications.findNotificationById(
-    userId,
-    req.params.notificationId
-  );
-  return res.status(200).json({
-    success: true,
-    notification: result,
-  });
-};
-
-/**
  * 通知に既読をセットする
  * @param {Request} req
  * @param {Response} res
@@ -101,6 +84,5 @@ module.exports = {
   getWebPushNotificationConfig,
   putWebPushNotificationConfig,
   getNotifications,
-  getNotification,
   postNotificationsRead,
 };
