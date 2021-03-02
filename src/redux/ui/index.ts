@@ -3,6 +3,7 @@ import { ApplicationState } from "..";
 import * as SignupStore from "./signup";
 import * as MessagingStore from "./messaging";
 import * as ForgotPasswordStore from "./forgotPassword";
+import * as NotificationStore from "./notifications";
 
 interface SignupState {
   waitingUserConfirmation: boolean;
@@ -69,12 +70,14 @@ export const uiActionCreators = {
   ...SignupStore.signupActionCreators,
   ...MessagingStore.messagingActionCreators,
   ...ForgotPasswordStore.forgotPasswordActionCreators,
+  ...NotificationStore.notificationsActionCreators,
 };
 
 export const uiMiddleware = [
   SignupStore.signupMiddleware,
   MessagingStore.messagingMiddleware,
   ForgotPasswordStore.forgotPasswordMiddleware,
+  NotificationStore.notificationsMiddleware,
 ];
 
 export const uiReducer: Reducer<UiState> = (state, incomingAction) => {

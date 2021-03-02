@@ -40,10 +40,22 @@ interface MessageDataState {
   entities: { [id: string]: Message };
 }
 
+interface Notification {
+  id: string;
+  timestamp: string;
+  message: string;
+}
+
+interface NotificationDataState {
+  list: string[];
+  entities: { [id: string]: Notification };
+}
+
 export interface DataState {
   users: UsersDataState;
   messageRooms: MessageRoomDataState;
   messages: MessageDataState;
+  notifications: NotificationDataState;
 }
 
 export const dataSelectors = {
@@ -78,7 +90,18 @@ export const dataSelectors = {
           selectors.getMessageById(state, item)
         )
       : [],
+  getNotification: (state: ApplicationState, id: string) =>
+    state.data.notifications.entities[id],
+  getNotifications: (state: ApplicationState) =>
+    state.data.notifications.list.map((id) =>
+      selectors.getNotification(state, id)
+    ),
 };
+
+interface ListInfo<T> {
+  totalCount: number;
+  items: T[];
+}
 interface ClearDataAction {
   type: "CLEAR_DATA";
 }
@@ -92,9 +115,7 @@ interface FetchUsersAction {
 
 interface SetUsersAction {
   type: "SET_USERS";
-  payload: {
-    items: User[];
-  };
+  payload: ListInfo<User>;
 }
 
 interface FetchUserAction {
@@ -117,9 +138,7 @@ interface FetchMessageRoomsAction {
 
 interface SetMessageRoomsAction {
   type: "SET_MESSAGE_ROOMS";
-  payload: {
-    items: MessageRoom[];
-  };
+  payload: ListInfo<MessageRoom>;
 }
 
 interface FetchMessagesAction {
@@ -131,9 +150,16 @@ interface FetchMessagesAction {
 
 interface SetMessagesAction {
   type: "SET_MESSAGES";
-  payload: {
-    items: Message[];
-  };
+  payload: ListInfo<Message>;
+}
+
+interface FetchNotificationsAction {
+  type: "FETCH_NOTIFICATIONS";
+}
+
+interface SetNotificationsAction {
+  type: "SET_NOTIFICATIONS";
+  payload: ListInfo<Notification>;
 }
 
 type KnownAction =
@@ -146,6 +172,8 @@ type KnownAction =
   | SetMessageRoomsAction
   | FetchMessagesAction
   | SetMessagesAction
+  | FetchNotificationsAction
+  | SetNotificationsAction
   | ApiAction;
 
 export const dataActionCreators = {
@@ -175,10 +203,7 @@ export const dataActionCreators = {
   fetchMessageRooms: (): FetchMessageRoomsAction => ({
     type: "FETCH_MESSAGE_ROOMS",
   }),
-  setMessageRooms: (info: {
-    totalCount: number;
-    items: MessageRoom[];
-  }): SetMessageRoomsAction => ({
+  setMessageRooms: (info: ListInfo<MessageRoom>): SetMessageRoomsAction => ({
     type: "SET_MESSAGE_ROOMS",
     payload: info,
   }),
@@ -188,11 +213,15 @@ export const dataActionCreators = {
       roomId,
     },
   }),
-  setMessages: (info: {
-    totalCount: number;
-    items: Message[];
-  }): SetMessagesAction => ({
+  setMessages: (info: ListInfo<Message>): SetMessagesAction => ({
     type: "SET_MESSAGES",
+    payload: info,
+  }),
+  fetchNotifications: (): FetchNotificationsAction => ({
+    type: "FETCH_NOTIFICATIONS",
+  }),
+  setNotifications: (info: ListInfo<Notification>): SetNotificationsAction => ({
+    type: "SET_NOTIFICATIONS",
     payload: info,
   }),
 };
@@ -238,12 +267,22 @@ export const dataMiddleware: Middleware = ({ dispatch, getState }) => (
   ) {
     dispatch(actionCreators.setMessages(action.payload));
   }
+  if (action.type === "FETCH_NOTIFICATIONS") {
+    dispatch(actionCreators.api(action.type, "GET_MESSAGES"));
+  }
+  if (
+    action.type === "API_SUCCEEDED" &&
+    action.meta.returnAddress === "FETCH_NOTIFICATIONS"
+  ) {
+    dispatch(actionCreators.setMessages(action.payload));
+  }
 };
 
 const initialValue = {
   users: { entities: {}, list: [] } as UsersDataState,
   messages: { entities: {}, listByRoomId: {} } as MessageDataState,
   messageRooms: { entities: {}, list: [] } as MessageRoomDataState,
+  notifications: { entities: {}, list: [] } as NotificationDataState,
 };
 
 export const dataReducer: Reducer<DataState> = (state, incomingAction) => {
@@ -331,6 +370,28 @@ export const dataReducer: Reducer<DataState> = (state, incomingAction) => {
             },
             entities: {
               ...state.messages.entities,
+              ...entities,
+            },
+          },
+        };
+      }
+      break;
+    }
+    case "SET_NOTIFICATIONS": {
+      const { items } = action.payload;
+      if (items.length > 0) {
+        const list = [] as string[];
+        const entities = {} as { [id: string]: Notification };
+        for (const notification of items) {
+          list.push(notification.id);
+          entities[notification.id] = notification;
+        }
+        return {
+          ...state,
+          notifications: {
+            ...state.notifications,
+            entities: {
+              ...state.notifications.entities,
               ...entities,
             },
           },

@@ -3,15 +3,17 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { actionCreators, ApplicationState, selectors } from "../redux";
 import Dropdown from "../foundation/Dropdown";
+import NotificationList from "./NotificationList";
 
 export type NavMenuProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps;
 
 export const NavMenu = (props: NavMenuProps) => {
-  const { auth, onLogout } = props;
-  const [open, setOpen] = React.useState(false);
+  const { auth, notifications, onLogout, onNotificationSelect } = props;
+  const [notificationOpen, setNotificationOpen] = React.useState(false);
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   React.useEffect(() => {
-    setOpen(false);
+    setUserMenuOpen(false);
   }, []);
   return (
     <nav className="bg-gray-800 px-4 md:px-10">
@@ -23,7 +25,7 @@ export const NavMenu = (props: NavMenuProps) => {
         </div>
         {auth.state === "LOGGED_IN" ? (
           <div className="flex justify-between flex-auto ml-10">
-            <ul>
+            <ul className="flex space-x-2">
               <li>
                 <Link
                   to="/messaging"
@@ -32,15 +34,34 @@ export const NavMenu = (props: NavMenuProps) => {
                   メッセージ
                 </Link>
               </li>
+              <li>
+                <Dropdown
+                  open={notificationOpen}
+                  onClose={() => setNotificationOpen(false)}
+                  trigger={
+                    <button
+                      className="text-gray-200 focus:text-gray-400"
+                      onClick={() => setNotificationOpen(true)}
+                    >
+                      通知
+                    </button>
+                  }
+                >
+                  <NotificationList
+                    items={notifications}
+                    onNotificationSelect={(e) => onNotificationSelect(e.id)}
+                  ></NotificationList>
+                </Dropdown>
+              </li>
             </ul>
             <div>
               <Dropdown
-                open={open}
-                onClose={() => setOpen(false)}
+                open={userMenuOpen}
+                onClose={() => setUserMenuOpen(false)}
                 trigger={
                   <button
                     className="text-gray-200 focus:text-gray-400"
-                    onClick={() => setOpen(true)}
+                    onClick={() => setUserMenuOpen(true)}
                   >
                     {auth.user?.name || "未設定"}
                   </button>
@@ -93,10 +114,12 @@ export const NavMenu = (props: NavMenuProps) => {
 
 const mapStateToProps = (state: ApplicationState) => ({
   auth: selectors.getAuthState(state),
+  notifications: selectors.getNotifications(state),
 });
 
 const mapDispatchToProps = {
   onLogout: actionCreators.logout,
+  onNotificationSelect: actionCreators.readNotification,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavMenu);
