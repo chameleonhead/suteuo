@@ -80,13 +80,16 @@ app.get("/messaging/rooms", asyncHandler(messaging.getMessageRooms));
  * @param {string} roomId.path.required - メッセージルームID
  * @return {object} 200 - success response
  */
-app.get(
-  "/messaging/rooms/:roomId",
-  asyncHandler(messaging.getMessageRooms)
-);
+app.get("/messaging/rooms/:roomId", asyncHandler(messaging.getMessageRooms));
 
 /**
+ * メッセージルーム
+ * @typedef {object} PostMessageRoomOptions
+ * @property {string[]} participants.required - 参加者
+ */
+/**
  * POST /messaging/rooms
+ * @param {PostMessageRoomOptions} request.body.required
  * @summary メッセージルームを作成する
  * @return {object} 200 - success response
  */

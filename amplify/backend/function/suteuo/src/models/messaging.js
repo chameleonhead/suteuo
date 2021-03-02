@@ -1,14 +1,5 @@
-const AWS = require("aws-sdk");
-if (process.env.ENDPOINT_OVERRIDE) {
-  // 開発時のみの設定
-  AWS.config.update({
-    region: "us-west-2",
-    endpoint: process.env.ENDPOINT_OVERRIDE,
-    accessKeyId: "fakeAccessKeyId",
-    secretAccessKey: "fakeSecretAccessKey",
-  });
-}
-const docClient = new AWS.DynamoDB.DocumentClient();
+const DynamoDb = require("./dynamodb");
+const messagingTable = new DynamoDb(process.env.STORAGE_SUTEUOMESSAGING_NAME);
 
 /**
  * @typedef MessageRoom
@@ -32,32 +23,19 @@ const docClient = new AWS.DynamoDB.DocumentClient();
  * @returns {{totalCount: number; items: MessageRoom[]}}
  */
 async function searchMessageRoomsForUser(userId) {
-  var params = {
-    TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
-    FilterExpression: "SK = :sk",
-    ExpressionAttributeValues: {
-      ":sk": "USER#" + userId,
-    },
-  };
-  const result = await docClient.scan(params).promise();
+  const result = await messagingTable.searchSk("USER#" + userId);
   if (result.Count === 0) {
     return {
       totalCount: 0,
       items: [],
     };
   }
-  const data = await docClient
-    .batchGet({
-      RequestItems: {
-        [process.env.STORAGE_SUTEUOMESSAGING_NAME]: {
-          Keys: result.Items.map((item) => ({
-            PK: item.PK,
-            SK: "Details",
-          })),
-        },
-      },
-    })
-    .promise();
+  const data = await messagingTable.batchFind(
+    result.Items.map((item) => ({
+      PK: item.PK,
+      SK: "Details",
+    }))
+  );
   return {
     totalCount: result.Count,
     items: data.Responses[process.env.STORAGE_SUTEUOMESSAGING_NAME].map(
@@ -76,14 +54,10 @@ async function searchMessageRoomsForUser(userId) {
  * @returns {MessageRoom}
  */
 async function findMessageRoomById(roomId) {
-  var params = {
-    TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
-    Key: {
-      PK: "MESSAGE_ROOM#" + roomId,
-      SK: "Details",
-    },
-  };
-  const messageRoom = await docClient.get(params).promise();
+  const messageRoom = await messagingTable.find(
+    "MESSAGE_ROOM#" + roomId,
+    "Details"
+  );
   if (messageRoom.Item) {
     return {
       id: messageRoom.Item.Id,
@@ -109,7 +83,7 @@ async function searchMessageRoomMessages(roomId) {
     },
     KeyConditionExpression: "PK = :id and begins_with(SK, :value)",
   };
-  const result = await docClient.query(params).promise();
+  const result = await messagingTable.client.query(params).promise();
   const messages = result.Items.map((item) => ({
     id: item.Id,
     roomId: item.MessageRoomId,
@@ -158,17 +132,16 @@ async function addMessageRoom(messageRoom) {
       [process.env.STORAGE_SUTEUOMESSAGING_NAME]: requests,
     },
   };
-  await docClient.batchWrite(params).promise();
+  await messagingTable.client.batchWrite(params).promise();
 }
 
 /**
  * @param {string} roomId
  * @param {Message} message
  */
-async function addMessageRoomMessage(roomId, message) {
-  var params = {
-    TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
-    Item: {
+async function addMessageRoomMessage(roomId, message, loginUserId) {
+  await messagingTable.add(
+    {
       PK: "MESSAGE_ROOM#" + roomId,
       SK: "MESSAGE#" + message.id,
       Id: message.id,
@@ -177,8 +150,8 @@ async function addMessageRoomMessage(roomId, message) {
       Sender: message.sender,
       CreatedAt: message.createdAt,
     },
-  };
-  await docClient.put(params).promise();
+    loginUserId
+  );
 }
 
 /**
@@ -232,23 +205,16 @@ async function updateMessageRoom(messageRoom) {
       [process.env.STORAGE_SUTEUOMESSAGING_NAME]: requests,
     },
   };
-  await docClient.batchWrite(params).promise();
+  await messagingTable.client.batchWrite(params).promise();
 }
 
 /**
  * @param {string} roomId
  */
 async function removeMessageRoom(roomId) {
-  var params = {
-    TableName: process.env.STORAGE_SUTEUOMESSAGING_NAME,
-    ExpressionAttributeValues: {
-      ":id": "MESSAGE_ROOM#" + roomId,
-    },
-    KeyConditionExpression: "PK = :id",
-  };
-  const result = await docClient.query(params).promise();
+  const result = await messagingTable.searchPk("MESSAGE_ROOM#" + roomId);
   if (result.Items.length) {
-    await docClient
+    await messagingTable.client
       .batchWrite({
         RequestItems: {
           [process.env.STORAGE_SUTEUOMESSAGING_NAME]: result.Items.map((e) => ({

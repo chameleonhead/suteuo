@@ -1,6 +1,6 @@
 const uuid = require("uuid");
 const messaging = require("../models/messaging");
-const { notfound, notvalid } = require("../utils/responseGenerator");
+const { notfound } = require("../utils/responseGenerator");
 const { getUserId } = require("../utils/helpers");
 
 /**
@@ -16,9 +16,6 @@ const { getUserId } = require("../utils/helpers");
  */
 const getMessageRooms = async (req, res) => {
   const userId = getUserId(req);
-  if (userId === "UNAUTH") {
-    return notvalid(res, "User is not valid.");
-  }
   const result = await messaging.searchMessageRoomsForUser(userId);
   res.status(200).json({ success: true, ...result });
 };
@@ -45,9 +42,6 @@ const getMessageRoom = async (req, res) => {
  */
 const postMessageRoom = async (req, res) => {
   const userId = getUserId(req);
-  if (userId === "UNAUTH") {
-    return notvalid(res, "User is not valid.");
-  }
   const { participants } = req.body;
   const roomId = uuid.v4();
   await messaging.addMessageRoom({
@@ -118,9 +112,6 @@ const getMessageRoomMessages = async (req, res) => {
  */
 const postMessageRoomMessage = async (req, res) => {
   const userId = getUserId(req);
-  if (userId === "UNAUTH") {
-    return notvalid(res, "User is not valid.");
-  }
   const { roomId } = req.params;
   const messageRoom = await messaging.findMessageRoomById(roomId);
   if (!messageRoom) {
