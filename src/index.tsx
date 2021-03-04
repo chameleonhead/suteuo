@@ -5,6 +5,7 @@ import App from "./App";
 import Amplify from "aws-amplify";
 import awsExports from "./aws-exports";
 import configureStore from "./redux/configureStore";
+import registerServiceWorker from "./registerServiceWorker";
 import "tailwindcss/dist/tailwind.css";
 
 Amplify.configure(awsExports);
@@ -18,3 +19,5 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
+
+registerServiceWorker();
