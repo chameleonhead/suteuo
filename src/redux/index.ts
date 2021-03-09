@@ -21,6 +21,13 @@ import {
   DataState,
 } from "./data";
 import {
+  notificationsActionCreators,
+  notificationsMiddleware,
+  notificationsReducer,
+  notificationsSelectors,
+  NotificationsState,
+} from "./notifications";
+import {
   taskActionCreators,
   taskMiddleware,
   taskReducer,
@@ -41,6 +48,7 @@ export interface ApplicationState {
   data: DataState;
   ui: UiState;
   task: TaskState;
+  notifications: NotificationsState;
 }
 
 export const selectors = {
@@ -49,6 +57,7 @@ export const selectors = {
   ...dataSelectors,
   ...uiSelectors,
   ...taskSelectors,
+  ...notificationsSelectors,
 };
 
 export const actionCreators = {
@@ -57,6 +66,7 @@ export const actionCreators = {
   ...dataActionCreators,
   ...uiActionCreators,
   ...taskActionCreators,
+  ...notificationsActionCreators,
 };
 
 export const middlewares = [
@@ -65,6 +75,7 @@ export const middlewares = [
   dataMiddleware,
   ...uiMiddleware,
   taskMiddleware,
+  notificationsMiddleware,
 ];
 
 export const reducers: Reducer<ApplicationState> = combineReducers({
@@ -73,4 +84,5 @@ export const reducers: Reducer<ApplicationState> = combineReducers({
   data: dataReducer,
   ui: uiReducer,
   task: taskReducer,
+  notifications: notificationsReducer,
 });

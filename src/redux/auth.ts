@@ -100,6 +100,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
     action.meta.returnAddress === "LOGIN"
   ) {
     dispatch(actionCreators.initAuth());
+    dispatch(actionCreators.registerServiceWorker());
   }
   if (action.type === "API_FAILED" && action.meta.returnAddress === "LOGIN") {
     if (action.payload.code === "UserNotConfirmedException") {
@@ -107,6 +108,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
     }
   }
   if (action.type === "LOGOUT") {
+    dispatch(actionCreators.unregisterServiceWorker());
     dispatch(actionCreators.api(action.type, "LOGOUT"));
     dispatch(actionCreators.clearAuth());
     dispatch(actionCreators.clearData());
