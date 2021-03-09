@@ -119,6 +119,20 @@ const searchNotificationsForUser = async (userId) => {
  */
 
 /**
+ *
+ * @param {string} userId
+ * @returns {{totalCount: number; items: NotificationSubscription[]}}
+ */
+const searchSubscriptionsByUser = async (userId) => {
+  const result = await table.searchPk("USER#" + userId);
+  const items = result.Items.map((item) => item.Entity);
+  return {
+    totalCount: items.length,
+    items,
+  };
+};
+
+/**
  * @param {string} userId
  * @param {string} subscriptionKey
  * @returns {NotificationSubscription}
@@ -177,6 +191,7 @@ module.exports = {
   findNotificationById,
   searchNotificationsForUser,
   updateNotificationRead,
+  searchSubscriptionsByUser,
   findSubscriptionById,
   addSubscription,
   updateSubscription,

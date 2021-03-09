@@ -89,6 +89,15 @@ const postNotificationRead = async (req, res) => {
   });
 };
 
+const getSubscriptions = async (req, res) => {
+  const userId = getUserId(req);
+  const result = await notifications.searchSubscriptionsByUser(userId);
+  res.status(200).json({
+    success: true,
+    ...result,
+  });
+};
+
 const putSubscription = async (req, res) => {
   const userId = getUserId(req);
   const { subscriptionKey } = req.params;
@@ -137,6 +146,7 @@ module.exports = {
   putWebPushNotificationConfig,
   getNotifications,
   postNotificationRead,
+  getSubscriptions,
   putSubscription,
   deleteSubscription,
 };

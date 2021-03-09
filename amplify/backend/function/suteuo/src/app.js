@@ -147,6 +147,16 @@ app.get("/notifications", asyncHandler(notifications.getNotifications));
  * @property {string} type.required - 購読タイプ
  * @property {object} data.required - 購読オブジェクト
  */
+
+/**
+ * GET /notifications/subscriptions
+ * @summary 購読の一覧を取得する
+ * @return {object} 200 - success response
+ */
+app.get(
+  "/notifications/subscriptions",
+  asyncHandler(notifications.getSubscriptions)
+);
 /**
  * PUT /notifications/subscriptions/{subscriptionKey}
  * @param {string} subscriptionKey.path.required - 購読キー
