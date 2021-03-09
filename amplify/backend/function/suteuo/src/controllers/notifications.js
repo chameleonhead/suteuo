@@ -2,6 +2,7 @@ const notifications = require("../models/notifications");
 const { notfound } = require("../utils/responseGenerator");
 const uuid = require("uuid");
 const { getUserId } = require("../utils/helpers");
+const webpush = require("../utils/webpush");
 
 /**
  * @typedef {import('express').Request} Request
@@ -32,7 +33,7 @@ const putWebPushNotificationConfig = async (req, res) => {
       userId
     );
   }
-  return res.status(200).json({
+  res.status(200).json({
     success: true,
   });
 };
@@ -43,14 +44,20 @@ const putWebPushNotificationConfig = async (req, res) => {
  * @param {Response} res
  */
 const getWebPushNotificationConfig = async (req, res) => {
-  const config = await notifications.findNotificationConfigByType("webpush");
+  let config = await notifications.findNotificationConfigByType("webpush");
   if (!config) {
-    notfound(res, "Web push config has not been set.");
-    return;
+    config = {
+      id: uuid.v4(),
+      notificationType: "webpush",
+      data: webpush.generateVAPIDKeys(),
+    };
+    await notifications.addNotificationConfig(config);
   }
-  return res.status(200).json({
+  res.status(200).json({
     success: true,
-    config: config.data,
+    config: {
+      publicKey: config.data.publicKey,
+    },
   });
 };
 
@@ -62,7 +69,7 @@ const getWebPushNotificationConfig = async (req, res) => {
 const getNotifications = async (req, res) => {
   const userId = getUserId(req);
   const result = await notifications.searchNotificationsForUser(userId);
-  return res.status(200).json({
+  res.status(200).json({
     success: true,
     ...result,
   });
@@ -77,9 +84,52 @@ const postNotificationRead = async (req, res) => {
   const userId = getUserId(req);
   const { notificationId } = req.params;
   await notifications.updateNotificationRead(userId, notificationId, userId);
-  return res.status(200).json({
+  res.status(200).json({
     success: true,
   });
+};
+
+const putSubscription = async (req, res) => {
+  const userId = getUserId(req);
+  const { subscriptionKey } = req.params;
+  const subscription = notifications.findSubscriptionById(subscriptionKey);
+  if (subscription) {
+    await notifications.updateSubscription(
+      {
+        subscriptionKey: subscriptionKey,
+        subscriptionType: req.body.type,
+        user: userId,
+        data: req.body.data,
+      },
+      userId
+    );
+  } else {
+    await notifications.addSubscription(
+      {
+        subscriptionKey: subscriptionKey,
+        subscriptionType: req.body.type,
+        user: userId,
+        data: req.body.data,
+      },
+      userId
+    );
+  }
+  res.status(200).json({ success: true });
+};
+
+const deleteSubscription = async (req, res) => {
+  const userId = getUserId();
+  const { subscriptionKey } = req.params;
+  const subscription = await notifications.findSubscriptionById(
+    userId,
+    subscriptionKey
+  );
+  if (!subscription) {
+    notfound(res, "Specified subscription not found.");
+    return;
+  }
+  await notifications.deleteSubscriptionById(userId, subscriptionKey);
+  res.status(200).json({ success: true });
 };
 
 module.exports = {
@@ -87,4 +137,6 @@ module.exports = {
   putWebPushNotificationConfig,
   getNotifications,
   postNotificationRead,
+  putSubscription,
+  deleteSubscription,
 };

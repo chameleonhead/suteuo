@@ -125,11 +125,50 @@ app.post(
 );
 
 /**
+ * GET /notifications/config/webpush
+ * @summary Web Push APIの設定を取得する
+ * @return {object} 200 - success response
+ */
+app.get(
+  "/notifications/config/webpush",
+  asyncHandler(notifications.getWebPushNotificationConfig)
+);
+
+/**
  * GET /notifications
  * @summary 通知一覧を取得する
  * @return {object} 200 - success response
  */
 app.get("/notifications", asyncHandler(notifications.getNotifications));
+
+/**
+ * 購読
+ * @typedef {object} PutSubscriptionOptions
+ * @property {string} type.required - 購読タイプ
+ * @property {object} data.required - 購読オブジェクト
+ */
+/**
+ * PUT /notifications/subscriptions/{subscriptionKey}
+ * @param {string} subscriptionKey.path.required - 購読キー
+ * @param {PutSubscriptionOptions} request.body - リクエストボディ
+ * @summary 購読を登録する
+ * @return {object} 200 - success response
+ */
+app.put(
+  "/notifications/subscriptions/:subscriptionKey",
+  asyncHandler(notifications.putSubscription)
+);
+
+/**
+ * DELETE /notifications/subscriptions/{subscriptionKey}
+ * @param {string} subscriptionKey.path.required - 購読キー
+ * @summary 購読を解除する
+ * @return {object} 200 - success response
+ */
+app.delete(
+  "/notifications/subscriptions/:subscriptionKey",
+  asyncHandler(notifications.deleteSubscription)
+);
 
 /**
  * @typedef PostNotificationsOptions
@@ -142,7 +181,10 @@ app.get("/notifications", asyncHandler(notifications.getNotifications));
  * @param {PostNotificationsOptions} request.body.required
  * @return {object} 200 - success response
  */
-app.post("/notifications/:notificationId/read", asyncHandler(notifications.postNotificationRead));
+app.post(
+  "/notifications/:notificationId/read",
+  asyncHandler(notifications.postNotificationRead)
+);
 
 app.listen(3000, function () {
   console.log("App started");
