@@ -129,15 +129,12 @@ const postMessageRoomMessage = async (req, res) => {
     createdAt: new Date().toISOString(),
   };
   await messaging.addMessageRoomMessage(roomId, message);
-  const notificationData = {
-    type: "MESSAGE_SENT",
-    data: message,
-  };
   for (const participant of messageRoom.participants) {
     if (participant !== userId) {
       await notificationsService.sendNotification(
         participant,
-        notificationData
+        "MESSAGE_SENT",
+        message
       );
     }
   }

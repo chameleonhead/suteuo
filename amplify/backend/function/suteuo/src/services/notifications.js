@@ -1,8 +1,8 @@
 const model = require("../models/notifications");
 const webpush = require("../utils/webpush");
 
-const sendNotification = async (userId, data) => {
-  const notification = await model.createNotification(userId, data);
+const sendNotification = async (userId, type, payload) => {
+  const notification = await model.createNotification(userId, type, payload);
   await model.addNotification(notification);
   const subscriptions = await model.searchSubscriptionsByUser(userId);
   for (const sub of subscriptions.items) {

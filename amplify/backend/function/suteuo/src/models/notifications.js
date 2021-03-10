@@ -46,13 +46,13 @@ const findNotificationConfigByType = async (notificationType) => {
  * @param {string} data
  * @param {boolean} isRead
  */
-const createNotification = (userId, type, data) => {
+const createNotification = (userId, type, payload) => {
   return {
     id: uuid.v4(),
     userId,
     timestamp: Date.now(),
     type,
-    data,
+    payload,
     isRead: false,
   };
 };

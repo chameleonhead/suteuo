@@ -1,5 +1,4 @@
 const webpush = require("web-push");
-const notifications = require("../models/notifications");
 let vapidKeySet = false;
 
 const generateVAPIDKeys = () => {
