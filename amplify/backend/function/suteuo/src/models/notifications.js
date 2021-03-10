@@ -43,16 +43,16 @@ const findNotificationConfigByType = async (notificationType) => {
  * @param {string} timestamp
  * @param {string} type
  * @param {string} message
+ * @param {string} data
  * @param {boolean} isRead
  */
-
-const createNotification = (userId, type, message) => {
+const createNotification = (userId, type, data) => {
   return {
     id: uuid.v4(),
     userId,
     timestamp: Date.now(),
     type,
-    message,
+    data,
     isRead: false,
   };
 };
@@ -103,7 +103,9 @@ const findNotificationById = async (userId, notificationId) => {
  */
 const searchNotificationsForUser = async (userId) => {
   const result = await table.searchPk("USER#" + userId);
-  const filtered = result.Items.map((e) => e.Entity);
+  const filtered = result.Items.map((e) => e.Entity).filter(
+    (e) => !e.Item.isRead
+  );
   return {
     totalCount: filtered.length,
     items: filtered,
