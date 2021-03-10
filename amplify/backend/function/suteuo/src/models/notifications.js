@@ -106,7 +106,9 @@ const findNotificationById = async (userId, notificationId) => {
  */
 const searchNotificationsForUser = async (userId) => {
   const result = await table.searchPk("USER#" + userId);
-  const filtered = result.Items.map((e) => e.Entity).filter((e) => !e.isRead);
+  const filtered = result.Items.filter(
+    (e) => e.SK.startsWith("NOTIFICATION#") && !e.Entity.isRead
+  ).map((e) => e.Entity);
   return {
     totalCount: filtered.length,
     items: filtered,
