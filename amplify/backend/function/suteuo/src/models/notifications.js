@@ -130,7 +130,9 @@ const searchNotificationsForUser = async (userId) => {
  */
 const searchSubscriptionsByUser = async (userId) => {
   const result = await table.searchPk("USER#" + userId);
-  const items = result.Items.map((item) => item.Entity);
+  const items = result.Items.filter((item) =>
+    item.SK.startsWith("SUBSCRIPTION#")
+  ).map((item) => item.Entity);
   return {
     totalCount: items.length,
     items,

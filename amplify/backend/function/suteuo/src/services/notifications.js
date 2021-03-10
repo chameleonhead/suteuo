@@ -8,7 +8,19 @@ const sendNotification = async (userId, data) => {
   for (const sub of subscriptions.items) {
     switch (sub.subscriptionType) {
       case "webpush": {
-        await webpush.sendPushNotification(sub.data, notification);
+        if (!webpush.isVAPIDKeySet()) {
+          const keys = await model.findNotificationConfigByType("webpush");
+          webpush.setVAPIDKeys(keys.data);
+        }
+        try {
+          await webpush.sendPushNotification(sub.data, notification);
+        } catch (e) {
+          console.error(e);
+          if (e.statusCode === 410) {
+            // Subscription has unsubscribed or expired.
+            await model.deleteSubscriptionById(userId, sub.data.endpoint);
+          }
+        }
         break;
       }
       default:
