@@ -22,6 +22,17 @@ type KnownAction =
   | UnregisterServiceWorkerAction
   | ApiAction;
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
 export const notificationsActionCreators = {
   registerServiceWorker: (): RegisterServiceWorkerAction => ({
     type: "REGISTER_SERVICE_WORKER",
@@ -37,55 +48,56 @@ export const notificationsMiddleware: Middleware = ({ dispatch, getState }) => (
   next(incomingAction);
   const action = incomingAction as KnownAction;
   if (action.type === "REGISTER_SERVICE_WORKER") {
-    navigator.serviceWorker.getRegistration().then((registration) => {
-      if (registration) {
-        registration.pushManager.getSubscription().then((sub) => {
-          if (!sub) {
-            return API.get(
-              "suteuorest",
-              "/notifications/config/webpush",
-              {}
-            ).then((data) => {
-              console.log(data);
-              return registration.pushManager
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/custom-service-worker.js")
+        .then((registration) => {
+          API.get("suteuorest", "/notifications/config/webpush", {}).then(
+            (data) => {
+              registration.pushManager
                 .subscribe({
                   userVisibleOnly: true,
-                  applicationServerKey: data.config.publicKey,
+                  applicationServerKey: urlBase64ToUint8Array(
+                    data.config.publicKey
+                  ),
                 })
-                .then((sub) => {
+                .then((subscription) => {
                   API.put(
                     "suteuorest",
                     "/notifications/subscriptions/" +
-                      encodeURIComponent(sub.endpoint),
+                      encodeURIComponent(subscription.endpoint),
                     {
-                      type: "webpush",
-                      data: sub.toJSON(),
+                      body: {
+                        type: "webpush",
+                        data: subscription.toJSON(),
+                      },
                     }
                   );
                 });
-            });
-          }
+            }
+          );
         });
-      }
-    });
+    }
   }
   if (action.type === "UNREGISTER_SERVICE_WORKER") {
-    navigator.serviceWorker.getRegistration().then((registration) => {
-      if (registration) {
-        registration.pushManager.getSubscription().then((sub) => {
-          if (sub) {
-            return API.del(
-              "suteuorest",
-              "/notifications/subscriptions/" +
-                encodeURIComponent(sub.endpoint),
-              {}
-            ).then(() => {
-              sub.unsubscribe();
-            });
-          }
-        });
-      }
-    });
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const registration of registrations) {
+          registration.pushManager.getSubscription().then((subscription) => {
+            if (subscription) {
+              subscription.unsubscribe();
+              API.del(
+                "suteuorest",
+                "/notifications/subscriptions/" +
+                  encodeURIComponent(subscription.endpoint),
+                {}
+              );
+            }
+          });
+          registration.unregister();
+        }
+      });
+    }
   }
 };
 

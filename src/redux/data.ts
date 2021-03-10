@@ -42,10 +42,9 @@ interface MessageDataState {
 
 interface Notification {
   id: string;
-  type: string;
   timestamp: string;
-  message: string;
-  data: object;
+  type: string;
+  payload: object;
 }
 
 interface NotificationDataState {

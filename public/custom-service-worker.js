@@ -6,5 +6,10 @@ addEventListener("message", (e) => {
   console.log(e);
 });
 addEventListener("push", (e) => {
-  console.log(e);
+  if (!e.data) {
+    return;
+  }
+  // ペイロードを JSON 形式でパース
+  const payload = e.data.json();
+  console.log(payload);
 });

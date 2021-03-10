@@ -4,7 +4,7 @@ export interface NotificationItem {
   id: string;
   type: string;
   timestamp: string;
-  message: string;
+  payload: object;
 }
 
 type NotificationListRowProps = {
@@ -20,7 +20,7 @@ const NotificationListRow = (props: NotificationListRowProps) => {
       onClick={() => onNotificationSelect(data)}
     >
       <div>
-        {data.type === "MESSAGE"
+        {data.type === "MESSAGE_SENT"
           ? "メッセージがあります。"
           : "通知があります。"}
       </div>

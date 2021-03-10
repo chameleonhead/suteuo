@@ -21,9 +21,11 @@ Default.args = {
   items: [
     {
       id: "messageId",
-      type: '',
+      type: "",
       timestamp: "2021-01-10T10:12:31.000Z",
-      message: "Message",
+      payload: {
+        message: "message",
+      },
     },
   ],
 };
@@ -33,15 +35,19 @@ TwoItems.args = {
   items: [
     {
       id: "message-1",
-      type: 'MESSAGE',
+      type: "MESSAGE_SENT",
       timestamp: "2021-01-10T10:12:31.000Z",
-      message: "Message1",
+      payload: {
+        message: "message1",
+      },
     },
     {
       id: "message-2",
-      type: 'MESSAGE',
+      type: "MESSAGE_SENT",
       timestamp: "2021-01-10T10:12:31.000Z",
-      message: "Message2",
+      payload: {
+        message: "message2",
+      },
     },
   ],
 };
