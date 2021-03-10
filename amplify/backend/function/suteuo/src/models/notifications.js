@@ -81,7 +81,10 @@ const updateNotificationRead = async (userId, notificationId, loginUserId) => {
   );
   await table.update({
     ...result.Item,
-    isRead: true,
+    Entity: {
+      ...result.Item.Entity,
+      isRead: true,
+    },
   });
 };
 
@@ -103,9 +106,7 @@ const findNotificationById = async (userId, notificationId) => {
  */
 const searchNotificationsForUser = async (userId) => {
   const result = await table.searchPk("USER#" + userId);
-  const filtered = result.Items.map((e) => e.Entity).filter(
-    (e) => !e.Item.isRead
-  );
+  const filtered = result.Items.map((e) => e.Entity).filter((e) => !e.isRead);
   return {
     totalCount: filtered.length,
     items: filtered,

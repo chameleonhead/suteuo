@@ -135,7 +135,10 @@ const postMessageRoomMessage = async (req, res) => {
   };
   for (const participant of messageRoom.participants) {
     if (participant !== userId) {
-      notificationsService.sendNotification(participant, notificationData);
+      await notificationsService.sendNotification(
+        participant,
+        notificationData
+      );
     }
   }
   res.status(200).json({ success: true, message: { id: messageId } });
