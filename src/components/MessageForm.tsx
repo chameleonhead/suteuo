@@ -2,7 +2,7 @@ import * as React from "react";
 import { useFormik } from "formik";
 
 interface MessageFormValue {
-  body: string;
+  text: string;
 }
 
 export type MessageFormProps = {
@@ -14,12 +14,12 @@ export const MessageForm = (props: MessageFormProps) => {
   const [focus, setFocus] = React.useState(false);
   const formik = useFormik<MessageFormValue>({
     initialValues: {
-      body: "",
+      text: "",
     },
     validate: (values) => {
       const errors = {} as any;
-      if (!values.body) {
-        errors.body = "必須項目です。";
+      if (!values.text) {
+        errors.text = "必須項目です。";
       }
       return errors;
     },
@@ -35,11 +35,11 @@ export const MessageForm = (props: MessageFormProps) => {
       >
         <input
           className="flex-auto block py-1 px-2 rounded-l outline-none focus:outline-none"
-          id="body"
+          id="text"
           type="text"
-          name="body"
+          name="text"
           placeholder="メッセージ"
-          value={formik.values.body}
+          value={formik.values.text}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
           onChange={formik.handleChange}

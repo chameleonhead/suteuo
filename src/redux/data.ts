@@ -19,7 +19,6 @@ interface UsersDataState {
 interface MessageRoom {
   id: string;
   participants: string[];
-  createdAt: string;
 }
 
 interface MessageRoomDataState {
@@ -30,9 +29,9 @@ interface MessageRoomDataState {
 interface Message {
   id: string;
   roomId: string;
-  body: string;
+  timestamp: string;
   sender: string;
-  createdAt: string;
+  text: string;
 }
 
 interface MessageDataState {

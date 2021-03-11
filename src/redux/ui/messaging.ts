@@ -20,18 +20,9 @@ interface SetMessageRoomIdAction {
   };
 }
 
-interface CreateMessageRoomInfo {
-  participants: string[];
-}
-
-interface CreateMessageRoomAction {
-  type: "CREATE_MESSAGE_ROOM";
-  payload: CreateMessageRoomInfo;
-}
-
 interface CreateMessageInfo {
-  roomId: string;
-  body: string;
+  recipients: string[];
+  text: string;
 }
 
 interface CreateMessageAction {
@@ -43,7 +34,6 @@ type KnownAction =
   | InitMessagingAction
   | SetUserQueryAction
   | SetMessageRoomIdAction
-  | CreateMessageRoomAction
   | CreateMessageAction
   | ApiAction;
 
@@ -62,12 +52,6 @@ export const messagingActionCreators = {
     payload: {
       roomId,
     },
-  }),
-  createMessageRoom: (
-    info: CreateMessageRoomInfo
-  ): CreateMessageRoomAction => ({
-    type: "CREATE_MESSAGE_ROOM",
-    payload: info,
   }),
   createMessage: (info: CreateMessageInfo): CreateMessageAction => ({
     type: "CREATE_MESSAGE",
@@ -103,45 +87,19 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
       })
     );
   }
-  if (action.type === "CREATE_MESSAGE_ROOM") {
+
+  if (action.type === "CREATE_MESSAGE") {
     dispatch(
-      actionCreators.api(action.type, "POST_MESSAGE_ROOM", {
+      actionCreators.api(action.type, "POST_MESSAGE", {
         ...action.payload,
       })
     );
   }
   if (
     action.type === "API_SUCCEEDED" &&
-    action.meta.returnAddress === "CREATE_MESSAGE_ROOM"
-  ) {
-    dispatch(actionCreators.fetchMessageRooms());
-  }
-  if (
-    action.type === "API_FAILED" &&
-    action.meta.returnAddress === "CREATE_MESSAGE_ROOM"
-  ) {
-    console.error("登録に失敗しました。");
-  }
-
-  if (action.type === "CREATE_MESSAGE") {
-    dispatch(
-      actionCreators.api(
-        action.type,
-        "POST_MESSAGE",
-        {
-          ...action.payload,
-        },
-        {
-          roomId: action.payload.roomId,
-        }
-      )
-    );
-  }
-  if (
-    action.type === "API_SUCCEEDED" &&
     action.meta.returnAddress === "CREATE_MESSAGE"
   ) {
-    dispatch(actionCreators.fetchMessages(action.meta.roomId));
+    dispatch(actionCreators.fetchMessages(action.payload.room.id));
   }
   if (
     action.type === "API_FAILED" &&

@@ -22,7 +22,6 @@ Default.args = {
     {
       id: "messageId",
       participants: [{ id: "user-1", name: "user1" }],
-      createdAt: "2021-01-10T10:12:31.000Z",
     },
   ],
 };
@@ -33,7 +32,6 @@ TwoItems.args = {
     {
       id: "message-1",
       participants: [{ id: "user-1", name: "user1" }],
-      createdAt: "2021-01-10T10:12:31.000Z",
     },
     {
       id: "message-2",
@@ -41,7 +39,6 @@ TwoItems.args = {
         { id: "user-1", name: "user1" },
         { id: "user-2", name: "user2" },
       ],
-      createdAt: "2021-01-10T10:12:31.000Z",
     },
   ],
 };
@@ -50,7 +47,6 @@ export const Selected = Template.bind({});
 const item = {
   id: "message-1",
   participants: [{ id: "user-1", name: "user1" }],
-  createdAt: "2021-01-10T10:12:31.000Z",
 };
 Selected.args = {
   items: [
@@ -61,7 +57,6 @@ Selected.args = {
         { id: "user-1", name: "user1" },
         { id: "user-2", name: "user2" },
       ],
-      createdAt: "2021-01-10T10:12:31.000Z",
     },
   ],
   selectedMessageRoom: item,

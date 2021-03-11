@@ -82,9 +82,9 @@ async function searchMessageRoomMessages(roomId) {
     KeyConditionExpression: "PK = :id and begins_with(SK, :value)",
   };
   const result = await table.client.query(params).promise();
-  const messages = result.Items.sort((l, r) => l.ModifiedAt - r.ModifiedAt).map(
-    (item) => item.Entity
-  );
+  const messages = result.Items.sort(
+    (l, r) => l.ModifiedAt - r.ModifiedAt
+  ).map((item) => ({ ...item.Entity, roomId }));
   return {
     totalCount: messages.length,
     items: messages,

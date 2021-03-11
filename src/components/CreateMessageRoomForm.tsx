@@ -2,9 +2,11 @@ import * as React from "react";
 import { useFormik } from "formik";
 import Button from "../foundation/Button";
 import ChipSelection from "../foundation/ChipSelection";
+import Input from "../foundation/Input";
 
 interface CreateMessageRoomFormValue {
-  participants: string[];
+  recipients: string[];
+  text: string;
 }
 
 export type CreateMessageRoomFormProps = {
@@ -21,12 +23,16 @@ export const CreateMessageRoomForm = (props: CreateMessageRoomFormProps) => {
   );
   const formik = useFormik<CreateMessageRoomFormValue>({
     initialValues: {
-      participants: [],
+      recipients: [],
+      text: "",
     },
     validate: (values) => {
       const errors = {} as any;
-      if (values.participants.length === 0) {
-        errors.participants = "必須項目です。";
+      if (values.recipients.length === 0) {
+        errors.recipients = "必須項目です。";
+      }
+      if (!values.text) {
+        errors.text = "必須項目です。";
       }
       return errors;
     },
@@ -44,16 +50,27 @@ export const CreateMessageRoomForm = (props: CreateMessageRoomFormProps) => {
             onChipChange={(value) => {
               setSelectedUsers(value);
               formik.setFieldValue(
-                "participants",
+                "recipients",
                 value.map((e) => e.value)
               );
             }}
-            onInputBlur={(e) => formik.handleBlur("participants")}
+            onInputBlur={(e) => formik.handleBlur("recipients")}
             onInputValueChange={onUserQueryChange}
           />
         </div>
         <div>
-          <Button type="submit">作成</Button>
+          <Input
+            type="text"
+            id="text"
+            name="text"
+            placeholder="メッセージ"
+            value={formik.values.text}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+          />
+        </div>
+        <div>
+          <Button type="submit">送信</Button>
         </div>
       </div>
     </form>

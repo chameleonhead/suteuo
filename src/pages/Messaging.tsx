@@ -22,7 +22,6 @@ export const Messaging = (props: MessagingProps) => {
     onInit,
     onChangeUserQuery,
     onSelectMessageRoom,
-    onCreateMessageRoom,
     onCreateMessage,
   } = props;
   const [open, setOpen] = React.useState(false);
@@ -56,8 +55,10 @@ export const Messaging = (props: MessagingProps) => {
               <MessageForm
                 onSubmit={(value) =>
                   onCreateMessage({
-                    roomId: selectedMessageRoom.id,
-                    body: value.body,
+                    recipients: selectedMessageRoom.participants.map(
+                      (u) => u.id
+                    ),
+                    text: value.text,
                   })
                 }
               />
@@ -78,7 +79,7 @@ export const Messaging = (props: MessagingProps) => {
             }
             userQuery={userQuery}
             onUserQueryChange={(value) => onChangeUserQuery(value)}
-            onSubmit={onCreateMessageRoom}
+            onSubmit={onCreateMessage}
           />
         </div>
       </Modal>
@@ -98,7 +99,6 @@ const mapDispatchToProps = {
   onInit: actionCreators.initMessaging,
   onChangeUserQuery: actionCreators.setUserQuery,
   onSelectMessageRoom: actionCreators.setMessageRoomId,
-  onCreateMessageRoom: actionCreators.createMessageRoom,
   onCreateMessage: actionCreators.createMessage,
 };
 

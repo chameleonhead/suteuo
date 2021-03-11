@@ -3,7 +3,6 @@ import * as React from "react";
 export interface MessageRoomItem {
   id: string;
   participants: { id: string; name: string }[];
-  createdAt: string;
 }
 
 export type MessageRoomListProps = {

@@ -157,11 +157,6 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
       case "GET_MESSAGE_ROOMS":
         fetchTask = API.get("suteuorest", "/messaging/rooms", {});
         break;
-      case "POST_MESSAGE_ROOM":
-        fetchTask = API.post("suteuorest", "/messaging/rooms", {
-          body: params,
-        });
-        break;
       case "GET_MESSAGES":
         fetchTask = API.get(
           "suteuorest",
@@ -170,13 +165,9 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
         );
         break;
       case "POST_MESSAGE":
-        fetchTask = API.post(
-          "suteuorest",
-          `/messaging/rooms/${params.roomId}/messages`,
-          {
-            body: params,
-          }
-        );
+        fetchTask = API.post("suteuorest", `/messaging/messages`, {
+          body: params,
+        });
         break;
       case "GET_NOTIFICATIONS":
         fetchTask = API.get("suteuorest", "/notifications", {});
