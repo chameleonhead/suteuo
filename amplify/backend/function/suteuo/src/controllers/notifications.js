@@ -127,7 +127,7 @@ const putSubscription = async (req, res) => {
 };
 
 const deleteSubscription = async (req, res) => {
-  const userId = getUserId();
+  const userId = getUserId(req);
   const { subscriptionKey } = req.params;
   const subscription = await notifications.findSubscriptionById(
     userId,

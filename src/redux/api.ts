@@ -131,7 +131,7 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
         fetchTask = new Promise((resolve) => {
           setTimeout(() => {
             resolve(Auth.signOut());
-          }, 3000);
+          }, 1000);
         });
         break;
       case "FORGOT_PASSWORD":
