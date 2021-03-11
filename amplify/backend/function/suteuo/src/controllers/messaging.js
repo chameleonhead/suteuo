@@ -36,44 +36,6 @@ const getMessageRoom = async (req, res) => {
 };
 
 /**
- * メッセージルームを作成する
- * @param {Request} req
- * @param {Response} res
- */
-const postMessageRoom = async (req, res) => {
-  const userId = req.user && req.user.username;
-  const { participants } = req.body;
-  const roomId = uuid.v4();
-  await messaging.addMessageRoom({
-    id: roomId,
-    participants: (participants || [])
-      .filter((p) => p !== userId)
-      .concat([userId]),
-    creator: userId,
-    createdAt: new Date().toISOString(),
-  });
-  res.status(200).json({ success: true, messageRoom: { id: roomId } });
-};
-
-/**
- * メッセージルームを更新する
- * @param {Request} req
- * @param {Response} res
- */
-const putMessageRoom = async (req, res) => {
-  const { roomId } = req.params;
-  const { participants } = req.body;
-  const messageRoom = await messaging.findMessageRoomById(roomId);
-  if (!messageRoom) {
-    notfound(res, "Specified message room not found.");
-    return;
-  }
-  messageRoom.participants = participants;
-  await messaging.updateMessageRoom(messageRoom);
-  res.status(200).json({ success: true });
-};
-
-/**
  * メッセージルームを削除する
  * @param {Request} req
  * @param {Response} res
@@ -106,28 +68,42 @@ const getMessageRoomMessages = async (req, res) => {
 };
 
 /**
- * メッセージルームにメッセージを投稿する
+ * メッセージを送信する
  * @param {Request} req
  * @param {Response} res
  */
-const postMessageRoomMessage = async (req, res) => {
+const postMessage = async (req, res) => {
   const userId = req.user && req.user.username;
-  const { roomId } = req.params;
-  const messageRoom = await messaging.findMessageRoomById(roomId);
-  if (!messageRoom) {
-    notfound(res, "Specified message room not found.");
-    return;
-  }
-  const { body } = req.body;
-
+  const { recipients, text } = req.body;
   const messageId = uuid.v4();
   const message = {
     id: messageId,
-    body,
+    timestamp: new Date().toISOString(),
+    text,
     sender: userId,
-    createdAt: new Date().toISOString(),
   };
-  await messaging.addMessageRoomMessage(roomId, message);
+  const distinctRecipients = [];
+  for (const recipient of [...recipients, userId]) {
+    if (!distinctRecipients.includes(recipient)) {
+      distinctRecipients.push(recipient);
+    }
+  }
+  distinctRecipients.sort();
+  let messageRoom = await messaging.findMessageRoomByParticipants(
+    distinctRecipients
+  );
+  if (messageRoom) {
+    messageRoom.latestMessages = [...messageRoom.latestMessages, message];
+    await messaging.updateMessageRoom(messageRoom);
+  } else {
+    messageRoom = {
+      id: uuid.v4(),
+      participants: distinctRecipients,
+      latestMessages: [message],
+    };
+    messaging.addMessageRoom(messageRoom);
+  }
+  await messaging.addMessageRoomMessage(messageRoom.id, message);
   for (const participant of messageRoom.participants) {
     if (participant !== userId) {
       await notificationsService.sendNotification(
@@ -143,9 +119,7 @@ const postMessageRoomMessage = async (req, res) => {
 module.exports = {
   getMessageRooms,
   getMessageRoom,
-  postMessageRoom,
-  putMessageRoom,
   deleteMessageRoom,
   getMessageRoomMessages,
-  postMessageRoomMessage,
+  postMessage,
 };

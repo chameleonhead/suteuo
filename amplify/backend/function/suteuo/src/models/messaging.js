@@ -5,17 +5,14 @@ const table = new DynamoDb(process.env.STORAGE_SUTEUOMESSAGING_NAME);
  * @typedef MessageRoom
  * @property {string} id
  * @property {string[]} participants
- * @property {string} creator
- * @property {string} createdAt
  */
 
 /**
  * @typedef Message
  * @property {string} id
- * @property {string} roomId
- * @property {string} body
+ * @property {string} timestamp
  * @property {string} sender
- * @property {string} createdAt
+ * @property {string} text
  */
 
 /**
@@ -30,20 +27,15 @@ async function searchMessageRoomsForUser(userId) {
       items: [],
     };
   }
-  const data = await table.batchFind(
+  const batchResult = await table.batchFind(
     result.Items.map((item) => ({
       PK: item.PK,
-      SK: "Details",
+      SK: "A",
     }))
   );
   return {
-    totalCount: result.Count,
-    items: data.map((messageRoom) => ({
-      id: messageRoom.Id,
-      participants: messageRoom.Participants,
-      creator: messageRoom.Creator,
-      createdAt: messageRoom.CreatedAt,
-    })),
+    totalCount: batchResult.length,
+    items: batchResult.map((item) => item.Entity),
   };
 }
 
@@ -52,17 +44,28 @@ async function searchMessageRoomsForUser(userId) {
  * @returns {MessageRoom}
  */
 async function findMessageRoomById(roomId) {
-  const messageRoom = await table.find("MESSAGE_ROOM#" + roomId, "Details");
+  const messageRoom = await table.find("MESSAGE_ROOM#" + roomId, "A");
   if (messageRoom.Item) {
-    return {
-      id: messageRoom.Item.Id,
-      participants: messageRoom.Item.Participants,
-      creator: messageRoom.Item.Creator,
-      createdAt: messageRoom.Item.CreatedAt,
-    };
+    return messageRoom.Item.Entity;
   } else {
     return null;
   }
+}
+
+/**
+ * @param {string} roomId
+ * @returns {MessageRoom}
+ */
+async function findMessageRoomByParticipants(participants) {
+  for (const participant of participants) {
+    const result = await searchMessageRoomsForUser(participant);
+    for (const room of result.items) {
+      if (JSON.stringify(room.participants) === JSON.stringify(participants)) {
+        return room;
+      }
+    }
+  }
+  return null;
 }
 
 /**
@@ -79,13 +82,9 @@ async function searchMessageRoomMessages(roomId) {
     KeyConditionExpression: "PK = :id and begins_with(SK, :value)",
   };
   const result = await table.client.query(params).promise();
-  const messages = result.Items.map((item) => ({
-    id: item.Id,
-    roomId: item.MessageRoomId,
-    body: item.Body,
-    sender: item.Sender,
-    createdAt: item.CreatedAt,
-  }));
+  const messages = result.Items.sort((l, r) => l.ModifiedAt - r.ModifiedAt).map(
+    (item) => item.Entity
+  );
   return {
     totalCount: messages.length,
     items: messages,
@@ -94,18 +93,20 @@ async function searchMessageRoomMessages(roomId) {
 
 /**
  * @param {MessageRoom} messageRoom
+ * @param {string} loginUserId
  */
-async function addMessageRoom(messageRoom) {
+async function addMessageRoom(messageRoom, loginUserId) {
   const requests = [];
   requests.push({
     PutRequest: {
       Item: {
         PK: "MESSAGE_ROOM#" + messageRoom.id,
-        SK: "Details",
-        Id: messageRoom.id,
-        Participants: messageRoom.participants,
-        Creator: messageRoom.creator,
-        CreatedAt: messageRoom.createdAt,
+        SK: "A",
+        Entity: messageRoom,
+        CreatedAt: Date.now(),
+        CreatedBy: loginUserId,
+        ModifiedAt: Date.now(),
+        ModifiedBy: loginUserId,
       },
     },
   });
@@ -116,7 +117,8 @@ async function addMessageRoom(messageRoom) {
         Item: {
           PK: "MESSAGE_ROOM#" + messageRoom.id,
           SK: "USER#" + user,
-          CreatedAt: messageRoom.createdAt,
+          CreatedAt: Date.now(),
+          CreatedBy: loginUserId,
         },
       },
     });
@@ -139,11 +141,11 @@ async function addMessageRoomMessage(roomId, message, loginUserId) {
     {
       PK: "MESSAGE_ROOM#" + roomId,
       SK: "MESSAGE#" + message.id,
-      Id: message.id,
-      MessageRoomId: roomId,
-      Body: message.body,
-      Sender: message.sender,
-      CreatedAt: message.createdAt,
+      Entity: message,
+      CreatedAt: Date.now(),
+      CreatedBy: loginUserId,
+      ModifiedAt: Date.now(),
+      ModifiedBy: loginUserId,
     },
     loginUserId
   );
@@ -152,55 +154,15 @@ async function addMessageRoomMessage(roomId, message, loginUserId) {
 /**
  * @param {MessageRoom} messageRoom
  */
-async function updateMessageRoom(messageRoom) {
-  const room = await findMessageRoomById(messageRoom.id);
-
-  const requests = [];
-  requests.push({
-    PutRequest: {
-      Item: {
-        PK: "MESSAGE_ROOM#" + messageRoom.id,
-        SK: "Details",
-        Id: messageRoom.id,
-        Participants: messageRoom.participants,
-        Creator: messageRoom.creator,
-        CreatedAt: messageRoom.createdAt,
-      },
+async function updateMessageRoom(messageRoom, loginUserId) {
+  table.update(
+    {
+      PK: "MESSAGE_ROOM#" + messageRoom.id,
+      SK: "A",
+      Entity: messageRoom,
     },
-  });
-
-  const usersToRemove = room.participants.filter(
-    (p) => !messageRoom.participants.includes(p)
+    loginUserId
   );
-  for (const user of usersToRemove) {
-    requests.push({
-      DeleteRequest: {
-        Key: {
-          PK: "MESSAGE_ROOM#" + messageRoom.id,
-          SK: "USER#" + user,
-        },
-      },
-    });
-  }
-
-  for (const user of messageRoom.participants) {
-    requests.push({
-      PutRequest: {
-        Item: {
-          PK: "MESSAGE_ROOM#" + messageRoom.id,
-          SK: "USER#" + user,
-          CreatedAt: messageRoom.createdAt,
-        },
-      },
-    });
-  }
-
-  var params = {
-    RequestItems: {
-      [process.env.STORAGE_SUTEUOMESSAGING_NAME]: requests,
-    },
-  };
-  await table.client.batchWrite(params).promise();
 }
 
 /**
@@ -229,6 +191,7 @@ async function removeMessageRoom(roomId) {
 module.exports = {
   searchMessageRoomsForUser,
   findMessageRoomById,
+  findMessageRoomByParticipants,
   searchMessageRoomMessages,
   addMessageRoom,
   addMessageRoomMessage,

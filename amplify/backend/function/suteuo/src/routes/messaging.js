@@ -4,15 +4,37 @@ const controller = require("../controllers/messaging");
 const { asyncHandler } = require("../utils/helpers");
 
 /**
- *
+ * @typedef {object} MessageRoom
+ * @property {string} id
+ * @property {array<string>} participants
+ * @property {array<Message>} latestMessages
+ */
+
+/**
+ * @typedef {object} Message
+ * @property {string} id
+ * @property {string} body
+ * @property {string} sender
+ */
+
+/**
+ * @typedef {object} MessageRoomListResponse
+ * @property {boolean} success
+ * @property {number} totalCount
+ * @property {array<MessageRoom>} items
  */
 
 /**
  * GET /messaging/rooms
  * @summary メッセージルーム内のメッセージ一覧を取得する
- * @return {import('./models/messaging').MessageRoom} 200 - success response
+ * @return {MessageRoomListResponse} 200 - success response
  */
 router.get("/messaging/rooms", asyncHandler(controller.getMessageRooms));
+
+/**
+ * @typedef {object} MessageRoomItemResponse
+ * @property {MessageRoom} room
+ */
 
 /**
  * GET /messaging/rooms/{roomId}
@@ -26,17 +48,30 @@ router.get(
 );
 
 /**
- * メッセージルーム
- * @typedef {object} PostMessageRoomOptions
- * @property {string[]} participants.required - 参加者
- */
-/**
- * POST /messaging/rooms
- * @param {PostMessageRoomOptions} request.body.required
- * @summary メッセージルームを作成する
+ * DELETE /messaging/rooms/{roomId}
+ * @summary メッセージルームを削除する
+ * @param {string} roomId.path.required - メッセージルームID
  * @return {object} 200 - success response
  */
-router.post("/messaging/rooms", asyncHandler(controller.postMessageRoom));
+router.delete(
+  "/messaging/rooms/:roomId",
+  asyncHandler(controller.deleteMessageRoom)
+);
+
+/**
+ * メッセージ送信
+ * @typedef {object} PostMessageOptions
+ * @property {array<string>} recipients.required - 送信先
+ * @property {string} text.required - 本文
+ */
+
+/**
+ * POST /messaging/messages
+ * @param {PostMessageOptions} request.body.required
+ * @summary メッセージを送信する
+ * @return {object} 200 - success response
+ */
+router.post("/messaging/messages", asyncHandler(controller.postMessage));
 
 /**
  * GET /messaging/rooms/{roomId}/messages
@@ -47,23 +82,6 @@ router.post("/messaging/rooms", asyncHandler(controller.postMessageRoom));
 router.get(
   "/messaging/rooms/:roomId/messages",
   asyncHandler(controller.getMessageRoomMessages)
-);
-
-/**
- * メッセージ
- * @typedef {object} PostMessageOptions
- * @property {string} body.required - メッセージ本文
- */
-/**
- * POST /messaging/rooms/{roomId}/messages
- * @summary メッセージルームにメッセージを投稿する
- * @param {string} roomId.path.required - メッセージルームID
- * @param {PostMessageOptions} request.body.required - メッセージ
- * @return {object} 200 - success response
- */
-router.post(
-  "/messaging/rooms/:roomId/messages",
-  asyncHandler(controller.postMessageRoomMessage)
 );
 
 module.exports = router;
