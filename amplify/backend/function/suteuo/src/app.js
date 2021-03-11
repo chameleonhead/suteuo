@@ -30,6 +30,21 @@ if (process.env.ENDPOINT_OVERRIDE) {
   expressJSDocSwagger(app)(options);
 }
 
+app.use((req, _, next) => {
+  let username = "UNAUTH";
+  try {
+    const reqContext = req.apiGateway.event.requestContext;
+    const authProvider = reqContext.identity.cognitoAuthenticationProvider;
+    if (authProvider) {
+      username = authProvider.split(":CognitoSignIn:").pop();
+    }
+  } catch (error) {}
+  req.user = {
+    username: username,
+  };
+  next();
+});
+
 var users = require("./routes/users");
 var messaging = require("./routes/messaging");
 var notifications = require("./routes/notifications");

@@ -2,7 +2,6 @@ const uuid = require("uuid");
 const messaging = require("../models/messaging");
 const notificationsService = require("../services/notifications");
 const { notfound } = require("../utils/responseGenerator");
-const { getUserId } = require("../utils/helpers");
 
 /**
  * @typedef {import('express').Request} Request
@@ -16,7 +15,7 @@ const { getUserId } = require("../utils/helpers");
  * @param {Response} res
  */
 const getMessageRooms = async (req, res) => {
-  const userId = getUserId(req);
+  const userId = req.user && req.user.username;
   const result = await messaging.searchMessageRoomsForUser(userId);
   res.status(200).json({ success: true, ...result });
 };
@@ -42,7 +41,7 @@ const getMessageRoom = async (req, res) => {
  * @param {Response} res
  */
 const postMessageRoom = async (req, res) => {
-  const userId = getUserId(req);
+  const userId = req.user && req.user.username;
   const { participants } = req.body;
   const roomId = uuid.v4();
   await messaging.addMessageRoom({
@@ -112,7 +111,7 @@ const getMessageRoomMessages = async (req, res) => {
  * @param {Response} res
  */
 const postMessageRoomMessage = async (req, res) => {
-  const userId = getUserId(req);
+  const userId = req.user && req.user.username;
   const { roomId } = req.params;
   const messageRoom = await messaging.findMessageRoomById(roomId);
   if (!messageRoom) {

@@ -1,7 +1,6 @@
 const notifications = require("../models/notifications");
 const { notfound } = require("../utils/responseGenerator");
 const uuid = require("uuid");
-const { getUserId } = require("../utils/helpers");
 const webpush = require("../utils/webpush");
 
 /**
@@ -16,7 +15,7 @@ const webpush = require("../utils/webpush");
  * @param {Response} res
  */
 const putWebPushNotificationConfig = async (req, res) => {
-  const userId = getUserId(req);
+  const userId = req.user && req.user.username;
   const config = await notifications.findNotificationConfigByType("webpush");
   if (config) {
     await notifications.updateNotificationConfig(
@@ -67,7 +66,7 @@ const getWebPushNotificationConfig = async (req, res) => {
  * @param {Response} res
  */
 const getNotifications = async (req, res) => {
-  const userId = getUserId(req);
+  const userId = req.user && req.user.username;
   const result = await notifications.searchNotificationsForUser(userId);
   res.status(200).json({
     success: true,
@@ -81,7 +80,7 @@ const getNotifications = async (req, res) => {
  * @param {Response} res
  */
 const postNotificationRead = async (req, res) => {
-  const userId = getUserId(req);
+  const userId = req.user && req.user.username;
   const { notificationId } = req.params;
   await notifications.updateNotificationRead(userId, notificationId, userId);
   res.status(200).json({
@@ -90,7 +89,7 @@ const postNotificationRead = async (req, res) => {
 };
 
 const getSubscriptions = async (req, res) => {
-  const userId = getUserId(req);
+  const userId = req.user && req.user.username;
   const result = await notifications.searchSubscriptionsByUser(userId);
   res.status(200).json({
     success: true,
@@ -99,7 +98,7 @@ const getSubscriptions = async (req, res) => {
 };
 
 const putSubscription = async (req, res) => {
-  const userId = getUserId(req);
+  const userId = req.user && req.user.username;
   const { subscriptionKey } = req.params;
   const subscription = notifications.findSubscriptionById(subscriptionKey);
   if (subscription) {
@@ -127,7 +126,7 @@ const putSubscription = async (req, res) => {
 };
 
 const deleteSubscription = async (req, res) => {
-  const userId = getUserId(req);
+  const userId = req.user && req.user.username;
   const { subscriptionKey } = req.params;
   const subscription = await notifications.findSubscriptionById(
     userId,
