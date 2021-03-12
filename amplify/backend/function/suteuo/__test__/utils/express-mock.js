@@ -12,14 +12,8 @@ const mockRequest = ({ params, body, query } = {}, user = undefined) => {
   req.body = body || {};
   req.query = query || {};
   if (user) {
-    req.apiGateway = {
-      event: {
-        requestContext: {
-          identity: {
-            cognitoAuthenticationProvider: user,
-          },
-        },
-      },
+    req.user = {
+      username: user,
     };
   }
   return req;

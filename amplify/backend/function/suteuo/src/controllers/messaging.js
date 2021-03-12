@@ -113,13 +113,11 @@ const postMessage = async (req, res) => {
       );
     }
   }
-  res
-    .status(200)
-    .json({
-      success: true,
-      room: { id: messageRoom.id },
-      message: { id: messageId },
-    });
+  res.status(200).json({
+    success: true,
+    messageRoom: { id: messageRoom.id },
+    message: { id: messageId },
+  });
 };
 
 module.exports = {

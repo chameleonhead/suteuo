@@ -99,7 +99,7 @@ export const messagingMiddleware: Middleware = ({ dispatch, getState }) => (
     action.type === "API_SUCCEEDED" &&
     action.meta.returnAddress === "CREATE_MESSAGE"
   ) {
-    dispatch(actionCreators.fetchMessages(action.payload.room.id));
+    dispatch(actionCreators.fetchMessages(action.payload.messageRoom.id));
   }
   if (
     action.type === "API_FAILED" &&

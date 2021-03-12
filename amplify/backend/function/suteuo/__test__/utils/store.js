@@ -2,6 +2,10 @@ class Store {
   kvData = {};
   all = [];
 
+  constructor(keyName) {
+    this.keyName = keyName || "id";
+  }
+
   clear() {
     for (const key in this.kvData) {
       if (Object.hasOwnProperty.call(this.kvData, key)) {
@@ -20,11 +24,11 @@ class Store {
   }
 
   add(entity) {
-    if (this.kvData[entity.id]) {
-      console.error("already exists")
+    if (this.kvData[entity[this.keyName]]) {
+      console.error("already exists");
       throw new Error("already exists");
     }
-    this.kvData[entity.id] = entity;
+    this.kvData[entity[this.keyName]] = entity;
     this.all.push(entity);
   }
   remove(entityId) {
@@ -35,9 +39,9 @@ class Store {
     }
   }
   update(entity) {
-    const currentEntity = this.kvData[entity.id];
+    const currentEntity = this.kvData[entity[this.keyName]];
     if (currentEntity) {
-      this.remove(entity.id);
+      this.remove(entity[this.keyName]);
       this.add(entity);
     }
   }

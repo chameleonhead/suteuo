@@ -1,7 +1,9 @@
+const uuid = require("uuid");
 const Store = require("./store");
 const notificationConfigStore = new Store();
 const notificationStore = new Store();
 const notificationsByUser = {};
+const subscriptionsStore = new Store("subscriptionKey");
 
 const clear = () => {
   notificationConfigStore.clear();
@@ -9,6 +11,27 @@ const clear = () => {
   for (let prop in notificationsByUser) {
     delete notificationsByUser[prop];
   }
+};
+
+/**
+ * @typedef Notification
+ * @param {string} id
+ * @param {string} userId
+ * @param {string} timestamp
+ * @param {string} type
+ * @param {string} message
+ * @param {string} data
+ * @param {boolean} isRead
+ */
+const createNotification = (userId, type, payload) => {
+  return {
+    id: uuid.v4(),
+    userId,
+    timestamp: Date.now(),
+    type,
+    payload,
+    isRead: false,
+  };
 };
 
 const addNotificationConfig = async (notificationConfig) => {
@@ -50,12 +73,42 @@ const searchNotificationsForUser = async (userId) => {
   };
 };
 
+const searchSubscriptionsByUser = async (userId) => {
+  const filtered = subscriptionsStore.all.filter((e) => e.user === userId);
+  return {
+    totalCount: filtered.length,
+    items: filtered,
+  };
+};
+
+const findSubscriptionById = async (subscriptionKey) => {
+  return subscriptionsStore.findById(subscriptionKey);
+};
+
+const addSubscription = async (subscription) => {
+  subscriptionsStore.add(subscription);
+};
+
+const updateSubscription = async (subscription) => {
+  subscriptionsStore.update(subscription);
+};
+
+const deleteSubscriptionById = async (subscriptionKey) => {
+  subscriptionsStore.remove(subscriptionKey);
+};
+
 module.exports = {
   clear,
+  createNotification,
   addNotificationConfig,
   findNotificationConfigByType,
   addNotification,
-  updateNotificationRead,
   findNotificationById,
   searchNotificationsForUser,
+  updateNotificationRead,
+  searchSubscriptionsByUser,
+  findSubscriptionById,
+  addSubscription,
+  updateSubscription,
+  deleteSubscriptionById,
 };

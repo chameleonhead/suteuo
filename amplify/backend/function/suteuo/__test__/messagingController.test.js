@@ -6,6 +6,11 @@ jest.mock("../src/models/messaging", () => {
 });
 const mockModel = require("./utils/messaging-mock");
 
+jest.mock("../src/models/notifications", () => {
+  const notificationModel = require("./utils/notifications-mock");
+  return notificationModel;
+});
+
 describe("messaging controller", () => {
   describe("getMessageRoom", () => {
     beforeEach(() => {
@@ -27,7 +32,7 @@ describe("messaging controller", () => {
         messageRoom: messageRoom1,
       });
     });
-    it("メッセージルームIDに該当するメッセージルームが存在しにない場合はエラー", async () => {
+    it("メッセージルームIDに該当するメッセージルームが存在しない場合はエラー", async () => {
       const req = mockRequest();
       const res = mockResponse();
       await controller.getMessageRoom(req, res);
@@ -52,7 +57,7 @@ describe("messaging controller", () => {
         body: "body",
       };
       mockModel.addMessageRoom(messageRoom1);
-      mockModel.addMessage("room-1", message1);
+      mockModel.addMessageRoomMessage("room-1", message1);
 
       const req = mockRequest({ params: { roomId: "room-1" } });
       const res = mockResponse();
@@ -66,30 +71,49 @@ describe("messaging controller", () => {
     });
   });
 
-  describe("postMesageRoom", () => {
+  describe("postMessage", () => {
     beforeEach(() => {
       mockModel.clear();
     });
-    it("メッセージルームを作成する", async () => {
-      const messageRoom1 = {
-        id: "room-1",
-        participants: ["user-2"],
+    it("メッセージルームが存在しない場合にメッセージを送信する", async () => {
+      const messageRequest = {
+        recipients: ["user-2"],
+        text: "message text",
       };
-      const req = mockRequest({ body: messageRoom1 }, "user-1");
+      const req = mockRequest({ body: messageRequest }, "user-1");
       const res = mockResponse();
-      await controller.postMessageRoom(req, res);
+      await controller.postMessage(req, res);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         success: true,
         messageRoom: {
           id: expect.anything(),
         },
+        message: {
+          id: expect.anything(),
+        },
       });
-      expect(mockModel.getAllMessageRooms()[0]).toEqual({
+      const createdMessageRoom = mockModel.getAllMessageRooms()[0];
+      expect(createdMessageRoom).toEqual({
         id: expect.anything(),
-        participants: ["user-2", "user-1"],
-        creator: "user-1",
-        createdAt: expect.anything(),
+        participants: ["user-1", "user-2"],
+        latestMessages: [
+          {
+            id: expect.anything(),
+            sender: "user-1",
+            timestamp: expect.anything(),
+            text: "message text",
+          },
+        ],
+      });
+      expect(
+        (await mockModel.searchMessageRoomMessages(createdMessageRoom.id))
+          .items[0]
+      ).toEqual({
+        id: expect.anything(),
+        sender: "user-1",
+        timestamp: expect.anything(),
+        text: "message text",
       });
     });
   });
