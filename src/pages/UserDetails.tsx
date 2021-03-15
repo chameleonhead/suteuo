@@ -28,7 +28,6 @@ export const UserDetails = (props: UserDetailsProps) => {
         alt={details.name + " の画像"}
       />
       <h1>{details.name}</h1>
-      <div>@{details.username}</div>
       <div>
         <dl>
           <dt>活動場所</dt>

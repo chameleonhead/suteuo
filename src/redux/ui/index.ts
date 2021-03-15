@@ -7,7 +7,9 @@ import * as NotificationStore from "./notifications";
 
 interface SignupState {
   waitingUserConfirmation: boolean;
+  error?: string;
 }
+
 interface ForgotPasswordState {
   waitingUserConfirmation: boolean;
 }

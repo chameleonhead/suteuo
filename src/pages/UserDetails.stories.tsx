@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Meta, Story } from "@storybook/react/types-6-0";
-import UserDetails from "./UserDetails";
+import { UserDetails, UserDetailsProps } from "./UserDetails";
 import { withContext } from "./utils";
 
 export default {
@@ -9,15 +9,21 @@ export default {
   decorators: [withContext()],
 } as Meta;
 
-const Template: Story<Parameters<typeof UserDetails>[0]> = (args) => (
-  <UserDetails {...args} />
-);
+const Template: Story<UserDetailsProps> = (args) => <UserDetails {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
   match: {
     params: {
-      userId: "686bf66f-d269-4d3d-ac83-1d7ec3e43da1",
+      userId: "user-1",
     },
   } as any,
+  details: {
+    area: "Area",
+    id: "user-1",
+    email: "user@email.com",
+    avatarUrl: null,
+    name: "User Name",
+    rating: 1,
+  },
 };

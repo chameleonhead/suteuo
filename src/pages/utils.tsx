@@ -1,15 +1,13 @@
 import * as React from "react";
 import { MemoryRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
-import Amplify from "aws-amplify";
-import awsExports from "../aws-exports";
-import configureStore from "../redux/configureStore";
+import { createStore } from "redux";
+import { ApplicationState, reducers } from "../redux";
 
-Amplify.configure(awsExports);
-
-export const withContext = () => {
+export const withContext = (initialState?: ApplicationState) => {
+  const store = createStore(reducers, initialState);
   return (story: any) => (
-    <Provider store={configureStore()}>
+    <Provider store={store}>
       <Router>{story()}</Router>
     </Provider>
   );

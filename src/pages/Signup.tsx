@@ -31,6 +31,7 @@ export const Signup = (props: SignupProps) => {
             <h1 className="text-3xl">新規登録</h1>
             <p className="text-gray-500">捨魚にようこそ</p>
           </div>
+          {state.error && <div className="my-6 text-red-600">エラー: {state.error}</div>}
           {state.waitingUserConfirmation ? (
             <ConfirmCodeForm
               credential={credential!}

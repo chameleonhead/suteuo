@@ -86,6 +86,38 @@ describe("App shell", () => {
       expect(screen.getByTestId("code")).toBeInTheDocument();
     });
   });
+  it("/registerですでに存在するユーザーを登録するとエラーメッセージが表示される", async () => {
+    services.session = jest.fn().mockReturnValue(Promise.resolve(null));
+    services.register = jest
+      .fn()
+      .mockReturnValue(
+        Promise.reject({ statucCode: 400, code: "UsernameExistsException" })
+      );
+    const history = createMemoryHistory();
+    history.push("/register");
+    render(<App store={configureStore()} history={history} />);
+    await waitFor(() => {
+      const pageTitleElement = screen.getByText(/新規登録/i, {
+        selector: "h1",
+      });
+      expect(pageTitleElement).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId("name"), {
+      target: { value: "New User Name" },
+    });
+    fireEvent.change(screen.getByTestId("email"), {
+      target: { value: "newuser@example.com" },
+    });
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "P@ssw0rd" },
+    });
+    fireEvent.click(screen.getByText("登録"));
+    await waitFor(() => {
+      expect(
+        screen.getByText(/既に登録済みのユーザーです。/i)
+      ).toBeInTheDocument();
+    });
+  });
   it("/registerで存在しないユーザーを新規登録し確認コードの入力を行うとログイン処理が実行される", async () => {
     services.session = jest.fn().mockReturnValue(Promise.resolve(null));
     services.register = jest.fn().mockReturnValue(Promise.resolve({}));
