@@ -1,6 +1,6 @@
-import { API, Auth } from "aws-amplify";
 import { Middleware, Reducer } from "redux";
 import { actionCreators, ApplicationState } from ".";
+import services from "../services";
 
 export interface ApiState {}
 
@@ -85,103 +85,53 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => (
     let fetchTask = undefined;
     switch (name) {
       case "REGISTER":
-        fetchTask = Auth.signUp({
-          username: params.email,
-          password: params.password,
-          attributes: {
-            name: params.name,
-          },
-        });
+        fetchTask = services.register(params);
         break;
       case "CONFIRM_CODE":
-        fetchTask = Auth.confirmSignUp(params.username, params.code);
+        fetchTask = services.confirmRegister(params);
         break;
       case "LOGIN":
-        fetchTask = Auth.signIn({
-          username: params.username,
-          password: params.password,
-        });
+        fetchTask = services.login(params);
         break;
       case "SESSION":
-        Auth.currentSession()
-          .then((_) => {
-            return Auth.currentUserInfo();
-          })
-          .then((value) => {
-            if (value.username) {
-              dispatch(
-                actionCreators.apiSuccess(
-                  {
-                    id: value.attributes["sub"],
-                    name: value.attributes["name"],
-                    email: value.attributes["email"],
-                  },
-                  action.meta
-                )
-              );
-            } else {
-              dispatch(actionCreators.apiSuccess(undefined, action.meta));
-            }
-          })
-          .catch((_) => {
-            dispatch(actionCreators.apiSuccess(undefined, action.meta));
-          });
+        fetchTask = services.session();
         break;
       case "LOGOUT":
-        fetchTask = new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(Auth.signOut());
-          }, 1000);
-        });
+        fetchTask = services.logout();
         break;
       case "FORGOT_PASSWORD":
-        fetchTask = Auth.forgotPassword(action.payload.params.username);
+        fetchTask = services.forgotPassword(params);
         break;
       case "RESET_PASSWORD":
-        fetchTask = Auth.forgotPasswordSubmit(
-          action.payload.params.username,
-          action.payload.params.code,
-          action.payload.params.password
-        );
+        fetchTask = services.resetPassword(params);
+        break;
+      case "CHANGE_PASSWORD":
+        fetchTask = services.changePassword(params);
         break;
       case "GET_USERS":
-        fetchTask = API.get(
-          "suteuorest",
-          "/users?q=" + encodeURIComponent(params.query || ""),
-          {}
-        );
+        fetchTask = services.getUsers(params);
         break;
       case "GET_USER":
-        fetchTask = API.get("suteuorest", "/users/" + params.userId, {});
+        fetchTask = services.getUsers(params);
         break;
       case "GET_MESSAGE_ROOMS":
-        fetchTask = API.get("suteuorest", "/messaging/rooms", {});
+        fetchTask = services.getMessageRooms(params);
         break;
       case "GET_MESSAGES":
-        fetchTask = API.get(
-          "suteuorest",
-          `/messaging/rooms/${params.roomId}/messages`,
-          {}
-        );
+        fetchTask = services.getMessagesInMessageRoom(params);
         break;
       case "POST_MESSAGE":
-        fetchTask = API.post("suteuorest", `/messaging/messages`, {
-          body: params,
-        });
+        fetchTask = services.postMessage(params);
         break;
       case "GET_NOTIFICATIONS":
-        fetchTask = API.get("suteuorest", "/notifications", {});
+        fetchTask = services.getNotifications(params);
         break;
       case "POST_NOTIFICATION_READ":
-        fetchTask = API.post(
-          "suteuorest",
-          `/notifications/${params.notificationId}/read`,
-          {}
-        );
+        fetchTask = services.postNotificationRead(params);
         break;
     }
     if (fetchTask) {
-      fetchTask
+      (fetchTask as Promise<any>)
         .then((data) => {
           dispatch(actionCreators.apiSuccess(data, action.meta));
         })

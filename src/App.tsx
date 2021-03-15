@@ -1,18 +1,26 @@
 import * as React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { Router } from "react-router-dom";
+import { History } from "history";
 import { Provider } from "react-redux";
 
-import configureStore from "./redux/configureStore";
 import Routes from "./Routes";
+import { Store } from "redux";
+import { ApplicationState } from "./redux";
 
-function App() {
+export type AppProps = {
+  store: Store<ApplicationState>;
+  history: History;
+};
+
+export const App = (props: AppProps) => {
+  const { store, history } = props;
   return (
-    <Provider store={configureStore()}>
-      <Router>
+    <Provider store={store}>
+      <Router history={history}>
         <Routes />
       </Router>
     </Provider>
   );
-}
+};
 
 export default App;

@@ -86,7 +86,7 @@ export const authMiddleware: Middleware = ({ dispatch }) => (next) => (
     action.meta.returnAddress === "INIT_AUTH"
   ) {
     if (action.payload) {
-      dispatch(actionCreators.setAuth(action.payload));
+      dispatch(actionCreators.setAuth(action.payload.user));
       dispatch(actionCreators.initNotifications());
     } else {
       dispatch(actionCreators.clearAuth());

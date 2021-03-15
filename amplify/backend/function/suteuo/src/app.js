@@ -42,6 +42,7 @@ app.use((req, _, next) => {
   req.user = {
     username: username,
   };
+  console.log(req.headers)
   next();
 });
 
