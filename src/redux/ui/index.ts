@@ -5,9 +5,15 @@ import * as MessagingStore from "./messaging";
 import * as ForgotPasswordStore from "./forgotPassword";
 import * as NotificationStore from "./notifications";
 
+interface DialogMessage {
+  id: string;
+  type: "info" | "warning" | "error";
+  title: string;
+  message: string;
+}
+
 interface SignupState {
   waitingUserConfirmation: boolean;
-  error?: string;
 }
 
 interface ForgotPasswordState {
@@ -24,9 +30,11 @@ export interface UiState {
   ["FORGOT_PASSWORD"]?: ForgotPasswordState;
   ["MESSAGING"]?: MessagingUiState;
   [key: string]: any;
+  messages: DialogMessage[];
 }
 
 export const uiSelectors = {
+  getDialogMessages: (state: ApplicationState) => state.ui.messages,
   getUiState: (state: ApplicationState) => state.ui,
   getSignupState: (state: ApplicationState) => state.ui["SIGNUP"],
   getForgotPasswordState: (state: ApplicationState) =>
@@ -50,7 +58,27 @@ interface ClearPageStateAction {
   };
 }
 
-type KnownAction = SetPageStateAction | ClearPageStateAction;
+interface ShowDialogMessageAction {
+  type: "SHOW_DIALOG_MESSAGE";
+  payload: {
+    type: "info" | "warning" | "error";
+    title: string;
+    message: string;
+  };
+}
+
+interface CloseDialogMessageAction {
+  type: "CLOSE_DIALOG_MESSAGE";
+  payload: {
+    messageId: string;
+  };
+}
+
+type KnownAction =
+  | SetPageStateAction
+  | ClearPageStateAction
+  | ShowDialogMessageAction
+  | CloseDialogMessageAction;
 
 export const uiActionCreators = {
   setPageState: <K extends UiStateKey, T = UiState[K]>(
@@ -69,13 +97,31 @@ export const uiActionCreators = {
       pageKey,
     },
   }),
+  showMessageDialog: (
+    type: "info" | "warning" | "error",
+    title: string,
+    message: string
+  ): ShowDialogMessageAction => ({
+    type: "SHOW_DIALOG_MESSAGE",
+    payload: {
+      type,
+      title,
+      message,
+    },
+  }),
+  closeMessageDialog: (messageId: string): CloseDialogMessageAction => ({
+    type: "CLOSE_DIALOG_MESSAGE",
+    payload: {
+      messageId,
+    },
+  }),
   ...SignupStore.signupActionCreators,
   ...MessagingStore.messagingActionCreators,
   ...ForgotPasswordStore.forgotPasswordActionCreators,
   ...NotificationStore.notificationsActionCreators,
 };
 
-export const uiMiddleware = [
+export const uiMiddlewares = [
   SignupStore.signupMiddleware,
   MessagingStore.messagingMiddleware,
   ForgotPasswordStore.forgotPasswordMiddleware,
@@ -84,7 +130,9 @@ export const uiMiddleware = [
 
 export const uiReducer: Reducer<UiState> = (state, incomingAction) => {
   if (!state) {
-    state = {};
+    state = {
+      messages: [],
+    };
   }
   const action = incomingAction as KnownAction;
   switch (action.type) {
@@ -100,6 +148,24 @@ export const uiReducer: Reducer<UiState> = (state, incomingAction) => {
       };
       delete newState[action.payload.pageKey];
       return newState;
+    }
+    case "SHOW_DIALOG_MESSAGE": {
+      return {
+        ...state,
+        messages: [
+          ...state.messages,
+          { ...action.payload, id: String(Date.now()) },
+        ],
+      };
+    }
+    case "CLOSE_DIALOG_MESSAGE": {
+      const messages = [...state.messages].filter(
+        (m) => m.id !== action.payload.messageId
+      );
+      return {
+        ...state,
+        messages: messages,
+      };
     }
   }
   return state;

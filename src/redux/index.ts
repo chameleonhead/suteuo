@@ -36,7 +36,7 @@ import {
 } from "./task";
 import {
   uiActionCreators,
-  uiMiddleware,
+  uiMiddlewares,
   uiReducer,
   uiSelectors,
   UiState,
@@ -73,7 +73,7 @@ export const middlewares = [
   apiMiddleware,
   authMiddleware,
   dataMiddleware,
-  ...uiMiddleware,
+  ...uiMiddlewares,
   taskMiddleware,
   notificationsMiddleware,
 ];

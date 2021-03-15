@@ -92,10 +92,11 @@ export const signupMiddleware: Middleware = ({ dispatch, getState }) => (
   ) {
     if (action.payload.code === "UsernameExistsException") {
       dispatch(
-        actionCreators.setPageState("SIGNUP", {
-          waitingUserConfirmation: false,
-          error: "既に登録済みのユーザーです。",
-        })
+        actionCreators.showMessageDialog(
+          "error",
+          "新規登録",
+          "既に登録済みのユーザーです。"
+        )
       );
     } else {
       console.error("登録に失敗しました。");

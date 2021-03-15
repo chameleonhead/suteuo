@@ -18,14 +18,6 @@ Default.args = {
   },
 };
 
-export const DefaultWithError = Template.bind({});
-DefaultWithError.args = {
-  state: {
-    waitingUserConfirmation: false,
-    error: "Error",
-  },
-};
-
 export const WaitingForCode = Template.bind({});
 WaitingForCode.args = {
   state: {

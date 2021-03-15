@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 
 import Routes from "./Routes";
 import { Store } from "redux";
+import MessageDialog from "./components/MessageDialog";
 import { ApplicationState } from "./redux";
 
 export type AppProps = {
@@ -16,6 +17,7 @@ export const App = (props: AppProps) => {
   const { store, history } = props;
   return (
     <Provider store={store}>
+      <MessageDialog />
       <Router history={history}>
         <Routes />
       </Router>
