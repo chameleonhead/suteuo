@@ -36,3 +36,11 @@ withSelections.args = {
     { value: "value2", text: "text2" },
   ],
 };
+
+
+export const withLongChipText = Template.bind({});
+withLongChipText.args = {
+  placeholder: "チップ",
+  inputValue: "text",
+  selectedData: [{ value: "value", text: "long long long long long long long long long long long long long long long long long long long long long long long long long long long text" }],
+};

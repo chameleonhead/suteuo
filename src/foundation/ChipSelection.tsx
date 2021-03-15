@@ -38,16 +38,16 @@ export const ChipSelection = (props: ChipSelectionProps) => {
       <div className="relative" onClick={() => inputRef.current?.focus()}>
         <div
           className={
-            "mt-1 py-1 px-2 block w-full border rounded flex items-center outline-none" +
+            "mt-1 py-1 px-2 block w-full border rounded flex flex-wrap items-center outline-none" +
             (focus ? " ring ring-black" : "")
           }
         >
           {selectedData.map((d, i) => (
             <div
               key={i}
-              className="rounded-full border px-3 py-1 flex items-center"
+              className="rounded-full border px-3 py-1 flex items-center max-w-full"
             >
-              <span>{d.text}</span>
+              <div className="truncate">{d.text}</div>
               <button
                 className="outline-none focus:outline-none px-1 w-5 h-5"
                 onClick={() => {
