@@ -7,7 +7,7 @@ jest.mock("../services");
 
 describe("App shell", () => {
   it("ログインせずにアクセスすると未ログイン状態のナビゲーションバーが表示される", async () => {
-    services.session = jest.fn().mockReturnValue(Promise.resolve(null));
+    services.session = jest.fn().mockResolvedValue(null);
     render(<App store={configureStore()} history={createMemoryHistory()} />);
     const titleElement = screen.getByText(/捨魚/i);
     expect(titleElement).toBeInTheDocument();
@@ -19,11 +19,9 @@ describe("App shell", () => {
     });
   });
   it("ログインしてアクセスするとログイン状態のナビゲーションバーが表示される", async () => {
-    services.session = jest.fn().mockReturnValue(
-      Promise.resolve({
-        user: { id: "testid", email: "test@example.com", name: "User Name" },
-      })
-    );
+    services.session = jest.fn().mockResolvedValue({
+      user: { id: "testid", email: "test@example.com", name: "User Name" },
+    });
     render(<App store={configureStore()} history={createMemoryHistory()} />);
     const titleElement = screen.getByText(/捨魚/i);
     expect(titleElement).toBeInTheDocument();
@@ -38,40 +36,45 @@ describe("App shell", () => {
     });
   });
   it("ログインせずに/にアクセスするとログインしない状態でホームページが表示される", async () => {
-    services.session = jest.fn().mockReturnValue(Promise.resolve(null));
+    services.session = jest.fn().mockResolvedValue(null);
     render(<App store={configureStore()} history={createMemoryHistory()} />);
-    await waitFor(() => {
-      const pageTitleElement = screen.getByText(/Home/i);
-      expect(pageTitleElement).toBeInTheDocument();
-    });
+    await waitFor(() => screen.getByText(/Home/i));
+    const pageTitleElement = screen.getByText(/Home/i);
+    expect(pageTitleElement).toBeInTheDocument();
   });
   it("ログインせずに/registerにアクセスすると新規登録画面が表示される", async () => {
-    services.session = jest.fn().mockReturnValue(Promise.resolve(null));
+    services.session = jest.fn().mockResolvedValue(null);
     const history = createMemoryHistory();
     history.push("/register");
     render(<App store={configureStore()} history={history} />);
-    await waitFor(() => {
-      const pageTitleElement = screen.getByText(/新規登録/i, {
+    await waitFor(() =>
+      screen.getByText(/新規登録/i, {
         selector: "h1",
-      });
-      expect(pageTitleElement).toBeInTheDocument();
-      expect(screen.getByTestId("name")).toBeInTheDocument();
-      expect(screen.getByTestId("email")).toBeInTheDocument();
-      expect(screen.getByTestId("password")).toBeInTheDocument();
+      })
+    );
+    const pageTitleElement = screen.getByText(/新規登録/i, {
+      selector: "h1",
     });
+    expect(pageTitleElement).toBeInTheDocument();
+    expect(screen.getByTestId("name")).toBeInTheDocument();
+    expect(screen.getByTestId("email")).toBeInTheDocument();
+    expect(screen.getByTestId("password")).toBeInTheDocument();
   });
   it("/registerで存在しないユーザーを新規登録すると確認コードの入力テキストが表示される", async () => {
-    services.session = jest.fn().mockReturnValue(Promise.resolve(null));
-    services.register = jest.fn().mockReturnValue(Promise.resolve({}));
+    services.session = jest.fn().mockResolvedValue(null);
+    services.register = jest.fn().mockResolvedValue({});
     const history = createMemoryHistory();
     history.push("/register");
     render(<App store={configureStore()} history={history} />);
-    await waitFor(() => {
-      const pageTitleElement = screen.getByText(/新規登録/i, {
+    await waitFor(() =>
+      screen.getByText(/新規登録/i, {
         selector: "h1",
-      });
-      expect(pageTitleElement).toBeInTheDocument();
+      })
+    );
+    const pageTitleElement = screen.getByText(/新規登録/i, {
+      selector: "h1",
     });
+    expect(pageTitleElement).toBeInTheDocument();
     fireEvent.change(screen.getByTestId("name"), {
       target: { value: "New User Name" },
     });
@@ -82,26 +85,26 @@ describe("App shell", () => {
       target: { value: "P@ssw0rd" },
     });
     fireEvent.click(screen.getByText("登録"));
-    await waitFor(() => {
-      expect(screen.getByTestId("code")).toBeInTheDocument();
-    });
+    await waitFor(() => screen.getByTestId("code"));
+    expect(screen.getByTestId("code")).toBeInTheDocument();
   });
   it("/registerですでに存在するユーザーを登録するとエラーメッセージが表示される", async () => {
-    services.session = jest.fn().mockReturnValue(Promise.resolve(null));
+    services.session = jest.fn().mockResolvedValue(null);
     services.register = jest
       .fn()
-      .mockReturnValue(
-        Promise.reject({ statucCode: 400, code: "UsernameExistsException" })
-      );
+      .mockRejectedValue({ statucCode: 400, code: "UsernameExistsException" });
     const history = createMemoryHistory();
     history.push("/register");
     render(<App store={configureStore()} history={history} />);
-    await waitFor(() => {
-      const pageTitleElement = screen.getByText(/新規登録/i, {
+    await waitFor(() =>
+      screen.getByText(/新規登録/i, {
         selector: "h1",
-      });
-      expect(pageTitleElement).toBeInTheDocument();
+      })
+    );
+    const pageTitleElement = screen.getByText(/新規登録/i, {
+      selector: "h1",
     });
+    expect(pageTitleElement).toBeInTheDocument();
     fireEvent.change(screen.getByTestId("name"), {
       target: { value: "New User Name" },
     });
@@ -112,26 +115,28 @@ describe("App shell", () => {
       target: { value: "P@ssw0rd" },
     });
     fireEvent.click(screen.getByText("登録"));
-    await waitFor(() => {
-      expect(
-        screen.getByText(/既に登録済みのユーザーです。/i)
-      ).toBeInTheDocument();
-    });
+    await waitFor(() => screen.getByText(/既に登録済みのユーザーです。/i));
+    expect(
+      screen.getByText(/既に登録済みのユーザーです。/i)
+    ).toBeInTheDocument();
   });
-  it("/registerで存在しないユーザーを新規登録し確認コードの入力を行うとログイン処理が実行される", async () => {
-    services.session = jest.fn().mockReturnValue(Promise.resolve(null));
-    services.register = jest.fn().mockReturnValue(Promise.resolve({}));
-    services.confirmRegister = jest.fn().mockReturnValue(Promise.resolve({}));
-    services.login = jest.fn();
+  it("/registerで存在しないユーザーを新規登録し確認コードの入力を行うとログイン処理が実行されてホーム画面に遷移する", async () => {
+    services.session = jest.fn().mockResolvedValue(null);
+    services.register = jest.fn().mockResolvedValue({});
+    services.confirmRegister = jest.fn().mockResolvedValue({});
+    services.login = jest.fn().mockResolvedValue({});
     const history = createMemoryHistory();
     history.push("/register");
     render(<App store={configureStore()} history={history} />);
-    await waitFor(() => {
-      const pageTitleElement = screen.getByText(/新規登録/i, {
+    await waitFor(() =>
+      screen.getByText(/新規登録/i, {
         selector: "h1",
-      });
-      expect(pageTitleElement).toBeInTheDocument();
+      })
+    );
+    const pageTitleElement = screen.getByText(/新規登録/i, {
+      selector: "h1",
     });
+    expect(pageTitleElement).toBeInTheDocument();
     fireEvent.change(screen.getByTestId("name"), {
       target: { value: "New User Name" },
     });
@@ -142,20 +147,15 @@ describe("App shell", () => {
       target: { value: "P@ssw0rd" },
     });
     fireEvent.click(screen.getByText("登録"));
-    await waitFor(() => {
-      expect(screen.getByTestId("code")).toBeInTheDocument();
-    });
+    await waitFor(() => screen.getByTestId("code"));
     fireEvent.change(screen.getByTestId("code"), {
       target: { value: "code" },
     });
     fireEvent.click(screen.getByText("送信"));
-    await waitFor(() => {
-      expect(services.login).toBeCalledWith(
-        expect.objectContaining({
-          username: "newuser@example.com",
-          password: "P@ssw0rd",
-        })
-      );
+    services.session = jest.fn().mockResolvedValue({
+      user: { id: "testid", email: "test@example.com", name: "User Name" },
     });
+    await waitFor(() => screen.getByText(/Home/i));
+    expect(screen.getByText(/Home/i)).toBeInTheDocument();
   });
 });
